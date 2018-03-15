@@ -23,6 +23,8 @@
 
 > Monorepo tools
 
+Clark is a toolkit for interacting with [alle-inspired](https://github.com/boennemann/alle) monorepos. This is a productization of scripts found in [PouchDB](https://github.com/pouchdb/pouchdb) and the [Cisco Spark JavaScript SDK](https://github.com/ciscospark/spark-js-sdk).
+
 ## Table of Contents
 
 - [Install](#install)
@@ -39,8 +41,18 @@ npm install @ianwremmel/clark
 
 ## Usage
 
+The key benefit of clark over [lerna](https://lernajs.io/) and similar tools comes from adhering to the directory layout described in [alle](https://github.com/boennemann/alle). In other words, all of your package **must** be kept in `./packages/node_modules` and the name each each `package.json` **should** match the subfolder path (yes, this includes the org/user scope if present).
+
+### List all commands
+
 ```bash
 clark --help
+```
+
+### List all packages
+
+```bash
+clark list
 ```
 
 ## Maintainer
@@ -50,6 +62,14 @@ clark --help
 ## Contribute
 
 PRs Welcome
+
+### Development
+
+Use `ts-node` to test your changes without rebuilding
+
+```bash
+ts-node ./src/cli.ts --help
+```
 
 ## License
 
