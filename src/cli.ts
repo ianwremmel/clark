@@ -4,7 +4,7 @@ import yargs from 'yargs';
 // for the program to execute.
 // tslint:disable-next-line:no-unused-expression
 yargs({})
-  .commandDir('../dist/commands')
+  .commandDir('../lib/commands')
   .demandCommand(1)
   .help()
   .recommendCommands()
