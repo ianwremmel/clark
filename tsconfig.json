@@ -1,18 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
+    "baseUrl": ".",
     "declaration": true,
-    "strict": true,
+    "experimentalDecorators": false,
+    "lib": ["es2017"],
+    "module": "commonjs",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "experimentalDecorators": false,
-    "baseUrl": "."
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "target": "es2017"
   },
-  "include": [
-    "./src/**/*.ts"
-  ],
   "exclude": [
     "node_modules"
+  ],
+  "include": [
+    "./src/**/*.ts"
   ]
 }
