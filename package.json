@@ -2,21 +2,24 @@
   "name": "@ianwremmel/clark",
   "version": "0.0.0-development",
   "description": "Monorepo tools",
-  "bin": {},
-  "main": "./src/index.js",
+  "bin": {
+    "clark": "bin/clark"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/ianwremmel/clark.git"
   },
   "scripts": {
+    "build": "tsc",
     "commitmsg": "npm run --silent lint:commitmsg",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "lint": "npm run --silent lint:js && npm run --silent lint:tslint && npm run --silent lint:changelog",
+    "lint": "npm run --silent lint:js && npm run --silent lint:ts && npm run --silent lint:changelog",
     "lint:changelog": "commitlint --from origin/master --to HEAD",
     "lint:commitmsg": "commitlint -e",
     "lint:eslint": "eslint --ignore --ignore-path .gitignore",
-    "lint:tslint": "tslint --project tsconfig.json",
     "lint:js": "npm run --silent lint:eslint -- .",
+    "lint:tslint": "tslint --project tsconfig.json",
+    "lint:ts": "npm run --slient lint:tslint -- './src/**/*.ts'",
     "lint:staged": "lint-staged",
     "mocha-reporter-options": "[ -n \"${CI}\" ] && echo '--reporter xunit --reporter-options output=reports/junit/mocha.xml'",
     "precommit": "npm run --silent lint:staged",
@@ -34,6 +37,8 @@
     "@commitlint/config-angular": "^6.1.3",
     "@ianwremmel/eslint-config-base": "^1.0.0",
     "@ianwremmel/eslint-config-standard": "^1.2.0",
+    "@types/node": "^9.4.7",
+    "@types/yargs": "^11.0.0",
     "@urbandoor/lint": "0.0.6",
     "chai": "^4.1.2",
     "condition-circle": "^2.0.1",
@@ -47,16 +52,20 @@
     "nyc": "^11.6.0",
     "prettier": "^1.11.1",
     "semantic-release": "^15.0.3",
+    "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
     "typescript": "^2.7.2"
   },
   "lint-staged": {
-    "*.js": "lint:eslint",
-    "*.ts": "lint:tslint",
-    "bin/**": "lint:eslint"
+    "**/*.js": "npm run lint:eslint -- ",
+    "**/*.ts": "npm run lint:tslint",
+    "bin/**": "npm run lint:eslint -- "
   },
   "release": {
     "verifyConditions": "condition-circle"
+  },
+  "dependencies": {
+    "yargs": "^11.0.0"
   }
 }
