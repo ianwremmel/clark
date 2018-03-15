@@ -69,7 +69,7 @@
   },
   "lint-staged": {
     "**/*.js": "npm run lint:eslint -- ",
-    "**/*.ts": "npm run lint:tslint",
+    "**/*.ts": "tslint",
     "bin/**": "npm run lint:eslint -- "
   },
   "release": {
