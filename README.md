@@ -33,14 +33,14 @@
 
 ## Install
 
-```
+```bash
 npm install @ianwremmel/clark
 ```
 
 ## Usage
 
-```
-# TODO
+```bash
+clark --help
 ```
 
 ## Maintainer
