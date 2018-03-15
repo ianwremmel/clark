@@ -38,7 +38,7 @@
     "@ianwremmel/eslint-config-base": "^1.0.0",
     "@ianwremmel/eslint-config-standard": "^1.2.0",
     "chai": "^4.1.2",
-    "condition-circle": "^1.6.0",
+    "condition-circle": "^2.0.1",
     "coveralls": "^3.0.0",
     "dependency-check": "^3.1.0",
     "eslint": "^4.18.2",
