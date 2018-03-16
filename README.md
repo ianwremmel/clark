@@ -55,6 +55,12 @@ clark --help
 clark list
 ```
 
+### Run a command each package directory
+
+```bash
+clark exec <command>
+```
+
 ## Maintainer
 
 [Ian Remmel](https://github.com/ianwremmel)

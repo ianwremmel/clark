@@ -43,7 +43,10 @@
     "@ianwremmel/eslint-config-base": "^1.0.0",
     "@ianwremmel/eslint-config-standard": "^1.2.0",
     "@types/chai": "^4.1.2",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/debug": "0.0.30",
     "@types/glob": "^5.0.35",
+    "@types/mocha": "^2.2.48",
     "@types/node": "^9.4.7",
     "@types/yargs": "^11.0.0",
     "@urbandoor/lint": "0.0.6",
@@ -76,7 +79,9 @@
     "verifyConditions": "condition-circle"
   },
   "dependencies": {
+    "debug": "^3.1.0",
     "glob": "^7.1.2",
+    "invariant": "^2.2.4",
     "yargs": "^11.0.0"
   },
   "pkg": {
