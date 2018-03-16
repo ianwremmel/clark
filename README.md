@@ -61,6 +61,12 @@ clark list
 clark exec <command>
 ```
 
+### Run a command in a single package directory
+
+```bash
+clark exec <command> --package <packagename>
+```
+
 ## Maintainer
 
 [Ian Remmel](https://github.com/ianwremmel)

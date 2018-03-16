@@ -1,22 +1,50 @@
-import * as debugFactory from 'debug';
-import {packages} from '../packages';
+import * as debugFactory from "debug";
+import { packages } from "../packages";
 
-const debug = debugFactory('clark:lib:handlers:exec');
+const debug = debugFactory("clark:lib:handlers:exec");
 
 export namespace Exec {
-  export async function handler(options: Options) {
-    debug(`running "${options.command}" in each package directory`);
-    for (const packageName of await packages.list()) {
-      debug(`running "${options.command}" in "${packageName}"'s directory`);
-      packages.exec(options.command, packageName);
-      debug(`ran "${options.command}" in "${packageName}"'s directory`);
-    }
-    debug(`ran "${options.command}" in each package directory`);
+  async function run(command: string, packageName: string): Promise<void> {
+    debug(`Running "${command}" against specified package "${packageName}"`);
+    await packages.exec(command, packageName);
+    debug(`Ran "${command}" against specified package "${packageName}"`);
+    return;
+  }
 
+  export async function handler(options: Options) {
+    const { packageName, command } = options;
+
+    if (packageName) {
+      if (Array.isArray(packageName)) {
+        debug(
+          `Running "${command}" against specified packages "${packageName.join(
+            ", "
+          )}"`
+        );
+        for (const _packageName of packageName) {
+          await run(command, _packageName);
+        }
+        debug(
+          `Ran "${command}" against specified packages "${packageName.join(
+            ", "
+          )}"`
+        );
+        return;
+      } else {
+        await run(command, packageName);
+        return;
+      }
+    }
+
+    debug(`Running "${command}" against each package`);
+    for (const _packageName of await packages.list()) {
+      await run(command, _packageName);
+    }
+    debug(`Ran "${command}" against each package`);
   }
 
   export interface Options {
-    command: string
+    packageName: string | string[];
+    command: string;
   }
 }
-
