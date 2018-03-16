@@ -2,7 +2,7 @@ import * as debugFactory from "debug";
 
 import { sync as glob } from "glob";
 import { dirname, resolve } from "path";
-import spawn from "./spawn";
+import { spawn } from "./spawn";
 
 const debug = debugFactory("clark:lib:packages");
 
