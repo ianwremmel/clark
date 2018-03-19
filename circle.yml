@@ -53,10 +53,16 @@ workflows:
   version: 2
   build:
     jobs:
-      - test-node-8
+      - test-node-8:
+          # @urbandoor/lint is currently a private package, so we need to an npm
+          # token to install dev dependencies
+          context: read-only
       # Reminder: we don't want to block tests on lint, otherwise #no-push
       # prevents tests from running
-      - lint
+      - lint:
+          # @urbandoor/lint is currently a private package, so we need to an npm
+          # token to install dev dependencies
+          context: read-only
       - release:
           context: org-global
           filters:
