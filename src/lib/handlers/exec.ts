@@ -11,7 +11,7 @@ export namespace Exec {
     return;
   }
 
-  export async function handler(options: Options) {
+  export async function handler(options: Options): Promise<void> {
     const {packageName, command} = options;
 
     if (packageName) {
