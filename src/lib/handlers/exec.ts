@@ -44,7 +44,7 @@ export namespace Exec {
   }
 
   export interface Options {
-    packageName: string | string[];
+    packageName?: string | string[];
     command: string;
   }
 }

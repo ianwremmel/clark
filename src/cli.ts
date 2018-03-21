@@ -1,8 +1,10 @@
 import yargs from 'yargs';
 
+import {magic} from './magic';
+
 // yargs does its work in the argv getter, so we need to reference it in order
 // for the program to execute.
-yargs({})
+magic(yargs({}))
   // support ts extensions during development
   .commandDir('./commands', {
     extensions: __dirname.includes('src') ? ['js', 'ts'] : ['js'],
