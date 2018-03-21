@@ -13,8 +13,8 @@
 [![npm](https://img.shields.io/npm/dm/@ianwremmel/clark.svg)](https://www.npmjs.com/package/@ianwremmel/clark)
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/ianwremmel/clark.svg)](https://greenkeeper.io/)
-[![dependencies Status](https://david-dm.org/@ianwremmel/clark/status.svg)](https://david-dm.org/@ianwremmel/clark)
-[![devDependencies Status](https://david-dm.org/@ianwremmel/clark/dev-status.svg)](https://david-dm.org/@ianwremmel/clark?type=dev)
+[![dependencies Status](https://david-dm.org/ianwremmel/clark/status.svg)](https://david-dm.org/ianwremmel/clark)
+[![devDependencies Status](https://david-dm.org/ianwremmel/clark/dev-status.svg)](https://david-dm.org/ianwremmel/clark?type=dev)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 [![CircleCI](https://circleci.com/gh/ianwremmel/clark.svg?style=svg)](https://circleci.com/gh/ianwremmel/clark)
