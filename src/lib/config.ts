@@ -3,14 +3,23 @@ import rc from 'rc';
 
 const debug = debugFactory('clark:lib:config');
 
+/**
+ * Root of the config object
+ */
 export interface Config {
   scripts?: ScriptConfig
 }
 
+/**
+ * Scripts section of the config object
+ */
 export interface ScriptConfig {
   [key: string]: string
 }
 
+/**
+ * Loads the .clarkrc config file for this project
+ */
 export function load() : Config {
   debug('Looking for .clarkrc files');
   const conf = rc('clark', {});
