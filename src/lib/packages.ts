@@ -12,7 +12,7 @@ const cwd = 'packages/node_modules';
 /**
  * Lists all packages in the monorepo
  */
-export async function list() : Promise<string[]> {
+export async function list(): Promise<string[]> {
   debug('listing all packages');
   const directories = glob('**/package.json', {cwd});
   debug(`found "${directories.length}" packages`);
@@ -23,7 +23,7 @@ export async function list() : Promise<string[]> {
  * Indicates if a given packageName identifies a package in the monorepo
  * @param packageName
  */
-export async function isPackage(packageName: string) : Promise<boolean> {
+export async function isPackage(packageName: string): Promise<boolean> {
   debug(`checking if "${packageName}" identifies a package`);
   const directories = glob(packageName + '/' + 'package.json', {cwd});
   switch (directories.length) {
@@ -45,7 +45,7 @@ export async function isPackage(packageName: string) : Promise<boolean> {
  * packageName is provided or not.
  * @param options
  */
-export async function gather({packageName} : gather.Options) : Promise<string[]> {
+export async function gather({packageName}: gather.Options): Promise<string[]> {
   if (packageName) {
     if (Array.isArray(packageName)) {
       return packageName;
@@ -61,7 +61,7 @@ export namespace gather {
    * Options for gather()
    */
   export interface Options {
-    packageName?: string|string[]
+    packageName?: string | string[];
   }
 }
 
@@ -74,7 +74,7 @@ export namespace gather {
 export async function hasScript(
   packageName: string,
   scriptName: string,
-) : Promise<boolean> {
+): Promise<boolean> {
   debug(`checking if "${packageName}" has a "${scriptName}" script`);
   const pkg = JSON.parse(
     readFileSync(
@@ -83,7 +83,11 @@ export async function hasScript(
     ),
   );
   const has = !!(pkg.scripts && pkg.scripts[scriptName]);
-  debug(`"${packageName}" ${has ? ' has ' : ' does not have '} a script named "${scriptName}"`);
+  debug(
+    `"${packageName}" ${
+      has ? ' has ' : ' does not have '
+    } a script named "${scriptName}"`,
+  );
   return has;
 }
 
@@ -96,7 +100,11 @@ export async function hasScript(
  * @param packageName
  * @param fallbackScript
  */
-export async function execScript(scriptName: string, packageName: string, fallbackScript? : string) : Promise<void> {
+export async function execScript(
+  scriptName: string,
+  packageName: string,
+  fallbackScript?: string,
+): Promise<void> {
   debug(`Running "${scriptName}" in "${packageName}"`);
   if (await hasScript(packageName, scriptName)) {
     return await exec(`npm run --silent ${scriptName}`, packageName);
@@ -115,7 +123,7 @@ export async function execScript(scriptName: string, packageName: string, fallba
  * @param cmd
  * @param packageName
  */
-export async function exec(cmd: string, packageName: string) : Promise<void> {
+export async function exec(cmd: string, packageName: string): Promise<void> {
   if (!await isPackage(packageName)) {
     throw new Error(`"${packageName}" does not appear to identify a package`);
   }

@@ -12,7 +12,7 @@ export namespace Exec {
    * @param command the command to run
    * @param packageName the package against which to run the command
    */
-  async function run(command: string, packageName: string) : Promise<void> {
+  async function run(command: string, packageName: string): Promise<void> {
     debug(`Running "${command}" against specified package "${packageName}"`);
     await exec(command, packageName);
     debug(`Ran "${command}" against specified package "${packageName}"`);
@@ -22,7 +22,7 @@ export namespace Exec {
    * Implementation of the exec command
    * @param options
    */
-  export async function handler(options: Options) : Promise<void> {
+  export async function handler(options: Options): Promise<void> {
     const {command} = options;
     const packages = await gather(options);
     debug(`Running "${command}" against ${packages.length} packages`);
@@ -31,7 +31,6 @@ export namespace Exec {
     }
     debug(`Ran "${command}" against ${packages.length} packages`);
   }
-
 
   /**
    * Exec handler options

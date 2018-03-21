@@ -7,20 +7,20 @@ const debug = debugFactory('clark:lib:config');
  * Root of the config object
  */
 export interface Config {
-  scripts?: ScriptConfig
+  scripts?: ScriptConfig;
 }
 
 /**
  * Scripts section of the config object
  */
 export interface ScriptConfig {
-  [key: string]: string
+  [key: string]: string;
 }
 
 /**
  * Loads the .clarkrc config file for this project
  */
-export function load() : Config {
+export function load(): Config {
   debug('Looking for .clarkrc files');
   const conf = rc('clark', {});
   if (conf.configs && conf.configs.length) {
