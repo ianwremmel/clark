@@ -1,7 +1,7 @@
-import * as debugFactory from "debug";
-import { packages } from "../packages";
+import * as debugFactory from 'debug';
+import {packages} from '../packages';
 
-const debug = debugFactory("clark:lib:handlers:exec");
+const debug = debugFactory('clark:lib:handlers:exec');
 
 export namespace Exec {
   async function run(command: string, packageName: string): Promise<void> {
@@ -12,22 +12,22 @@ export namespace Exec {
   }
 
   export async function handler(options: Options) {
-    const { packageName, command } = options;
+    const {packageName, command} = options;
 
     if (packageName) {
       if (Array.isArray(packageName)) {
         debug(
           `Running "${command}" against specified packages "${packageName.join(
-            ", "
-          )}"`
+            ', ',
+          )}"`,
         );
         for (const _packageName of packageName) {
           await run(command, _packageName);
         }
         debug(
           `Ran "${command}" against specified packages "${packageName.join(
-            ", "
-          )}"`
+            ', ',
+          )}"`,
         );
         return;
       } else {
