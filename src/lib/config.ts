@@ -1,5 +1,5 @@
-import * as debugFactory from 'debug';
-import * as rc from 'rc';
+import debugFactory from 'debug';
+import rc from 'rc';
 
 const debug = debugFactory('clark:lib:config');
 

@@ -4,7 +4,7 @@ import {
   SpawnOptions as cpSpawnOptions,
 } from 'child_process';
 
-import * as invariant from 'invariant';
+import invariant from 'invariant';
 
 export interface SpawnOptions extends cpSpawnOptions {
   /**
