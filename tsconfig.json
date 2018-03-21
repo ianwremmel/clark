@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "experimentalDecorators": false,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "pretty": true,
+    "lib": ["es2017"],
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "target": "es2017"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "./src/**/*.ts"
+  ]
+}

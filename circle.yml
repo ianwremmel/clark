@@ -1,0 +1,76 @@
+restore_cache: &restore_cache
+  keys:
+    - node-modules-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "package.json" }}
+    - node-modules-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+    - node-modules-{{ arch }}-{{ .Environment.CIRCLE_JOB }}
+
+save_cache: &save_cache
+  key: node-modules-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "package.json" }}
+  paths:
+    - node_modules
+
+steps: &steps
+  - checkout
+  - restore_cache: *restore_cache
+  - run: "echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ./.npmrc"
+  - run: npm install
+  - run: npm test
+  - run: npm run coveralls || true
+  - save_cache: *save_cache
+  - store_test_results:
+      path: reports
+
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: node:8
+    steps:
+      - checkout
+      - restore_cache: *restore_cache
+      - run: "echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ./.npmrc"
+      - run: npm install
+      - run: npm run lint
+      - save_cache: *save_cache
+
+  test-node-8:
+    docker:
+      - image: node:8
+    steps: *steps
+
+  release:
+    docker:
+      - image: node:8
+    steps:
+      - checkout
+      - restore_cache: *restore_cache
+      - run: "echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ./.npmrc"
+      - run: npm install
+      - deploy:
+          command: |
+            echo 'release is disabled'
+            # npm run semantic-release
+      - save_cache: *save_cache
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test-node-8:
+          # @urbandoor/lint is currently a private package, so we need to an npm
+          # token to install dev dependencies
+          context: read-only
+      # Reminder: we don't want to block tests on lint, otherwise #no-push
+      # prevents tests from running
+      - lint:
+          # @urbandoor/lint is currently a private package, so we need to an npm
+          # token to install dev dependencies
+          context: read-only
+      - release:
+          context: org-global
+          filters:
+            branches:
+              only: master
+          requires:
+            - test-node-8
+            - lint
