@@ -9,6 +9,9 @@ const debug = debugFactory('clark:lib:packages');
 
 const cwd = 'packages/node_modules';
 
+/**
+ * Lists all packages in the monorepo
+ */
 export async function list() : Promise<string[]> {
   debug('listing all packages');
   const directories = glob('**/package.json', {cwd});
@@ -16,6 +19,10 @@ export async function list() : Promise<string[]> {
   return directories.map(dirname);
 }
 
+/**
+ * Indicates if a given packageName identifies a package in the monorepo
+ * @param packageName
+ */
 export async function isPackage(packageName: string) : Promise<boolean> {
   debug(`checking if "${packageName}" identifies a package`);
   const directories = glob(packageName + '/' + 'package.json', {cwd});
@@ -33,11 +40,12 @@ export async function isPackage(packageName: string) : Promise<boolean> {
   }
 }
 
-export interface GatherOptions {
-  packageName?: string|string[]
-}
-
-export async function gather({packageName} : GatherOptions) : Promise<string[]> {
+/**
+ * Higher-level version of that "does the right thing" whether package
+ * packageName is provided or not.
+ * @param options
+ */
+export async function gather({packageName} : gather.Options) : Promise<string[]> {
   if (packageName) {
     if (Array.isArray(packageName)) {
       return packageName;
@@ -48,6 +56,21 @@ export async function gather({packageName} : GatherOptions) : Promise<string[]> 
   return await list();
 }
 
+export namespace gather {
+  /**
+   * Options for gather()
+   */
+  export interface Options {
+    packageName?: string|string[]
+  }
+}
+
+/**
+ * Indicates if the specified package has an implementation of the specified
+ * npm script
+ * @param packageName
+ * @param scriptName
+ */
 export async function hasScript(
   packageName: string,
   scriptName: string,
@@ -64,6 +87,15 @@ export async function hasScript(
   return has;
 }
 
+/**
+ * Executes the specified npm script in the specified package. If the package
+ * does not have a definition for the script and fallbackScript is provided,
+ * then fallbackScript will be executed directly (i.e., run as a bash command,
+ * not as an npm script).
+ * @param scriptName
+ * @param packageName
+ * @param fallbackScript
+ */
 export async function execScript(scriptName: string, packageName: string, fallbackScript? : string) : Promise<void> {
   debug(`Running "${scriptName}" in "${packageName}"`);
   if (await hasScript(packageName, scriptName)) {
@@ -78,6 +110,11 @@ export async function execScript(scriptName: string, packageName: string, fallba
   return await exec(fallbackScript, packageName);
 }
 
+/**
+ * Executes the specified command against the specified package
+ * @param cmd
+ * @param packageName
+ */
 export async function exec(cmd: string, packageName: string) : Promise<void> {
   if (!await isPackage(packageName)) {
     throw new Error(`"${packageName}" does not appear to identify a package`);

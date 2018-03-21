@@ -6,36 +6,13 @@ import {
 
 import invariant from 'invariant';
 
-export interface SpawnOptions extends cpSpawnOptions {
-  /**
-   * Indicates if the ChildProcess should be unref()ed
-   */
-  detached?: boolean;
-  /**
-   * {opulated when SpawnOtions.detached is true. Provides a handle to the
-   * ChildProcess.
-   */
-  child?: ChildProcess;
-}
-
-export class SpawnError extends Error {
-  /**
-   * exit code of the ChildProcess
-   */
-  code: number = 0;
-
-  /**
-   * stderr output of the ChildProcess
-   */
-  data: string = '';
-}
 /**
  * Simplified spawn
  */
 export function spawn(
   cmd: string,
   args: string[] = [],
-  options?: SpawnOptions,
+  options?: spawn.Options,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     invariant(cmd, '"cmd" is required');
@@ -57,7 +34,7 @@ export function spawn(
 
     child.on('close', code => {
       if (code) {
-        const e = new SpawnError(`${cmd} exited with code "${code}"`);
+        const e = new spawn.ExitError(`${cmd} exited with code "${code}"`);
         e.code = code;
         e.data = data;
 
@@ -73,4 +50,36 @@ export function spawn(
       options.child = child;
     }
   });
+}
+
+export namespace spawn {
+  /**
+   * Options for spawn()
+   */
+  export interface Options extends cpSpawnOptions {
+    /**
+     * Indicates if the ChildProcess should be unref()ed
+     */
+    detached?: boolean;
+    /**
+     * {opulated when SpawnOtions.detached is true. Provides a handle to the
+     * ChildProcess.
+     */
+    child?: ChildProcess;
+  }
+
+  /**
+   * Thrown when a spawned command exits non-zero
+   */
+  export class ExitError extends Error {
+    /**
+     * exit code of the ChildProcess
+     */
+    code: number = 0;
+
+    /**
+     * stderr output of the ChildProcess
+     */
+    data: string = '';
+  }
 }
