@@ -41,13 +41,11 @@ export function spawn(
     invariant(cmd, '"cmd" is required');
     invariant(Array.isArray(args), '"args" is required and must be an Array');
 
-    const opts = Object.assign(
-      {
-        detached: false,
-        stdio: 'inherit',
-      },
-      options,
-    );
+    const opts = {
+      detached: false,
+      stdio: 'inherit',
+      ...options,
+    };
     const child = cpSpawn(cmd, args, opts);
 
     let data = '';
