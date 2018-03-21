@@ -18,4 +18,14 @@ describe('magic', () => {
     const result = await run('local');
     assert.equal(result, 'run\nrun\nrun');
   });
+
+  describe('when a packages has an npm script of the same name', () => {
+    it('executes the override or falls back to the .clarkrc.json version', async () => {
+      const result = await run('override');
+      assert.equal(
+        result,
+        'not overridden\nnot overridden\nthis is an override',
+      );
+    });
+  });
 });
