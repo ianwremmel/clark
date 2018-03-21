@@ -1,4 +1,4 @@
-import * as debugFactory from 'debug';
+import debugFactory from 'debug';
 
 import {readFileSync} from 'fs';
 import {sync as glob} from 'glob';

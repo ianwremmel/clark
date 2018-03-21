@@ -1,4 +1,4 @@
-import * as debugFactory from 'debug';
+import debugFactory from 'debug';
 import {exec, gather} from '../packages';
 
 const debug = debugFactory('clark:lib:handlers:exec');
