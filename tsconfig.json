@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "declaration": true,
     "experimentalDecorators": false,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "noImplicitAny": true,

@@ -5,8 +5,8 @@ const ExecCommand: CommandModule = {
   describe: 'List all packages',
 
   async handler() {
-    for (const pkg of await list()) {
-      console.log(pkg);
+    for (const packageName of await list()) {
+      console.log(packageName);
     }
   },
 };

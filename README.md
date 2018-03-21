@@ -67,6 +67,40 @@ clark exec <command>
 clark exec <command> --package <packagename>
 ```
 
+### Magic
+
+While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test`. These commands can be executed in each package or across all packages.
+
+> In documenation, we refer to "commands", but in `.clarkrc`, we use `scripts` to more closely mirror `package.json`.
+
+#### Package Commands
+
+Package commands are executed sequentially in each package directory. They may be overridden with an entry in the package's package.json.
+
+For example, your repository might use [mocha](https://mochajs.org/) to run your integration tests
+
+```json
+//.clarkrc
+{
+    "scripts": {
+        "package": {
+            "test": "mocha 'test/*/spec/**/*.js'"
+        }
+    }
+}
+```
+
+but if one of the packages in your monorepo is a React project, you might need to test it with [jest](https://facebook.github.io/jest/)
+
+```json
+//my-react-app/package.json
+{
+    "scripts": {
+        "test": "jest 'src/**/*-spec.js'"
+    }
+}
+```
+
 ## Maintainer
 
 [Ian Remmel](https://github.com/ianwremmel)

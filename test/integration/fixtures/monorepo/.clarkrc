@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "local": "echo 'run'",
+    "override": "echo 'not overridden'"
+  }
+}

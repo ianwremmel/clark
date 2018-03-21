@@ -4,7 +4,7 @@ import {
   SpawnOptions as cpSpawnOptions,
 } from 'child_process';
 
-import * as invariant from 'invariant';
+import invariant from 'invariant';
 
 export interface SpawnOptions extends cpSpawnOptions {
   /**
@@ -35,7 +35,7 @@ export class SpawnError extends Error {
 export function spawn(
   cmd: string,
   args: string[] = [],
-  options: SpawnOptions,
+  options?: SpawnOptions,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     invariant(cmd, '"cmd" is required');
