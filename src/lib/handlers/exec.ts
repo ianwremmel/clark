@@ -1,12 +1,12 @@
 import * as debugFactory from 'debug';
-import {packages} from '../packages';
+import {exec, list} from '../packages';
 
 const debug = debugFactory('clark:lib:handlers:exec');
 
 export namespace Exec {
   async function run(command: string, packageName: string): Promise<void> {
     debug(`Running "${command}" against specified package "${packageName}"`);
-    await packages.exec(command, packageName);
+    await exec(command, packageName);
     debug(`Ran "${command}" against specified package "${packageName}"`);
     return;
   }
@@ -37,7 +37,7 @@ export namespace Exec {
     }
 
     debug(`Running "${command}" against each package`);
-    for (const _packageName of await packages.list()) {
+    for (const _packageName of await list()) {
       await run(command, _packageName);
     }
     debug(`Ran "${command}" against each package`);
