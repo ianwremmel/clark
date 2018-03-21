@@ -1,24 +1,24 @@
-import * as debugFactory from "debug";
+import * as debugFactory from 'debug';
 
-import { sync as glob } from "glob";
-import { dirname, resolve } from "path";
-import { spawn } from "./spawn";
+import {sync as glob} from 'glob';
+import {dirname, resolve} from 'path';
+import {spawn} from './spawn';
 
-const debug = debugFactory("clark:lib:packages");
+const debug = debugFactory('clark:lib:packages');
 
 export namespace packages {
-  const cwd = "packages/node_modules";
+  const cwd = 'packages/node_modules';
 
   export async function list(): Promise<string[]> {
-    debug("listing all packages");
-    const directories = glob("**/package.json", { cwd });
+    debug('listing all packages');
+    const directories = glob('**/package.json', {cwd});
     debug(`found "${directories.length}" packages`);
     return directories.map(dirname);
   }
 
   export async function isPackage(packageName: string): Promise<boolean> {
     debug(`checking if "${packageName}" identifies a package`);
-    const directories = glob(packageName + "/" + "package.json", { cwd });
+    const directories = glob(packageName + '/' + 'package.json', {cwd});
     switch (directories.length) {
       case 0:
         debug(`"${packageName}" does not identify a package`);
@@ -28,7 +28,7 @@ export namespace packages {
         return true;
       default:
         throw new Error(
-          `"${packageName}" appears to represent multiple packages`
+          `"${packageName}" appears to represent multiple packages`,
         );
     }
   }
@@ -39,10 +39,10 @@ export namespace packages {
     }
 
     debug(`running command "${cmd}" in directory for package "${packageName}"`);
-    const bin = "bash";
-    const args = ["-c", cmd];
+    const bin = 'bash';
+    const args = ['-c', cmd];
     try {
-      const result = await spawn(bin, args, { cwd: resolve(cwd, packageName) });
+      const result = await spawn(bin, args, {cwd: resolve(cwd, packageName)});
       debug(`ran command "${cmd}" in directory for package "${packageName}"`);
       return result;
     } catch (err) {

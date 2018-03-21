@@ -1,10 +1,10 @@
 import {
   ChildProcess,
   spawn as cpSpawn,
-  SpawnOptions as cpSpawnOptions
-} from "child_process";
+  SpawnOptions as cpSpawnOptions,
+} from 'child_process';
 
-import * as invariant from "invariant";
+import * as invariant from 'invariant';
 
 export interface SpawnOptions extends cpSpawnOptions {
   /**
@@ -27,7 +27,7 @@ export class SpawnError extends Error {
   /**
    * stderr output of the ChildProcess
    */
-  data: string = "";
+  data: string = '';
 }
 /**
  * Simplified spawn
@@ -35,7 +35,7 @@ export class SpawnError extends Error {
 export function spawn(
   cmd: string,
   args: string[] = [],
-  options: SpawnOptions
+  options: SpawnOptions,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     invariant(cmd, '"cmd" is required');
@@ -44,20 +44,20 @@ export function spawn(
     const opts = Object.assign(
       {
         detached: false,
-        stdio: "inherit"
+        stdio: 'inherit',
       },
-      options
+      options,
     );
     const child = cpSpawn(cmd, args, opts);
 
-    let data = "";
+    let data = '';
     if (child.stderr) {
-      child.stderr.on("data", d => {
+      child.stderr.on('data', d => {
         data += d;
       });
     }
 
-    child.on("close", code => {
+    child.on('close', code => {
       if (code) {
         const e = new SpawnError(`${cmd} exited with code "${code}"`);
         e.code = code;
