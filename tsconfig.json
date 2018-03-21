@@ -16,6 +16,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "./lib",
+    "plugins": [
+      {
+        "name": "tslint-language-service"
+      }
+    ],
     "rootDir": "./src",
     "strictNullChecks": true,
     "strictFunctionTypes": true,
