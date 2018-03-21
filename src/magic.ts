@@ -1,7 +1,7 @@
 import {readFileSync} from 'fs';
 import {resolve} from 'path';
 import {Argv} from 'yargs';
-import {Exec} from './lib/handlers/exec';
+import {execScript, gather} from './lib/packages';
 
 interface Config {
   scripts: ScriptsConfig;
@@ -28,7 +28,11 @@ export function magic(y: Argv): Argv {
           command,
           `the "${command}" command is generated from your local .clarkrc.json. It runs "${script} "in each package directory.`,
           {},
-          async (): Promise<void> => await Exec.handler({command: script}),
+          async (): Promise<void> => {
+            for (const packageName of await gather({})) {
+              await execScript(command, packageName, script);
+            }
+          },
         ),
       y,
     );

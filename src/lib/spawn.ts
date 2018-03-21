@@ -35,7 +35,7 @@ export class SpawnError extends Error {
 export function spawn(
   cmd: string,
   args: string[] = [],
-  options: SpawnOptions,
+  options?: SpawnOptions,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     invariant(cmd, '"cmd" is required');
