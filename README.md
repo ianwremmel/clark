@@ -71,7 +71,7 @@ clark exec <command> --package <packagename>
 
 While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test`. These commands can be executed in each package or across all packages.
 
-> In documenation, we refer to "commands", but in `.clarkrc.json`, we use `scripts` to more closely mirror `package.json`.
+> In documenation, we refer to "commands", but in `.clarkrc`, we use `scripts` to more closely mirror `package.json`.
 
 #### Package Commands
 
@@ -80,7 +80,7 @@ Package commands are executed sequentially in each package directory. They may b
 For example, your repository might use [mocha](https://mochajs.org/) to run your integration tests
 
 ```json
-//.clarkrc.json
+//.clarkrc
 {
     "scripts": {
         "package": {
