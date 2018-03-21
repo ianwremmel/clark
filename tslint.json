@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@urbandoor/lint",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "no-console": false,
+    "no-non-null-assertion": true
+  }
+}
