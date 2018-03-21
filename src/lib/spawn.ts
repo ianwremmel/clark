@@ -8,12 +8,12 @@ import * as invariant from 'invariant';
 
 export interface SpawnOptions extends cpSpawnOptions {
   /**
-   * When true, unrefs the ChildProcess.
+   * Indicates if the ChildProcess should be unref()ed
    */
   detached?: boolean;
   /**
-   * populated when SpawnOtions.detached is true. Gives you a handle to the
-   * ChildProcess
+   * {opulated when SpawnOtions.detached is true. Provides a handle to the
+   * ChildProcess.
    */
   child?: ChildProcess;
 }
