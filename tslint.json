@@ -1,27 +1,29 @@
 {
-  "extends": [
-    "@urbandoor/lint",
-    "tslint-config-prettier"
-  ],
+  "extends": ["@urbandoor/lint", "tslint-config-prettier"],
   "rules": {
-    "completed-docs": [true, {
-      "classes": true,
-      "enums": true,
-      "enum-members": true,
-      "functions": true,
-      "interfaces": {
-        "visibilities": ["exported"]
-      },
-      "methods": true,
-      "namespaces": true,
-      "properties": true,
-      "types": true,
-      "variables": {
-        "visibilities": ["exported"]
+    "completed-docs": [
+      true,
+      {
+        "classes": true,
+        "enums": true,
+        "enum-members": true,
+        "functions": true,
+        "interfaces": {
+          "visibilities": ["exported"]
+        },
+        "methods": true,
+        "namespaces": true,
+        "properties": true,
+        "types": true,
+        "variables": {
+          "visibilities": ["exported"]
+        }
       }
-    }],
+    ],
     "no-console": false,
     "no-non-null-assertion": true,
-    "no-redundant-jsdoc": true
-  }
+    "no-redundant-jsdoc": true,
+    "prettier": true
+  },
+  "rulesDirectory": ["tslint-plugin-prettier"]
 }
