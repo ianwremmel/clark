@@ -1,7 +1,6 @@
 import debugFactory from 'debug';
-
-import {readFileSync} from 'fs';
 import {sync as glob} from 'glob';
+import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
 import {spawn} from './spawn';
 
@@ -77,7 +76,7 @@ export async function hasScript(
 ): Promise<boolean> {
   debug(`checking if "${packageName}" has a "${scriptName}" script`);
   const pkg = JSON.parse(
-    readFileSync(
+    await readFile(
       resolve('packages', 'node_modules', packageName, 'package.json'),
       'utf-8',
     ),

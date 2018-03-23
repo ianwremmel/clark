@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import {execSync} from 'child_process';
-import {readFileSync} from 'fs';
+import {readFile} from 'mz/fs';
 import {resolve} from 'path';
 import run from '../lib/run';
 
@@ -21,8 +21,8 @@ describe('init', () => {
 
   describe('when --force is passed', () => {
     it('overwrites an existing config file', async () => {
-      const result = await run('init --force');
-      const clarkrc = readFileSync(
+      await run('init --force');
+      const clarkrc = await readFile(
         resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
         'utf-8',
       );
@@ -34,10 +34,8 @@ describe('init', () => {
 
   describe('when --script is specified once', () => {
     it('writes the script to .clarkrc', async () => {
-      const result = await run(
-        `init --force --script test='mocha test/*/spec/**/*.js'`,
-      );
-      const clarkrc = readFileSync(
+      await run("init --force --script test='mocha test/*/spec/**/*.js'");
+      const clarkrc = await readFile(
         resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
         'utf-8',
       );
@@ -51,10 +49,10 @@ describe('init', () => {
 
   describe('when --script is specified more than once', () => {
     it('writes each script to .clarkrc', async () => {
-      const result = await run(
-        `init --force --script test='mocha test/*/spec/**/*.js' --script build='babel -d dist src/**/*.js'`,
+      await run(
+        "init --force --script test='mocha test/*/spec/**/*.js' --script build='babel -d dist src/**/*.js'",
       );
-      const clarkrc = readFileSync(
+      const clarkrc = await readFile(
         resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
         'utf-8',
       );
@@ -69,8 +67,8 @@ describe('init', () => {
 
   describe('when the --script includes more than one equals sign', () => {
     it('does the right thing', async () => {
-      const result = await run(`init --force --script test='a=b=c'`);
-      const clarkrc = readFileSync(
+      await run("init --force --script test='a=b=c'");
+      const clarkrc = await readFile(
         resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
         'utf-8',
       );
