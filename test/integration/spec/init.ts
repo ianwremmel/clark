@@ -34,14 +34,16 @@ describe('init', () => {
 
   describe('when --script is specified once', () => {
     it('writes the script to .clarkrc', async () => {
-      const result = await run(`init --force --script hello="echo 'world=42'"`);
+      const result = await run(
+        `init --force --script test='mocha test/*/spec/**/*.js'`,
+      );
       const clarkrc = readFileSync(
         resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
         'utf-8',
       );
       assert.deepEqual(JSON.parse(clarkrc), {
         scripts: {
-          hello: "echo 'world=42'",
+          test: 'mocha test/*/spec/**/*.js',
         },
       });
     });
@@ -50,7 +52,7 @@ describe('init', () => {
   describe('when --script is specified more than once', () => {
     it('writes each script to .clarkrc', async () => {
       const result = await run(
-        `init --force --script hello="echo 'world=42'" --script world="echo 'world=pi'"`,
+        `init --force --script test='mocha test/*/spec/**/*.js' --script build='babel -d dist src/**/*.js'`,
       );
       const clarkrc = readFileSync(
         resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
@@ -58,8 +60,23 @@ describe('init', () => {
       );
       assert.deepEqual(JSON.parse(clarkrc), {
         scripts: {
-          hello: "echo 'world=42'",
-          world: "echo 'world=pi'",
+          build: 'babel -d dist src/**/*.js',
+          test: 'mocha test/*/spec/**/*.js',
+        },
+      });
+    });
+  });
+
+  describe('when the --script includes more than one equals sign', () => {
+    it('does the right thing', async () => {
+      const result = await run(`init --force --script test='a=b=c'`);
+      const clarkrc = readFileSync(
+        resolve(__dirname, '../fixtures/monorepo/.clarkrc'),
+        'utf-8',
+      );
+      assert.deepEqual(JSON.parse(clarkrc), {
+        scripts: {
+          test: 'a=b=c',
         },
       });
     });
