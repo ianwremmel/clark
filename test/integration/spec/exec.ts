@@ -9,11 +9,11 @@ describe('exec', () => {
     assert.equal(
       result,
       [
-        `@example/scoped-package-the-first`,
-        `@example/scoped-package-the-second`,
-        `not-scoped`,
+        '@example/scoped-package-the-first',
+        '@example/scoped-package-the-second',
+        'not-scoped',
       ]
-        .map((dir) =>
+        .map(dir =>
           resolve(__dirname, '../fixtures/monorepo/packages/node_modules', dir),
         )
         .join('\n'),
@@ -47,8 +47,8 @@ describe('exec', () => {
       assert.lengthOf(result.split('\n'), 1);
       assert.equal(
         result,
-        [`not-scoped`]
-          .map((dir) =>
+        ['not-scoped']
+          .map(dir =>
             resolve(
               __dirname,
               '../fixtures/monorepo/packages/node_modules',
@@ -67,10 +67,10 @@ describe('exec', () => {
       assert.equal(
         result,
         [
-          `@example/scoped-package-the-first`,
-          `@example/scoped-package-the-second`,
+          '@example/scoped-package-the-first',
+          '@example/scoped-package-the-second',
         ]
-          .map((dir) =>
+          .map(dir =>
             resolve(
               __dirname,
               '../fixtures/monorepo/packages/node_modules',
