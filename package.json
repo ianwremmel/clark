@@ -22,7 +22,7 @@
     "lint:commitmsg": "commitlint -e",
     "lint:eslint": "eslint --ignore --ignore-path .gitignore",
     "lint:js": "npm run --silent lint:eslint -- .",
-    "lint:tslint": "tslint --project tsconfig.json",
+    "lint:tslint": "tslint --project tsconfig.json -t stylish",
     "lint:ts": "npm run --slient lint:tslint -- './src/**/*.ts' && tsc --noemit",
     "lint:staged": "lint-staged",
     "mocha-reporter-options": "[ -n \"${CI}\" ] && echo '--reporter xunit --reporter-options output=reports/junit/mocha.xml'",
