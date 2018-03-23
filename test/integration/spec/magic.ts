@@ -1,11 +1,7 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import {assert} from 'chai';
 import {resolve} from 'path';
 
 import run from '../lib/run';
-
-chai.use(chaiAsPromised);
-const {assert} = chai;
 
 describe('magic', () => {
   it('generates commands from the local .clarkrc', async () => {

@@ -1,12 +1,7 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import {assert} from 'chai';
 import {resolve} from 'path';
 
 import run from '../lib/run';
-
-chai.use(chaiAsPromised);
-const {assert} = chai;
-
 describe('exec', () => {
   it('executes a command in every directory', async () => {
     const result = await run('exec pwd');
@@ -18,7 +13,7 @@ describe('exec', () => {
         `@example/scoped-package-the-second`,
         `not-scoped`,
       ]
-        .map(dir =>
+        .map((dir) =>
           resolve(__dirname, '../fixtures/monorepo/packages/node_modules', dir),
         )
         .join('\n'),
@@ -53,7 +48,7 @@ describe('exec', () => {
       assert.equal(
         result,
         [`not-scoped`]
-          .map(dir =>
+          .map((dir) =>
             resolve(
               __dirname,
               '../fixtures/monorepo/packages/node_modules',
@@ -75,7 +70,7 @@ describe('exec', () => {
           `@example/scoped-package-the-first`,
           `@example/scoped-package-the-second`,
         ]
-          .map(dir =>
+          .map((dir) =>
             resolve(
               __dirname,
               '../fixtures/monorepo/packages/node_modules',
