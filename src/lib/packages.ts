@@ -2,6 +2,7 @@ import debugFactory from 'debug';
 import {sync as glob} from 'glob';
 import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
+import {read as readRootPackage, write as writeRootPackage} from './project';
 import {spawn} from './spawn';
 
 const debug = debugFactory('clark:lib:packages');
@@ -88,6 +89,59 @@ export async function hasScript(
     } a script named "${scriptName}"`,
   );
   return has;
+}
+
+/**
+ * Moves dependencies and dev dependencies from the specified package's
+ * package.json to the dependencies section of the root package.json. Note that
+ * dependencies and devDepenencies are combined because the distinction loses
+ * meaning in a monorepo (arguably, they should all be devDependencies, but
+ * that's not where `npm install` defaults).
+ * @param packageName
+ */
+export async function hoist(packageName: string): Promise<void> {
+  debug(`Reading deps from "${packageName}"`);
+  const pkg = await read(packageName);
+  const rootPkg = await readRootPackage();
+
+  const deps = {
+    ...pkg.dependencies,
+    ...pkg.devDependencies,
+  };
+
+  for (const [depName, depVersion] of Object.entries(deps)) {
+    rootPkg.dependencies[depName] = depVersion;
+  }
+
+  delete pkg.dependencies;
+  delete pkg.devDependencies;
+  await write(packageName, pkg);
+  await writeRootPackage(rootPkg);
+}
+
+/**
+ * Reads a package.json from the monorepo
+ * @param packageName
+ */
+export async function read(packageName: string) {
+  return JSON.parse(
+    await readFile(
+      resolve('packages', 'node_modules', packageName, 'package.json'),
+      'utf-8',
+    ),
+  );
+}
+
+/**
+ * Writes a new package.json to the appropriate package
+ * @param packageName
+ * @param pkg
+ */
+export async function write(packageName: string, pkg: object) {
+  return await writeFile(
+    resolve('packages', 'node_modules', packageName, 'package.json'),
+    `${JSON.stringify(pkg, null, 2)}\n`,
+  );
 }
 
 /**

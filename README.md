@@ -57,6 +57,20 @@ clark --help
 clark list
 ```
 
+### Migrate all packages' dependencies to the root
+
+```bash
+clark hoist
+```
+
+> Note that `dependencies` and `devDepenencies` are combined because the distinction loses meaning in a monorepo (arguably, they should all be devDependencies, but that's not where `npm install` defaults).
+
+### Migrate a package's dependencies to the root
+
+```bash
+clark hoist --package
+```
+
 ### Run a command each package directory
 
 ```bash
