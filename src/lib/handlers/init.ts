@@ -1,5 +1,5 @@
 import debugFactory from 'debug';
-import {writeFileSync} from 'fs';
+import {writeFile} from 'mz/fs';
 import {resolve} from 'path';
 import {Config, ScriptConfig} from '../config';
 import {findProjectRoot, hasRc} from '../project';
@@ -46,7 +46,7 @@ export namespace Init {
     };
 
     debug(`writing .clarkrc to ${rootDir}`);
-    writeFileSync(
+    writeFile(
       resolve(rootDir, '.clarkrc'),
       `${JSON.stringify(config, null, 2)}\n`,
     );
