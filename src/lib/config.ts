@@ -27,6 +27,6 @@ export function load(): Config {
     debug(`Found "${conf.configs.length}" .clarkrc files`);
     return conf;
   }
-  debug(`Did not find any .clarkrc files`);
+  debug('Did not find any .clarkrc files');
   return {};
 }

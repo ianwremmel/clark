@@ -24,7 +24,7 @@ export async function list(): Promise<string[]> {
  */
 export async function isPackage(packageName: string): Promise<boolean> {
   debug(`checking if "${packageName}" identifies a package`);
-  const directories = glob(packageName + '/' + 'package.json', {cwd});
+  const directories = glob(`${packageName}/package.json`, {cwd});
   switch (directories.length) {
     case 0:
       debug(`"${packageName}" does not identify a package`);
