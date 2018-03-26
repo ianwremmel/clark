@@ -25,7 +25,7 @@
     "mocha-reporter-options": "[ -n \"${CI}\" ] && echo '--reporter xunit --reporter-options output=reports/junit/mocha.xml'",
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release": "semantic-release",
     "test": "mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './src/**/*-spec.[jt]s' './test/*/spec/**/*.[jt]s'"
   },
   "engines": {
