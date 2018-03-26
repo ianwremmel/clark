@@ -110,6 +110,20 @@ export async function hoist(packageName: string): Promise<void> {
   };
 
   for (const [depName, depVersion] of Object.entries(deps)) {
+    debug(
+      `Checking if root package has version of "${depName}" that conflicts with "${depVersion}"`,
+    );
+    if (
+      rootPkg.dependencies[depName] &&
+      rootPkg.dependencies[depName] !== depVersion
+    ) {
+      throw new Error(
+        `Cowardly refusing to overwrite mismatched semver for "${depName}" from "${packageName}"`,
+      );
+    }
+    debug(
+      `Root package does not have conflicting version of "${depName}" that conflicts with "${depVersion}"`,
+    );
     rootPkg.dependencies[depName] = depVersion;
   }
 

@@ -1,7 +1,10 @@
+import debugFactory from 'debug';
 import findRoot from 'find-root';
 import {existsSync} from 'fs';
 import {readFile, writeFile} from 'mz/fs';
 import {resolve} from 'path';
+
+const debug = debugFactory('clark:lib:project');
 
 /**
  * Locates the monorepo's root based on various heuristics including existence
@@ -30,19 +33,30 @@ export async function findProjectRoot(): Promise<string> {
  * @param rootDir
  */
 export async function hasRc(rootDir: string): Promise<boolean> {
-  return existsSync(resolve(rootDir, '.clarkrc'));
+  debug(`checking if "${rootDir}" contains '.clarkrc'`);
+  const contains = existsSync(resolve(rootDir, '.clarkrc'));
+  debug(
+    `"${rootDir}" ${contains ? 'contains' : 'does not contain'} '.clarkrc'`,
+  );
+  return contains;
 }
 
 /**
  * Reads the monorepo's package.json
  */
 export async function read() {
-  return JSON.parse(await readFile('package.json', 'utf-8'));
+  debug('Reading root package.json');
+  const root = JSON.parse(await readFile('package.json', 'utf-8'));
+  debug('Read root');
+  return root;
 }
 
 /**
  * Writes the monorepo's package.json
  */
 export async function write(pkg: object) {
-  return await writeFile('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
+  debug('Writing root package.json');
+  await writeFile('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
+  debug('Wrote root package.json');
+  return;
 }
