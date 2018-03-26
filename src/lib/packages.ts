@@ -198,8 +198,15 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
   debug(`running command "${cmd}" in directory for package "${packageName}"`);
   const bin = 'bash';
   const args = ['-c', cmd];
+  const {PATH, ...env} = process.env;
   try {
-    const result = await spawn(bin, args, {cwd: resolve(cwd, packageName)});
+    const result = await spawn(bin, args, {
+      cwd: resolve(cwd, packageName),
+      env: {
+        ...env,
+        PATH: `${PATH}:${resolve(process.cwd(), 'node_modules', '.bin')}`,
+      },
+    });
     debug(`ran command "${cmd}" in directory for package "${packageName}"`);
     return result;
   } catch (err) {
