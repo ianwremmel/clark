@@ -21,7 +21,7 @@ describe('exec', () => {
   });
 
   it('requires a command arguments', async () => {
-    const err = await assert.isRejected(run('exec'));
+    const err = ((await assert.isRejected(run('exec'))) as any) as Error;
     assert.include(
       err.message,
       'Not enough non-option arguments: got 0, need at least 1',
@@ -82,9 +82,9 @@ describe('exec', () => {
     });
 
     it('fails if the package does not exist', async () => {
-      const err = await assert.isRejected(
+      const err = ((await assert.isRejected(
         run('exec --package-name not-a-package pwd'),
-      );
+      )) as any) as Error;
       assert.include(
         err.message,
         'Error: "not-a-package" does not appear to identify a package',
