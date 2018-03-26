@@ -7,6 +7,7 @@
 <!-- (optional) Put banner here -->
 
 <!-- PROJ: Badges Start -->
+
 [![license](https://img.shields.io/github/license/ianwremmel/clark.svg)](https://github.com/ianwremmel/clark/blob/master/LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![npm (scoped)](https://img.shields.io/npm/v/@ianwremmel/clark.svg)](https://www.npmjs.com/package/@ianwremmel/clark)
@@ -19,6 +20,7 @@
 
 [![CircleCI](https://circleci.com/gh/ianwremmel/clark.svg?style=svg)](https://circleci.com/gh/ianwremmel/clark)
 [![Coverage Status](https://coveralls.io/repos/github/ianwremmel/clark/badge.svg?branch=master)](https://coveralls.io/github/ianwremmel/clark?branch=master)
+
 <!-- PROJ: Badges End -->
 
 > Monorepo tools
@@ -27,11 +29,11 @@ Clark is a toolkit for interacting with [alle-inspired](https://github.com/boenn
 
 ## Table of Contents
 
-- [Install](#install)
-- [Usage](#usage)
-- [Maintainers](#maintainers)
-- [Contribute](#contribute)
-- [License](#license)
+*   [Install](#install)
+*   [Usage](#usage)
+*   [Maintainers](#maintainers)
+*   [Contribute](#contribute)
+*   [License](#license)
 
 ## Install
 
@@ -55,6 +57,20 @@ clark --help
 clark list
 ```
 
+### Migrate all packages' dependencies to the root
+
+```bash
+clark hoist
+```
+
+> Note that `dependencies` and `devDepenencies` are combined because the distinction loses meaning in a monorepo (arguably, they should all be devDependencies, but that's not where `npm install` defaults).
+
+### Migrate a package's dependencies to the root
+
+```bash
+clark hoist --package
+```
+
 ### Run a command each package directory
 
 ```bash
@@ -69,9 +85,15 @@ clark exec <command> --package <packagename>
 
 ### Magic
 
-While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test`. These commands can be executed in each package or across all packages.
+While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test` that you want to run each independently against each package.
 
 > In documenation, we refer to "commands", but in `.clarkrc`, we use `scripts` to more closely mirror `package.json`.
+
+Magic can be initialized with something like
+
+```bash
+clark init --script test='mocha test/*/spec/**/*.js' --script build='babel -d dist src/**/*.js'
+```
 
 #### Package Commands
 

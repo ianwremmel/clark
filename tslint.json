@@ -23,7 +23,11 @@
     "no-console": false,
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
-    "prettier": true
+    "prettier": true,
+
+    "no-invalid-template-strings": true,
+    "prefer-template": true,
+    "quotemark": [true, "single", "avoid-escape", "avoid-template"]
   },
   "rulesDirectory": ["tslint-plugin-prettier"]
 }
