@@ -19,7 +19,7 @@ export namespace Init {
     const rootDir = await findProjectRoot();
     debug('checking if root dir contains a .clarkrc');
 
-    if (hasRc(rootDir) && !options.force) {
+    if ((await hasRc(rootDir)) && !options.force) {
       throw new Error(
         'Project already configured for clark. Pass --force to overwrite',
       );
