@@ -25,13 +25,13 @@
 
 > Monorepo tools
 
-Clark is a toolkit for interacting with [alle-inspired](https://github.com/boennemann/alle) monorepos. This is a productization of scripts found in [PouchDB](https://github.com/pouchdb/pouchdb) and the [Cisco Spark JavaScript SDK](https://github.com/ciscospark/spark-js-sdk).
+Clark is a toolkit for interacting with [alle-inspired](https://github.com/boennemann/alle) monorepos. This is a productization of practices found in [PouchDB](https://github.com/pouchdb/pouchdb), the [Cisco Spark JavaScript SDK](https://github.com/ciscospark/spark-js-sdk), and other monorepo projects.
 
 ## Table of Contents
 
 *   [Install](#install)
 *   [Usage](#usage)
-*   [Maintainers](#maintainers)
+*   [Maintainer](#maintainer)
 *   [Contribute](#contribute)
 *   [License](#license)
 
