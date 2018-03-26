@@ -14,7 +14,10 @@ const cwd = 'packages/node_modules';
  */
 export async function list(): Promise<string[]> {
   debug('listing all packages');
-  const directories = glob('**/package.json', {cwd});
+  // `packages/node_modules/*/package.json` and
+  // `packages/node_modules/@*/*/package.json` are the only valid monorepo
+  // package locations
+  const directories = glob('{*,@*/*}/package.json', {cwd});
   debug(`found "${directories.length}" packages`);
   return directories.map(dirname);
 }
