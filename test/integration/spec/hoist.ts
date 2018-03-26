@@ -10,6 +10,12 @@ describe('hoist', () => {
         'git checkout ./test/integration/fixtures/unhoisted-monorepo',
       ).toString(),
     );
+
+    console.log(
+      execSync(
+        'git checkout ./test/integration/fixtures/conflicted-unhoisted-monorepo',
+      ).toString(),
+    );
   });
 
   describe('when --package is specified', () => {
@@ -34,11 +40,52 @@ describe('hoist', () => {
       assert.notProperty(pkg, 'dependencies');
       assert.notProperty(pkg, 'devDependencies');
     });
-
-    it('cowardly refuses to overwrite a semver discrepancy');
   });
 
-  // not yet implemented
+  describe('when the monorepo packages have conflicting dependencies', () => {
+    it('cowardly refuses to overwrite a semver discrepancy', async () => {
+      const err = await assert.isRejected(
+        run('hoist', 'conflicted-unhoisted-monorepo'),
+      );
+
+      assert.include(
+        err.message,
+        'Cowardly refusing to overwrite mismatched semver for "external-dep-1" from "@example/scoped-package-the-second"',
+      );
+
+      // TODO err must contain helpful message
+      const pkg1 = JSON.parse(
+        await readFile(
+          'packages/node_modules/@example/scoped-package-the-first/package.json',
+          'conflicted-unhoisted-monorepo',
+        ),
+      );
+      assert.notProperty(pkg1, 'dependencies');
+      assert.notProperty(pkg1, 'devDependencies');
+
+      const pkg2 = JSON.parse(
+        await readFile(
+          'packages/node_modules/@example/scoped-package-the-second/package.json',
+          'conflicted-unhoisted-monorepo',
+        ),
+      );
+
+      assert.property(pkg2, 'dependencies');
+      assert.deepEqual(pkg2.dependencies, {
+        'external-dep-1': '^0.2.0',
+      });
+      assert.notProperty(pkg2, 'devDependencies');
+
+      const root = JSON.parse(
+        await readFile('package.json', 'conflicted-unhoisted-monorepo'),
+      );
+
+      assert.deepEqual(root.dependencies, {
+        'external-dep-1': '^0.0.1',
+      });
+    });
+  });
+
   it('migrates all dependencies from their packages to the top-level package.json', async () => {
     await run('hoist', 'unhoisted-monorepo');
     const root = JSON.parse(
