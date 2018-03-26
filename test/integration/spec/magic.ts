@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {resolve} from 'path';
 
 import run from '../lib/run';
 

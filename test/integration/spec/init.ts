@@ -12,7 +12,7 @@ describe('init', () => {
   });
 
   it('refuses to overwrite an existing config file', async () => {
-    const err = await assert.isRejected(run('init'));
+    const err = ((await assert.isRejected(run('init'))) as any) as Error;
     assert.include(
       err.message,
       'Project already configured for clark. Pass --force to overwrite',

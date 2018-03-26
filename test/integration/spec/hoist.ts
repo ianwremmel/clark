@@ -44,9 +44,9 @@ describe('hoist', () => {
 
   describe('when the monorepo packages have conflicting dependencies', () => {
     it('cowardly refuses to overwrite a semver discrepancy', async () => {
-      const err = await assert.isRejected(
+      const err = ((await assert.isRejected(
         run('hoist', 'conflicted-unhoisted-monorepo'),
-      );
+      )) as any) as Error;
 
       assert.include(
         err.message,
