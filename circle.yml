@@ -47,8 +47,7 @@ jobs:
       - run: npm install
       - deploy:
           command: |
-            echo 'release is disabled'
-            # npm run semantic-release
+            npm run semantic-release
       - save_cache: *save_cache
 
 workflows:
