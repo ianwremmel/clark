@@ -13,10 +13,8 @@
     "prebuild": "npm run clean",
     "build": "tsc",
     "prebundle": "npm run build",
-    "bundle": "pkg --out-path dist .",
     "clean": "rimraf dist lib",
     "commitmsg": "npm run --silent lint:commitmsg",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "npm run --silent lint:js && npm run --silent lint:ts && npm run --silent lint:changelog",
     "lint:changelog": "commitlint --from origin/master --to HEAD",
     "lint:commitmsg": "commitlint -e",
@@ -29,7 +27,7 @@
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run bundle",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "test": "nyc --reporter=text mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './src/**/*-spec.[jt]s' './test/*/spec/**/*.[jt]s'"
+    "test": "mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './src/**/*-spec.[jt]s' './test/*/spec/**/*.[jt]s'"
   },
   "engines": {
     "node": ">=8"
@@ -42,13 +40,14 @@
     "@commitlint/config-angular": "^6.1.3",
     "@ianwremmel/eslint-config-base": "^1.0.0",
     "@ianwremmel/eslint-config-standard": "^1.2.0",
-    "@types/find-root": "^1.1.0",
     "@types/chai": "^4.1.2",
     "@types/chai-as-promised": "^7.1.0",
     "@types/debug": "0.0.30",
+    "@types/find-root": "^1.1.0",
     "@types/glob": "^5.0.35",
     "@types/invariant": "^2.2.29",
     "@types/mocha": "^5.0.0",
+    "@types/mz": "0.0.32",
     "@types/node": "^9.4.7",
     "@types/rc": "0.0.1",
     "@types/yargs": "^11.0.0",
@@ -56,15 +55,12 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "condition-circle": "^2.0.1",
-    "coveralls": "^3.0.0",
     "eslint": "^4.18.2",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-mocha": "^5.0.0",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0",
     "mocha": "^5.0.4",
-    "nyc": "^11.6.0",
-    "pkg": "^4.3.0",
     "prettier": "^1.11.1",
     "rimraf": "^2.6.2",
     "semantic-release": "^15.0.3",
@@ -84,7 +80,6 @@
     "verifyConditions": "condition-circle"
   },
   "dependencies": {
-    "@types/mz": "0.0.32",
     "debug": "^3.1.0",
     "find-root": "^1.1.0",
     "glob": "^7.1.2",
@@ -92,14 +87,5 @@
     "mz": "^2.7.0",
     "rc": "^1.2.6",
     "yargs": "^11.0.0"
-  },
-  "pkg": {
-    "assets": [
-      "lib/**/*.d.ts"
-    ],
-    "scripts": [
-      "bin/clark",
-      "lib/**/*.js"
-    ]
   }
 }
