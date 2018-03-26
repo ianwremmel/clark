@@ -12,7 +12,6 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc",
-    "prebundle": "npm run build",
     "clean": "rimraf dist lib",
     "commitmsg": "npm run --silent lint:commitmsg",
     "lint": "npm run --silent lint:js && npm run --silent lint:ts && npm run --silent lint:changelog",
@@ -25,7 +24,7 @@
     "lint:staged": "lint-staged",
     "mocha-reporter-options": "[ -n \"${CI}\" ] && echo '--reporter xunit --reporter-options output=reports/junit/mocha.xml'",
     "precommit": "npm run --silent lint:staged",
-    "presemantic-release": "npm run bundle",
+    "presemantic-release": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './src/**/*-spec.[jt]s' './test/*/spec/**/*.[jt]s'"
   },
