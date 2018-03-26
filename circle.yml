@@ -15,7 +15,6 @@ steps: &steps
   - run: "echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ./.npmrc"
   - run: npm install
   - run: npm test
-  - run: npm run coveralls || true
   - save_cache: *save_cache
   - store_test_results:
       path: reports
@@ -48,8 +47,7 @@ jobs:
       - run: npm install
       - deploy:
           command: |
-            echo 'release is disabled'
-            # npm run semantic-release
+            npm run semantic-release
       - save_cache: *save_cache
 
 workflows:
