@@ -14,13 +14,31 @@ describe('magic', () => {
     assert.equal(result, 'run\nrun\nrun');
   });
 
-  describe('when a packages has an npm script of the same name', () => {
+  describe('when a package has an npm script of the same name', () => {
     it('executes the override or falls back to the .clarkrc version', async () => {
       const result = await run('override');
       assert.equal(
         result,
         'not overridden\nnot overridden\nthis is an override',
       );
+    });
+  });
+
+  describe('when invoked with --package', () => {
+    it('invokes within only that package', () => {
+      it('executes the override or falls back to the .clarkrc version', async () => {
+        const result = await run('override --package not-scoped');
+        assert.equal(result, 'this is an override');
+      });
+    });
+
+    it('invokes within only that package', () => {
+      it('executes the override or falls back to the .clarkrc version', async () => {
+        const result = await run(
+          'override --package not-scoped --package @example/scoped-package-the-first',
+        );
+        assert.equal(result, 'not overridden\nthis is an override');
+      });
     });
   });
 });
