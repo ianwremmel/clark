@@ -2,12 +2,24 @@ import debugFactory from 'debug';
 import {sync as glob} from 'glob';
 import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
-import {read as readRootPackage, write as writeRootPackage} from './project';
+import {
+  findProjectRoot,
+  read as readRootPackage,
+  write as writeRootPackage,
+} from './project';
 import {spawn} from './spawn';
 
 const debug = debugFactory('clark:lib:packages');
 
 const cwd = 'packages/node_modules';
+
+/**
+ * Finds the relative path to the specified package.
+ * @param packageName
+ */
+export async function findPackagePath(packageName: string): Promise<string> {
+  return `./packages/node_modules/${packageName}`;
+}
 
 /**
  * Lists all packages in the monorepo
@@ -202,11 +214,22 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
   const bin = 'bash';
   const args = ['-c', cmd];
   const {PATH, ...env} = process.env;
+  const clarkEnv = {
+    CLARK_PACKAGE_ABS_PATH: resolve(
+      await findProjectRoot(),
+      await findPackagePath(packageName),
+    ),
+    CLARK_PACKAGE_NAME: packageName,
+    CLARK_PACKAGE_REL_PATH: await findPackagePath(packageName),
+    CLARK_ROOT_PATH: await findProjectRoot(),
+    ...filterEnv(env),
+  };
+
   try {
     const result = await spawn(bin, args, {
       cwd: resolve(cwd, packageName),
       env: {
-        ...env,
+        ...clarkEnv,
         PATH: `${PATH}:${resolve(process.cwd(), 'node_modules', '.bin')}`,
       },
     });
@@ -216,4 +239,23 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
     debug(`command "${cmd}" failed for package "${packageName}"`);
     throw err;
   }
+}
+
+/**
+ * Removes any `CLARK_` prefixed variables from env before passing them to
+ * `spawn()`.
+ * @param env
+ */
+function filterEnv(env: object): object {
+  return Object.entries(env).reduce<EnvObject>((acc, [key, value]) => {
+    if (!key.startsWith('CLARK_')) {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
+}
+
+interface EnvObject {
+  [key: string]: string;
 }
