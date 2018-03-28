@@ -12,15 +12,19 @@ const debug = debugFactory('clark:lib:version');
 export function select(left: string | null, right: string | null): string {
   debug(`checking if "${left}" and "${right}" are compatible`);
 
-  if (!left && right) {
-    return right;
+  // There are *much* simpler ways to write this, but typescript disagrees.
+
+  if (left === null) {
+    if (right) {
+      return right;
+    }
+    throw new Error('Cannot select a version from "null" and "null"');
   }
 
-  if (!right && left) {
-    return left;
-  }
-
-  if (!right && !left) {
+  if (right === null) {
+    if (left) {
+      return left;
+    }
     throw new Error('Cannot select a version from "null" and "null"');
   }
 
@@ -93,7 +97,7 @@ function extractRangeModifer(version: string): rangeModifier {
     return rangeModifier.Tilde;
   }
 
-  return Exact;
+  return rangeModifier.Exact;
 }
 
 /**
