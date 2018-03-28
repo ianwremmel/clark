@@ -16,7 +16,7 @@ export namespace Hoist {
     debug(`Hoisting ${packages.length} packages`);
     for (const packageName of packages) {
       debug(`hoisting deps from ${packageName}`);
-      await hoist(packageName);
+      await hoist(packageName, {risky: options.risky});
       debug(`hoisted deps from ${packageName}`);
     }
     debug(`Hoisted ${packages.length} packages`);
@@ -27,5 +27,6 @@ export namespace Hoist {
    */
   export interface Options {
     packageName?: string | string[];
+    risky?: boolean;
   }
 }
