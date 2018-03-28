@@ -94,7 +94,7 @@ clark exec <command> --package <packagename>
 
 The script will be invoked from within the package's directory.
 
-### Magic
+### Run npm scripts with default fallbacks
 
 While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test` that you want to run each independently against each package.
 
@@ -110,7 +110,7 @@ clark init --script test='mocha test/*/spec/**/*.js' --script build='babel -d di
 
 Package commands are executed sequentially in each package directory. They may be overridden with an entry in the package's package.json.
 
-> Note: magic scripts receive the same environment variables as `clark exec` and are executed within each package directory.
+> Note: these scripts receive the same environment variables as `clark exec` and are executed within each package directory.
 
 For example, your repository might use [mocha](https://mochajs.org/) to run your integration tests
 
