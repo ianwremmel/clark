@@ -20,6 +20,7 @@
 
 [![CircleCI](https://circleci.com/gh/ianwremmel/clark.svg?style=svg)](https://circleci.com/gh/ianwremmel/clark)
 [![Coverage Status](https://coveralls.io/repos/github/ianwremmel/clark/badge.svg?branch=master)](https://coveralls.io/github/ianwremmel/clark?branch=master)
+[![Build status](https://ci.appveyor.com/api/projects/status/wasymttjg1fq51lo/branch/master?svg=true)](https://ci.appveyor.com/project/ianwremmel/clark/branch/master)
 
 <!-- PROJ: Badges End -->
 
