@@ -2,21 +2,21 @@ import {assert} from 'chai';
 
 import run from '../lib/run';
 
-describe('magic', () => {
+describe('run', () => {
   it('generates commands from the local .clarkrc', async () => {
-    const result = await run('--help');
+    const result = await run('run --help');
     assert.include(result, 'local');
     assert.include(result, 'override');
   });
 
   it('executes a script in each package directory', async () => {
-    const result = await run('local');
+    const result = await run('run local');
     assert.equal(result, 'run\nrun\nrun');
   });
 
   describe('when a package has an npm script of the same name', () => {
     it('executes the override or falls back to the .clarkrc version', async () => {
-      const result = await run('override');
+      const result = await run('run override');
       assert.equal(
         result,
         'not overridden\nnot overridden\nthis is an override',
@@ -27,7 +27,7 @@ describe('magic', () => {
   describe('when invoked with --package', () => {
     it('invokes within only that package', () => {
       it('executes the override or falls back to the .clarkrc version', async () => {
-        const result = await run('override --package not-scoped');
+        const result = await run('run override --package not-scoped');
         assert.equal(result, 'this is an override');
       });
     });
@@ -35,7 +35,7 @@ describe('magic', () => {
     it('invokes within only that package', () => {
       it('executes the override or falls back to the .clarkrc version', async () => {
         const result = await run(
-          'override --package not-scoped --package @example/scoped-package-the-first',
+          'run override --package not-scoped --package @example/scoped-package-the-first',
         );
         assert.equal(result, 'not overridden\nthis is an override');
       });
