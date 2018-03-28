@@ -71,17 +71,28 @@ clark hoist
 clark hoist --package
 ```
 
-### Run a command each package directory
+### Run a command in each package directory
 
 ```bash
 clark exec <command>
 ```
+
+The following environment variables will be available to your script:
+
+*   `CLARK_ROOT_PATH`: The monorepo's root path.
+*   `CLARK_PACKAGE_REL_PATH`: The relative path within the monorepo to the package currently being acted upon.
+*   `CLARK_PACKAGE_ABS_PATH`: The absolute path to the package currently being acted upon.
+*   `CLARK_PACKAGE_NAME`: The name of the package being acted upon according to its `package.json`
+
+The script will be invoked from within the package's directory.
 
 ### Run a command in a single package directory
 
 ```bash
 clark exec <command> --package <packagename>
 ```
+
+The script will be invoked from within the package's directory.
 
 ### Magic
 
@@ -98,6 +109,8 @@ clark init --script test='mocha test/*/spec/**/*.js' --script build='babel -d di
 #### Package Commands
 
 Package commands are executed sequentially in each package directory. They may be overridden with an entry in the package's package.json.
+
+> Note: magic scripts receive the same environment variables as `clark exec` and are executed within each package directory.
 
 For example, your repository might use [mocha](https://mochajs.org/) to run your integration tests
 

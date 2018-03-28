@@ -1,7 +1,17 @@
 import {assert} from 'chai';
 import {resolve} from 'path';
-
 import run from '../lib/run';
+
+function stringToObject(str: string) {
+  return str
+    .split('\n')
+    .map(row => row.split('='))
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+}
+
 describe('exec', () => {
   it('executes a command in every directory', async () => {
     const result = await run('exec pwd');
@@ -39,6 +49,29 @@ describe('exec', () => {
       result,
       '.\n..\ndist\npackage.json\n.\n..\ndist\npackage.json\n.\n..\ndist\npackage.json\ntest',
     );
+  });
+
+  it('injects useful environment variables', async () => {
+    const result = await run(
+      'exec --package @example/scoped-package-the-first  "env | grep CLARK"',
+    );
+    // strip out this project's path so we can write consistent assertions
+    const modified = result.replace(
+      new RegExp(resolve(__dirname, '..', '..'), 'g'),
+      'REPLACED',
+    );
+
+    // different versions of node unexpectedly impact the order of the results,
+    // so we need to do an object comparison instead of a string comparison.
+
+    assert.deepEqual(stringToObject(modified), {
+      CLARK_ROOT_PATH: 'REPLACED/integration/fixtures/monorepo',
+      CLARK_PACKAGE_REL_PATH:
+        './packages/node_modules/@example/scoped-package-the-first',
+      CLARK_PACKAGE_ABS_PATH:
+        'REPLACED/integration/fixtures/monorepo/packages/node_modules/@example/scoped-package-the-first',
+      CLARK_PACKAGE_NAME: '@example/scoped-package-the-first',
+    });
   });
 
   describe('with --package', () => {
