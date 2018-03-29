@@ -5,6 +5,7 @@ import {dirname, resolve} from 'path';
 import {load} from './config';
 import {
   findProjectRoot,
+  isAlleRepo,
   read as readRootPackage,
   write as writeRootPackage,
 } from './project';
@@ -237,6 +238,12 @@ export async function hoist(
 
   delete pkg.dependencies;
   delete pkg.devDependencies;
+
+  if (!isAlleRepo(await listPaths())) {
+    rootPkg.dependencies[packageName] = `file:./${await getPackagePath(
+      packageName,
+    )}`;
+  }
 
   rootPkg.dependencies = sortObject(rootPkg.dependencies);
 
