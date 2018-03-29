@@ -129,15 +129,20 @@ describe('hoist', () => {
   });
 
   describe('when the monorepo does not follow the alle layout', () => {
-    it('migrates all dependencies from their packages to the top-level package.json', async () => {
+    it('migrates all dependencies from their packages to the top-level package.json and adds refs to local packages', async () => {
       await run('hoist', 'unhoisted-non-alle-monorepo');
       const root = JSON.parse(
         await readFile('package.json', 'unhoisted-non-alle-monorepo'),
       );
       assert.deepEqual(root.dependencies, {
+        '@example/scoped-package-the-first':
+          'file:./backend/scoped-package-the-first',
+        '@example/scoped-package-the-second':
+          'file:./backend/scoped-package-the-second',
         'external-dep-1': '^0.0.1',
         'external-dep-2': '^0.2.0',
         'external-dep-3': '^3.0.0',
+        'not-scoped': 'file:./frontend/not-scoped',
       });
 
       const packages = glob('{backend,frontend}/*/package.json', {
