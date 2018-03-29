@@ -2,58 +2,111 @@ import debugFactory from 'debug';
 import {sync as glob} from 'glob';
 import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
+import {load} from './config';
 import {
   findProjectRoot,
   read as readRootPackage,
   write as writeRootPackage,
 } from './project';
 import {spawn} from './spawn';
+import {sortObject} from './util';
 import {select} from './version';
 
 const debug = debugFactory('clark:lib:packages');
 
-const cwd = 'packages/node_modules';
+const pathsByPackage = new Map();
+const packagesByPath = new Map();
+let initialized = false;
 
-/**
- * Finds the relative path to the specified package.
- * @param packageName
- */
-export async function findPackagePath(packageName: string): Promise<string> {
-  return `./packages/node_modules/${packageName}`;
+interface EnvObject {
+  [key: string]: string;
 }
 
 /**
- * Lists all packages in the monorepo
- */
-export async function list(): Promise<string[]> {
-  debug('listing all packages');
-  // `packages/node_modules/*/package.json` and
-  // `packages/node_modules/@*/*/package.json` are the only valid monorepo
-  // package locations
-  const directories = glob('{*,@*/*}/package.json', {cwd});
-  debug(`found "${directories.length}" packages`);
-  return directories.map(dirname);
-}
-
-/**
- * Indicates if a given packageName identifies a package in the monorepo
+ * Executes the specified command against the specified package
+ * @param cmd
  * @param packageName
  */
-export async function isPackage(packageName: string): Promise<boolean> {
-  debug(`checking if "${packageName}" identifies a package`);
-  const directories = glob(`${packageName}/package.json`, {cwd});
-  switch (directories.length) {
-    case 0:
-      debug(`"${packageName}" does not identify a package`);
-      return false;
-    case 1:
-      debug(`"${packageName}" identifies a package`);
-      return true;
-    default:
-      throw new Error(
-        `"${packageName}" appears to represent multiple packages`,
-      );
+export async function exec(cmd: string, packageName: string): Promise<void> {
+  if (!await isPackage(packageName)) {
+    throw new Error(`"${packageName}" does not appear to identify a package`);
   }
+
+  debug(`running command "${cmd}" in directory for package "${packageName}"`);
+  const bin = 'bash';
+  const args = ['-c', cmd];
+  const {PATH, ...env} = process.env;
+  const clarkEnv = {
+    CLARK_PACKAGE_ABS_PATH: resolve(
+      await findProjectRoot(),
+      await getPackagePath(packageName),
+    ),
+    CLARK_PACKAGE_NAME: packageName,
+    CLARK_PACKAGE_REL_PATH: await getPackagePath(packageName),
+    CLARK_ROOT_PATH: await findProjectRoot(),
+    ...filterEnv(env),
+  };
+
+  try {
+    const result = await spawn(bin, args, {
+      cwd: resolve(await findProjectRoot(), await getPackagePath(packageName)),
+      env: {
+        ...clarkEnv,
+        PATH: `${PATH}:${resolve(
+          await findProjectRoot(),
+          'node_modules',
+          '.bin',
+        )}`,
+      },
+    });
+    debug(`ran command "${cmd}" in directory for package "${packageName}"`);
+    return result;
+  } catch (err) {
+    debug(`command "${cmd}" failed for package "${packageName}"`);
+    throw err;
+  }
+}
+
+/**
+ * Executes the specified npm script in the specified package. If the package
+ * does not have a definition for the script and fallbackScript is provided,
+ * then fallbackScript will be executed directly (i.e., run as a bash command,
+ * not as an npm script).
+ * @param scriptName
+ * @param packageName
+ * @param fallbackScript
+ */
+export async function execScript(
+  scriptName: string,
+  packageName: string,
+  fallbackScript?: string,
+): Promise<void> {
+  debug(`Running "${scriptName}" in "${packageName}"`);
+  if (await hasScript(packageName, scriptName)) {
+    return await exec(`npm run --silent ${scriptName}`, packageName);
+  }
+
+  if (!fallbackScript) {
+    throw new Error(`${packageName} does not implement ${scriptName}`);
+  }
+
+  debug(`Falling back to run "${scriptName}" in "${packageName}"`);
+  return await exec(fallbackScript, packageName);
+}
+
+/**
+ * Removes any `CLARK_` prefixed variables from env before passing them to
+ * `spawn()`.
+ * @param env
+ */
+function filterEnv(env: object): object {
+  return Object.entries(env).reduce<EnvObject>((acc, [key, value]) => {
+    if (!key.startsWith('CLARK_')) {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
 }
 
 /**
@@ -82,6 +135,19 @@ export namespace gather {
 }
 
 /**
+ * Returns the relative path from the monorepo root to the directory containing
+ * the specified package's package.json.
+ * @param packageName
+ */
+export async function getPackagePath(packageName: string): Promise<string> {
+  await init();
+  if (!await isPackage(packageName)) {
+    throw new Error(`"${packageName}" does not appear to identify a package`);
+  }
+  return pathsByPackage.get(packageName);
+}
+
+/**
  * Indicates if the specified package has an implementation of the specified
  * npm script
  * @param packageName
@@ -92,12 +158,7 @@ export async function hasScript(
   scriptName: string,
 ): Promise<boolean> {
   debug(`checking if "${packageName}" has a "${scriptName}" script`);
-  const pkg = JSON.parse(
-    await readFile(
-      resolve('packages', 'node_modules', packageName, 'package.json'),
-      'utf-8',
-    ),
-  );
+  const pkg = await read(packageName);
   const has = !!(pkg.scripts && pkg.scripts[scriptName]);
   debug(
     `"${packageName}" ${
@@ -191,6 +252,87 @@ export namespace hoist {
     risky?: boolean;
   }
 }
+
+/**
+ * Helper
+ */
+async function init(): Promise<void> {
+  if (!initialized) {
+    initialized = true;
+    debug('globbing for packages');
+    const patterns = (await load()).include || [];
+    for (const pattern of Array.isArray(patterns) ? patterns : [patterns]) {
+      await listPackagesInGlob(pattern);
+    }
+  }
+}
+
+/**
+ * Indicates if the given packageName identifies a package in the monorpeo
+ * @param packageName
+ */
+export async function isPackage(packageName: string): Promise<boolean> {
+  await init();
+  return pathsByPackage.has(packageName);
+}
+
+/**
+ * Indicates if the given directory contains a package
+ * @param dir
+ */
+export async function isPackagePath(dir: string): Promise<boolean> {
+  await init();
+  return packagesByPath.has(dir);
+}
+
+/**
+ * Returns the names of the packages defined in the project
+ *
+ * Note: This packages are the package.json names, not necessarily the directory
+ * paths containing the packages.
+ */
+export async function list(): Promise<string[]> {
+  await init();
+  return [...pathsByPackage.keys()];
+}
+
+/**
+ * Loads all packages found in a particular glob pattern
+ *
+ * @param pattern
+ */
+async function listPackagesInGlob(pattern: string): Promise<void> {
+  debug(`Listing packages in "${pattern}"`);
+  // I'm a little concerned just tacking package.json on the end could break
+  // certain glob patterns, but I don't have any proof to back that up.
+  const paths = glob(`${pattern}/package.json`);
+  debug(`Found ${paths.length} directories in "${pattern}"`);
+
+  for (const packagePath of paths) {
+    debug(`Checking if "${packagePath}" contains a package.json`);
+    const dir = dirname(packagePath);
+    const pkg = JSON.parse(await readFile(packagePath, 'utf-8'));
+    debug(`Found "${pkg.name}" in "${dir}"`);
+    if (pathsByPackage.has(pkg.name) && pathsByPackage.get(pkg.name) !== dir) {
+      throw new Error(
+        `Package names must be unique. "${
+          pkg.name
+        } found in "${dir}" and "${pathsByPackage.get(pkg.name)}"`,
+      );
+    }
+    pathsByPackage.set(pkg.name, dir);
+    packagesByPath.set(dir, pkg.name);
+  }
+}
+
+/**
+ * Returns the directory paths of each package.json
+ */
+export async function listPaths(): Promise<string[]> {
+  await init();
+  return [...packagesByPath.keys()];
+}
+
 /**
  * Reads a package.json from the monorepo
  * @param packageName
@@ -198,7 +340,7 @@ export namespace hoist {
 export async function read(packageName: string) {
   return JSON.parse(
     await readFile(
-      resolve('packages', 'node_modules', packageName, 'package.json'),
+      resolve(await getPackagePath(packageName), 'package.json'),
       'utf-8',
     ),
   );
@@ -211,120 +353,7 @@ export async function read(packageName: string) {
  */
 export async function write(packageName: string, pkg: object) {
   return await writeFile(
-    resolve('packages', 'node_modules', packageName, 'package.json'),
+    resolve(await getPackagePath(packageName), 'package.json'),
     `${JSON.stringify(pkg, null, 2)}\n`,
   );
-}
-
-/**
- * Executes the specified npm script in the specified package. If the package
- * does not have a definition for the script and fallbackScript is provided,
- * then fallbackScript will be executed directly (i.e., run as a bash command,
- * not as an npm script).
- * @param scriptName
- * @param packageName
- * @param fallbackScript
- */
-export async function execScript(
-  scriptName: string,
-  packageName: string,
-  fallbackScript?: string,
-): Promise<void> {
-  debug(`Running "${scriptName}" in "${packageName}"`);
-  if (await hasScript(packageName, scriptName)) {
-    return await exec(`npm run --silent ${scriptName}`, packageName);
-  }
-
-  if (!fallbackScript) {
-    throw new Error(`${packageName} does not implement ${scriptName}`);
-  }
-
-  debug(`Falling back to run "${scriptName}" in "${packageName}"`);
-  return await exec(fallbackScript, packageName);
-}
-
-/**
- * Executes the specified command against the specified package
- * @param cmd
- * @param packageName
- */
-export async function exec(cmd: string, packageName: string): Promise<void> {
-  if (!await isPackage(packageName)) {
-    throw new Error(`"${packageName}" does not appear to identify a package`);
-  }
-
-  debug(`running command "${cmd}" in directory for package "${packageName}"`);
-  const bin = 'bash';
-  const args = ['-c', cmd];
-  const {PATH, ...env} = process.env;
-  const clarkEnv = {
-    CLARK_PACKAGE_ABS_PATH: resolve(
-      await findProjectRoot(),
-      await findPackagePath(packageName),
-    ),
-    CLARK_PACKAGE_NAME: packageName,
-    CLARK_PACKAGE_REL_PATH: await findPackagePath(packageName),
-    CLARK_ROOT_PATH: await findProjectRoot(),
-    ...filterEnv(env),
-  };
-
-  try {
-    const result = await spawn(bin, args, {
-      cwd: resolve(cwd, packageName),
-      env: {
-        ...clarkEnv,
-        PATH: `${PATH}:${resolve(process.cwd(), 'node_modules', '.bin')}`,
-      },
-    });
-    debug(`ran command "${cmd}" in directory for package "${packageName}"`);
-    return result;
-  } catch (err) {
-    debug(`command "${cmd}" failed for package "${packageName}"`);
-    throw err;
-  }
-}
-
-/**
- * Removes any `CLARK_` prefixed variables from env before passing them to
- * `spawn()`.
- * @param env
- */
-function filterEnv(env: object): object {
-  return Object.entries(env).reduce<EnvObject>((acc, [key, value]) => {
-    if (!key.startsWith('CLARK_')) {
-      acc[key] = value;
-    }
-
-    return acc;
-  }, {});
-}
-
-interface EnvObject {
-  [key: string]: string;
-}
-
-interface AnyObject {
-  [key: string]: any;
-}
-
-/**
- * Sorts an object
- * @param obj
- */
-function sortObject(obj: object): object {
-  return Object.entries(obj)
-    .sort((left, right) => {
-      if (left[0] < right[0]) {
-        return -1;
-      }
-      if (left[0] > right[0]) {
-        return 1;
-      }
-
-      return 0;
-    })
-    .reduce<AnyObject>((acc, [key, value]) => {
-      acc[key] = value;
-      return acc;
-    }, {});
 }
