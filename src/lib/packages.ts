@@ -8,6 +8,7 @@ import {
   write as writeRootPackage,
 } from './project';
 import {spawn} from './spawn';
+import {select} from './version';
 
 const debug = debugFactory('clark:lib:packages');
 
@@ -114,7 +115,10 @@ export async function hasScript(
  * that's not where `npm install` defaults).
  * @param packageName
  */
-export async function hoist(packageName: string): Promise<void> {
+export async function hoist(
+  packageName: string,
+  options: hoist.Options = {risky: false},
+): Promise<void> {
   debug(`Reading deps from "${packageName}"`);
   const pkg = await read(packageName);
   const rootPkg = await readRootPackage();
@@ -125,21 +129,49 @@ export async function hoist(packageName: string): Promise<void> {
   };
 
   for (const [depName, depVersion] of Object.entries(deps)) {
-    debug(
-      `Checking if root package has version of "${depName}" that conflicts with "${depVersion}"`,
-    );
-    if (
-      rootPkg.dependencies[depName] &&
-      rootPkg.dependencies[depName] !== depVersion
-    ) {
-      throw new Error(
-        `Cowardly refusing to overwrite mismatched semver for "${depName}" from "${packageName}"`,
+    const rootVersion = rootPkg.dependencies[depName];
+
+    if (!rootVersion) {
+      debug(
+        `Root package does not yet have a version of "${depName}", defaulting to "${packageName}"'s version of "${depVersion}"`,
       );
+      rootPkg.dependencies[depName] = depVersion;
+    } else if (options.risky) {
+      debug(
+        `Checking if root "${depName}@${rootVersion}" is loosely compatible with "${depName}@${depVersion}"`,
+      );
+
+      try {
+        const toUseVersion = select(rootVersion, depVersion as string);
+        rootPkg.dependencies[depName] = toUseVersion;
+        debug(
+          `"root ${depName}@${rootVersion}" is loosely compatible with "${packageName}" "${depName}@${depVersion}"`,
+        );
+      } catch (err) {
+        debug(
+          `"root ${depName}@${rootVersion}" is not loosely compatible with "${packageName}" "${depName}@${depVersion}"`,
+        );
+        throw new Error(
+          `Cowardly refusing to overwrite "${depName}@${rootVersion}" for "${depName}@${depVersion}" from "${packageName}"`,
+        );
+      }
+    } else {
+      debug(
+        `Checking if root "${depName}@${rootVersion}" is strictly compatible with "${depName}@${depVersion}"`,
+      );
+      if (rootVersion !== depVersion) {
+        debug(
+          `"root ${depName}@${rootVersion}" is not strictly compatible with "${packageName}" "${depName}@${depVersion}"`,
+        );
+        throw new Error(
+          `Cowardly refusing to overwrite "${depName}@${rootVersion}" for "${depName}@${depVersion}" from "${packageName}"`,
+        );
+      }
+      debug(
+        `"root ${depName}@${rootVersion}" is strictly compatible with "${packageName}" "${depName}@${depVersion}"`,
+      );
+      rootPkg.dependencies[depName] = depVersion;
     }
-    debug(
-      `Root package does not have conflicting version of "${depName}" that conflicts with "${depVersion}"`,
-    );
-    rootPkg.dependencies[depName] = depVersion;
   }
 
   delete pkg.dependencies;
@@ -151,6 +183,14 @@ export async function hoist(packageName: string): Promise<void> {
   await writeRootPackage(rootPkg);
 }
 
+export namespace hoist {
+  /**
+   * Options for the hoist function
+   */
+  export interface Options {
+    risky?: boolean;
+  }
+}
 /**
  * Reads a package.json from the monorepo
  * @param packageName

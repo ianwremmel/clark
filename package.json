@@ -26,7 +26,7 @@
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
     "semantic-release": "semantic-release",
-    "test": "mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './src/**/*-spec.[jt]s' './test/*/spec/**/*.[jt]s'"
+    "test": "mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './src/**/*.spec.[jt]s' './test/*/spec/**/*.[jt]s'"
   },
   "engines": {
     "node": ">=8"
@@ -49,6 +49,7 @@
     "@types/mz": "0.0.32",
     "@types/node": "^9.4.7",
     "@types/rc": "0.0.1",
+    "@types/semver": "^5.5.0",
     "@types/yargs": "^11.0.0",
     "@urbandoor/lint": "0.0.6",
     "chai": "^4.1.2",
@@ -85,6 +86,7 @@
     "invariant": "^2.2.4",
     "mz": "^2.7.0",
     "rc": "^1.2.6",
+    "semver": "^5.5.0",
     "tslib": "^1.9.0",
     "yargs": "^11.0.0"
   }
