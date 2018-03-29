@@ -1,5 +1,5 @@
 import debugFactory from 'debug';
-import semver, {SemVer} from 'semver';
+import semver from 'semver';
 
 const debug = debugFactory('clark:lib:version');
 
