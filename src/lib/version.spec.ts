@@ -8,6 +8,8 @@ describe('version', () => {
         ['^1.0.0', '^1.1.0', '^1.1.0'],
         ['^1.1.0', '^1.0.0', '^1.1.0'],
         ['~1.3.0', '^1.1.0', '^1.3.0'],
+        ['~1.0.0', '~1.0.1', '~1.0.1'],
+        ['^1.0.0', '1.1.0', '^1.1.0'],
       ].forEach(([left, right, correct]) => {
         assert.equal(
           select(left, right),
@@ -54,6 +56,11 @@ describe('version', () => {
           `"${left}" and "${right}" are not compatible`,
         );
       });
+
+      assert.throws(
+        () => select(null, null),
+        'Cannot select a version from "null" and "null"',
+      );
     });
   });
 });
