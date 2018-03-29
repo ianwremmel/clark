@@ -5,7 +5,7 @@ const debug = debugFactory('clark:lib:version');
 
 /**
  * Selects the greater of two semver ranges combined with their most permissive
- * range modifier
+ * range operator
  * @param left
  * @param right
  */
@@ -42,9 +42,9 @@ export function select(left: string | null, right: string | null): string {
       throw new Error(`"${right}" is not a valid semver`);
     }
 
-    debug(`checking if "${left}" and "${right}" have the same range modifier`);
-    if (hasSameModifier(left, right)) {
-      debug(`"${left}" and "${right}" have the same range modifier`);
+    debug(`checking if "${left}" and "${right}" have the same range operator`);
+    if (hasSameOperator(left, right)) {
+      debug(`"${left}" and "${right}" have the same range operator`);
       if (semver.gt(leftExact, rightExact)) {
         return left;
       } else {
@@ -52,14 +52,14 @@ export function select(left: string | null, right: string | null): string {
       }
     }
 
-    debug(`"${left}" and "${right}" do not have the same range modifier`);
+    debug(`"${left}" and "${right}" do not have the same range operator`);
 
-    const modifier = extractMostPermissiveModifier(left, right);
+    const operator = extractMostPermissiveOperator(left, right);
 
     if (semver.gt(leftExact, rightExact)) {
-      return modifier + leftExact;
+      return operator + leftExact;
     } else {
-      return modifier + rightExact;
+      return operator + rightExact;
     }
   } else {
     debug(`"${left}" and "${right}" are not compatible`);
@@ -68,19 +68,19 @@ export function select(left: string | null, right: string | null): string {
 }
 
 /**
- * Range modifiers
+ * Range operators
  */
-enum RangeModifier {
+enum RangeOperator {
   /**
-   * Caret modifier
+   * Caret operator
    */
   Caret = '^',
   /**
-   * Tilde modifier
+   * Tilde operator
    */
   Tilde = '~',
   /**
-   * No modifier
+   * No operator
    */
   Exact = '',
 }
@@ -89,47 +89,47 @@ enum RangeModifier {
  * Extracts the range modififer from a semver string
  * @param version
  */
-function extractRangeModifier(version: string): RangeModifier {
+function extractRangeOperator(version: string): RangeOperator {
   if (version.startsWith('^')) {
-    return RangeModifier.Caret;
+    return RangeOperator.Caret;
   }
   if (version.startsWith('~')) {
-    return RangeModifier.Tilde;
+    return RangeOperator.Tilde;
   }
 
-  return RangeModifier.Exact;
+  return RangeOperator.Exact;
 }
 
 /**
- * Indicates of two version strings have the same range modifier
+ * Indicates of two version strings have the same range operator
  * @param left
  * @param right
  */
-function hasSameModifier(left: string, right: string): boolean {
-  const leftType = extractRangeModifier(left);
-  const rightType = extractRangeModifier(right);
+function hasSameOperator(left: string, right: string): boolean {
+  const leftType = extractRangeOperator(left);
+  const rightType = extractRangeOperator(right);
   return leftType === rightType;
 }
 
 /**
- * Determines the most permissive range modifier between two version strings
+ * Determines the most permissive range operator between two version strings
  * @param left
  * @param right
  */
-function extractMostPermissiveModifier(
+function extractMostPermissiveOperator(
   left: string,
   right: string,
-): RangeModifier {
-  const leftType = extractRangeModifier(left);
-  const rightType = extractRangeModifier(right);
+): RangeOperator {
+  const leftType = extractRangeOperator(left);
+  const rightType = extractRangeOperator(right);
 
-  if (leftType === RangeModifier.Caret || rightType === RangeModifier.Caret) {
-    return RangeModifier.Caret;
+  if (leftType === RangeOperator.Caret || rightType === RangeOperator.Caret) {
+    return RangeOperator.Caret;
   }
 
-  if (leftType === RangeModifier.Tilde || rightType === RangeModifier.Tilde) {
-    return RangeModifier.Tilde;
+  if (leftType === RangeOperator.Tilde || rightType === RangeOperator.Tilde) {
+    return RangeOperator.Tilde;
   }
 
-  return RangeModifier.Exact;
+  return RangeOperator.Exact;
 }
