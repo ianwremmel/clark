@@ -4,7 +4,7 @@ import semver from 'semver';
 const debug = debugFactory('clark:lib:version');
 
 /**
- * Selcts the greater of two semver ranges combined with their most permissive
+ * Selects the greater of two semver ranges combined with their most permissive
  * range modifier
  * @param left
  * @param right
@@ -43,7 +43,7 @@ export function select(left: string | null, right: string | null): string {
     }
 
     debug(`checking if "${left}" and "${right}" have the same range modifier`);
-    if (hasSameModifer(left, right)) {
+    if (hasSameModifier(left, right)) {
       debug(`"${left}" and "${right}" have the same range modifier`);
       if (semver.gt(leftExact, rightExact)) {
         return left;
@@ -70,7 +70,7 @@ export function select(left: string | null, right: string | null): string {
 /**
  * Range modifiers
  */
-enum rangeModifier {
+enum RangeModifier {
   /**
    * Caret modifier
    */
@@ -89,15 +89,15 @@ enum rangeModifier {
  * Extracts the range modififer from a semver string
  * @param version
  */
-function extractRangeModifer(version: string): rangeModifier {
+function extractRangeModifier(version: string): RangeModifier {
   if (version.startsWith('^')) {
-    return rangeModifier.Caret;
+    return RangeModifier.Caret;
   }
   if (version.startsWith('~')) {
-    return rangeModifier.Tilde;
+    return RangeModifier.Tilde;
   }
 
-  return rangeModifier.Exact;
+  return RangeModifier.Exact;
 }
 
 /**
@@ -105,9 +105,9 @@ function extractRangeModifer(version: string): rangeModifier {
  * @param left
  * @param right
  */
-function hasSameModifer(left: string, right: string): boolean {
-  const leftType = extractRangeModifer(left);
-  const rightType = extractRangeModifer(right);
+function hasSameModifier(left: string, right: string): boolean {
+  const leftType = extractRangeModifier(left);
+  const rightType = extractRangeModifier(right);
   return leftType === rightType;
 }
 
@@ -116,17 +116,20 @@ function hasSameModifer(left: string, right: string): boolean {
  * @param left
  * @param right
  */
-function extractMostPermissiveModifier(left: string, right: string) {
-  const leftType = extractRangeModifer(left);
-  const rightType = extractRangeModifer(right);
+function extractMostPermissiveModifier(
+  left: string,
+  right: string,
+): RangeModifier {
+  const leftType = extractRangeModifier(left);
+  const rightType = extractRangeModifier(right);
 
-  if (leftType === rangeModifier.Caret || rightType === rangeModifier.Caret) {
-    return rangeModifier.Caret;
+  if (leftType === RangeModifier.Caret || rightType === RangeModifier.Caret) {
+    return RangeModifier.Caret;
   }
 
-  if (leftType === rangeModifier.Tilde || rightType === rangeModifier.Tilde) {
-    return rangeModifier.Tilde;
+  if (leftType === RangeModifier.Tilde || rightType === RangeModifier.Tilde) {
+    return RangeModifier.Tilde;
   }
 
-  return rangeModifier.Exact;
+  return RangeModifier.Exact;
 }
