@@ -1,0 +1,12 @@
+{
+  "name": "not-scoped",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "override": "echo 'this is an override'"
+  },
+  "devDependencies": {
+    "external-dep-3": "^3.0.0"
+  },
+  "private": true
+}

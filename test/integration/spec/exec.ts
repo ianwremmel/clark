@@ -67,7 +67,7 @@ describe('exec', () => {
     assert.deepEqual(stringToObject(modified), {
       CLARK_ROOT_PATH: 'REPLACED/integration/fixtures/monorepo',
       CLARK_PACKAGE_REL_PATH:
-        './packages/node_modules/@example/scoped-package-the-first',
+        'packages/node_modules/@example/scoped-package-the-first',
       CLARK_PACKAGE_ABS_PATH:
         'REPLACED/integration/fixtures/monorepo/packages/node_modules/@example/scoped-package-the-first',
       CLARK_PACKAGE_NAME: '@example/scoped-package-the-first',
