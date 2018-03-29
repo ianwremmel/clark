@@ -50,7 +50,7 @@ describe('hoist', () => {
 
       assert.include(
         err.message,
-        'Cowardly refusing to overwrite mismatched semver for "external-dep-1" from "@example/scoped-package-the-second"',
+        'Cowardly refusing to overwrite "external-dep-1@^1.0.0" for "external-dep-1@^1.1.0" from "@example/scoped-package-the-second"',
       );
 
       // TODO err must contain helpful message
@@ -72,7 +72,7 @@ describe('hoist', () => {
 
       assert.property(pkg2, 'dependencies');
       assert.deepEqual(pkg2.dependencies, {
-        'external-dep-1': '^0.2.0',
+        'external-dep-1': '^1.1.0',
       });
       assert.notProperty(pkg2, 'devDependencies');
 
@@ -81,7 +81,21 @@ describe('hoist', () => {
       );
 
       assert.deepEqual(root.dependencies, {
-        'external-dep-1': '^0.0.1',
+        'external-dep-1': '^1.0.0',
+      });
+    });
+
+    describe('when invoked with --risky', () => {
+      it('uses semver comparison to choose a reasonable version', async () => {
+        await run('hoist --risky', 'conflicted-unhoisted-monorepo');
+
+        const root = JSON.parse(
+          await readFile('package.json', 'conflicted-unhoisted-monorepo'),
+        );
+
+        assert.deepEqual(root.dependencies, {
+          'external-dep-1': '^1.1.0',
+        });
       });
     });
   });
