@@ -1,5 +1,5 @@
 import debugFactory from 'debug';
-import semver from 'semver';
+import semver, {SemVer} from 'semver';
 
 const debug = debugFactory('clark:lib:version');
 
@@ -28,43 +28,33 @@ export function select(left: string | null, right: string | null): string {
     throw new Error('Cannot select a version from "null" and "null"');
   }
 
-  if (semver.intersects(left, right)) {
-    debug(`"${left}" and "${right}" are compatible`);
-
-    const leftExact = semver.clean(left.replace('^', '').replace('~', ''));
-    const rightExact = semver.clean(right.replace('^', '').replace('~', ''));
-
-    if (!leftExact) {
-      throw new Error(`"${left}" is not a valid semver`);
-    }
-
-    if (!rightExact) {
-      throw new Error(`"${right}" is not a valid semver`);
-    }
-
-    debug(`checking if "${left}" and "${right}" have the same range operator`);
-    if (hasSameOperator(left, right)) {
-      debug(`"${left}" and "${right}" have the same range operator`);
-      if (semver.gt(leftExact, rightExact)) {
-        return left;
-      } else {
-        return right;
-      }
-    }
-
-    debug(`"${left}" and "${right}" do not have the same range operator`);
-
-    const operator = extractMostPermissiveOperator(left, right);
-
-    if (semver.gt(leftExact, rightExact)) {
-      return operator + leftExact;
-    } else {
-      return operator + rightExact;
-    }
-  } else {
+  if (!semver.intersects(left, right)) {
     debug(`"${left}" and "${right}" are not compatible`);
     throw new Error(`"${left}" and "${right}" are not compatible`);
   }
+
+  debug(`"${left}" and "${right}" are compatible`);
+
+  const leftExact = extractExactVersion(left);
+  const rightExact = extractExactVersion(right);
+
+  debug(`checking if "${left}" and "${right}" have the same range operator`);
+  if (hasSameOperator(left, right)) {
+    debug(`"${left}" and "${right}" have the same range operator`);
+    if (semver.gt(leftExact, rightExact)) {
+      return left;
+    } else {
+      return right;
+    }
+  }
+
+  debug(`"${left}" and "${right}" do not have the same range operator`);
+
+  const operator = extractMostPermissiveOperator(left, right);
+
+  return `${operator}${
+    semver.gt(leftExact, rightExact) ? leftExact : rightExact
+  }`;
 }
 
 /**
@@ -83,6 +73,22 @@ enum RangeOperator {
    * No operator
    */
   Exact = '',
+}
+
+/**
+ * Removes the range operator from a version string and converts it to a SemVer
+ * @param version
+ */
+function extractExactVersion(version: string): string {
+  const exact = semver.clean(
+    version.replace(RangeOperator.Caret, '').replace(RangeOperator.Tilde, ''),
+  );
+
+  if (!exact) {
+    throw new Error(`"${version}" is not a valid semver`);
+  }
+
+  return exact;
 }
 
 /**
