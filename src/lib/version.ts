@@ -101,7 +101,7 @@ function extractRangeOperator(version: string): RangeOperator {
 }
 
 /**
- * Indicates of two version strings have the same range operator
+ * Indicates if two version strings have the same range operator
  * @param left
  * @param right
  */
