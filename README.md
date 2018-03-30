@@ -31,8 +31,12 @@ Clark is a toolkit for interacting with [alle-inspired](https://github.com/boenn
 
 *   [Install](#install)
 *   [Usage](#usage)
+    *   [Alle](#alle)
+    *   [Non-Alle](#non-alle)
+    *   [Commands](#commands)
 *   [Maintainer](#maintainer)
 *   [Contribute](#contribute)
+    *   [Development](#development)
 *   [License](#license)
 
 ## Install
@@ -43,21 +47,61 @@ npm install @ianwremmel/clark
 
 ## Usage
 
-The key benefit of clark over [lerna](https://lernajs.io/) and similar tools comes from adhering to the directory layout described in [alle](https://github.com/boennemann/alle). In other words, all of your package **must** be kept in `./packages/node_modules` and the name each each `package.json` **should** match the subfolder path (yes, this includes the org/user scope if present).
+Unlike [lerna](https://lernajs.io/) or similar tools, `clark` lets you keep track of your dependencies all in your main `package.json` (key benefits being significantly faster `npm install` times and the ability to use greenkeeper). In order to get this benefit, however, you'll need to follow one of two patterns ([alle](#alle) or [non-alle](#non-alle), described below). Once you pick one of those patterns and configure your repository accordingly, you can use `clark hoist`, to move your deps from you individual subpackages to your repo root.
 
-### List all commands
+### Alle
+
+[Alle](https://github.com/boennemann/alle) was originally described as just an example of how things _could_ work, before eventually being enacted by [pouchdb](). In order to follow the Alle pattern, all of your package **must** be kept in `./packages/node_modules` and the name of each `package.json` **should** match the subfolder path (yes, this includes the org/user scope if present).
+
+**Benefits**
+
+*   Alle is symlink free. It relies on the behavior of `require()` inside a `node_modules` directory to search both up the tree and in sibling folders, thus letting your packages find each other automatically.
+
+**Caveats**
+
+*   Many tools have hardcoded excludes for `node_modules` and some can't be overridden at all. Perhaps most problematically, GitHub PR will collapse most of your diffs assuming that anything in `node_modules` is vendored. GitHub language stats also get confused.
+*   If you already have an established project, moving every folder can be problematic.
+
+### Non-Alle
+
+When npm encounters a package version that's simply a file path (e.g. `"my-package": "file:./packages/my-package"`), it will symlink it into `./node_modules`. By putting all of our local node_modules in the top-level `package.json`, we can expose our local packages to each other without making any other repo changes.
+
+> In addition to moving dependencies to the top-level, if `clark` sees your in a non-alle monorepo, it will automatically add the local `file:` entries to the top-level as well. You may want to run hoist whenever you create a new package.
+
+Simply add your package directories the `include` section of `.clarkrc`.
+
+```json
+//.clarkrc
+{
+    "include": ["frontend/*", "backend/*"]
+}
+```
+
+**Benefits**
+
+*   No need to move anything in your existing project.
+*   Doesn't break GitHub.
+
+**Caveats**
+
+*   Not yet tested in the wild.
+*   Likely requires a very recent version of npm. (Though, clark requires node 8 or later, so this may not be an issue).
+
+### Commands
+
+#### List all commands
 
 ```bash
 clark --help
 ```
 
-### List all packages
+#### List all packages
 
 ```bash
 clark list
 ```
 
-### Migrate all packages' dependencies to the root
+#### Migrate all packages' dependencies to the root
 
 ```bash
 clark hoist
@@ -65,13 +109,13 @@ clark hoist
 
 > Note that `dependencies` and `devDepenencies` are combined because the distinction loses meaning in a monorepo (arguably, they should all be devDependencies, but that's not where `npm install` defaults).
 
-### Migrate a package's dependencies to the root
+#### Migrate a package's dependencies to the root
 
 ```bash
 clark hoist --package
 ```
 
-### Run a command in each package directory
+#### Run a command in each package directory
 
 ```bash
 clark exec <command>
@@ -86,7 +130,7 @@ The following environment variables will be available to your script:
 
 The script will be invoked from within the package's directory.
 
-### Run a command in a single package directory
+#### Run a command in a single package directory
 
 ```bash
 clark exec <command> --package <packagename>
@@ -94,19 +138,13 @@ clark exec <command> --package <packagename>
 
 The script will be invoked from within the package's directory.
 
-### Run npm scripts with default fallbacks
+#### Run npm scripts with default fallbacks
 
 While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test` that you want to run each independently against each package.
 
 > In documenation, we refer to "commands", but in `.clarkrc`, we use `scripts` to more closely mirror `package.json`.
 
-Magic can be initialized with something like
-
-```bash
-clark init --script test='mocha test/*/spec/**/*.js' --script build='babel -d dist src/**/*.js'
-```
-
-#### Package Commands
+##### Package Commands
 
 Package commands are executed sequentially in each package directory. They may be overridden with an entry in the package's package.json.
 

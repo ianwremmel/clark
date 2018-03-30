@@ -1,0 +1,8 @@
+{
+  "include": [
+    "backend/*",
+    "frontend/*"
+  ],
+  "scripts": {
+  }
+}
