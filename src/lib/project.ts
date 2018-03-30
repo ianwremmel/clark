@@ -42,8 +42,8 @@ export async function hasRc(rootDir: string): Promise<boolean> {
 }
 
 /**
- * Iterates overall package paths and, depending on the presence or absence of
- * "packages/node_modules", determines if this is a alle or non-alle monorepo.
+ * Determines whether the given paths describe an alle monorepo by checking for
+ * a packages/node_modules path in all of them.
  * @param paths
  */
 export function isAlleRepo(paths: string[]): boolean {

@@ -3,7 +3,7 @@ interface AnyObject {
 }
 
 /**
- * Sorts an object
+ * Returns a new clone of `obj` with its keys sorted alphabetically
  * @param obj
  */
 export function sortObject(obj: object): object {

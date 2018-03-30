@@ -47,7 +47,7 @@ npm install @ianwremmel/clark
 
 ## Usage
 
-Unlike [lerna](https://lernajs.io/) or similar tools, `clark` let's you keep track of your dependencies all in your main `package.json` (key benefits being significantly faster `npm install` times and the ability to use greenkeeper). In order to get this benefit, however, you'll need to follow one of two patterns ([alle](#alle) or [non-alle](#non-alle), described below). Once you pick one of those patterns and configure your repository accordingly, you can use `clark hoist`, to move your deps from you individual subpackages to your repo root.
+Unlike [lerna](https://lernajs.io/) or similar tools, `clark` lets you keep track of your dependencies all in your main `package.json` (key benefits being significantly faster `npm install` times and the ability to use greenkeeper). In order to get this benefit, however, you'll need to follow one of two patterns ([alle](#alle) or [non-alle](#non-alle), described below). Once you pick one of those patterns and configure your repository accordingly, you can use `clark hoist`, to move your deps from you individual subpackages to your repo root.
 
 ### Alle
 
@@ -55,7 +55,7 @@ Unlike [lerna](https://lernajs.io/) or similar tools, `clark` let's you keep tra
 
 **Benefits**
 
-*   Alle is symlink free. It relies on the behavior of `require()` inside a `node_modules` directory to search both up the tree and in sibling folders, thus letting your packages find each automatically.
+*   Alle is symlink free. It relies on the behavior of `require()` inside a `node_modules` directory to search both up the tree and in sibling folders, thus letting your packages find each other automatically.
 
 **Caveats**
 
@@ -64,7 +64,7 @@ Unlike [lerna](https://lernajs.io/) or similar tools, `clark` let's you keep tra
 
 ### Non-Alle
 
-When npm encounters a package version that's simply a file path (e.g. `"my-package": "file:./packages/my-package"`), it will symlink it into `./node_modules`. By putting all of our local node_modules in the top-level `package.json`, we can expose our local packages to eachother withought making any other repo changes.
+When npm encounters a package version that's simply a file path (e.g. `"my-package": "file:./packages/my-package"`), it will symlink it into `./node_modules`. By putting all of our local node_modules in the top-level `package.json`, we can expose our local packages to each other without making any other repo changes.
 
 > In addition to moving dependencies to the top-level, if `clark` sees your in a non-alle monorepo, it will automatically add the local `file:` entries to the top-level as well. You may want to run hoist whenever you create a new package.
 
