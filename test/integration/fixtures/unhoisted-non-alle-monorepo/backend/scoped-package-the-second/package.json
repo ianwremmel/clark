@@ -1,0 +1,9 @@
+{
+  "name": "@example/scoped-package-the-second",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "dependencies": {
+    "external-dep-2": "^0.2.0"
+  },
+  "private": true
+}
