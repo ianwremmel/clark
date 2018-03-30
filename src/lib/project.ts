@@ -47,12 +47,9 @@ export async function hasRc(rootDir: string): Promise<boolean> {
  * @param paths
  */
 export function isAlleRepo(paths: string[]): boolean {
-  for (const packagePath of paths) {
-    if (!packagePath.includes('packages/node_modules')) {
-      return false;
-    }
-  }
-  return true;
+  return paths.every(packagePath =>
+    packagePath.includes('packages/node_modules'),
+  );
 }
 
 /**
