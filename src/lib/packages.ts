@@ -185,6 +185,8 @@ export async function hoist(
   const pkg = await read(packageName);
   const rootPkg = await readRootPackage();
 
+  rootPkg.dependencies = rootPkg.dependencies || {};
+
   const deps = {
     ...pkg.dependencies,
     ...pkg.devDependencies,
