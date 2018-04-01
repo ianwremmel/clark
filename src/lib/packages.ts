@@ -82,12 +82,16 @@ export async function execScript(
   packageName: string,
   fallbackScript?: string,
 ): Promise<void> {
-  debug(`Running "${scriptName}" in "${packageName}"`);
+  debug(`Running script "${scriptName}" in "${packageName}"`);
   if (await hasScript(packageName, scriptName)) {
+    debug('Using override script');
     return await exec(`npm run --silent ${scriptName}`, packageName);
   }
 
   if (!fallbackScript) {
+    debug(
+      `Neither override nor fallback script defined for script "${scriptName}"`,
+    );
     throw new Error(`${packageName} does not implement ${scriptName}`);
   }
 
@@ -111,18 +115,22 @@ function filterEnv(env: object): object {
 }
 
 /**
- * Higher-level version of that "does the right thing" whether package
- * packageName is provided or not.
+ * Higher-level version of that "does the right thing" whether packageName is
+ * provided or not.
  * @param options
  */
 export async function gather({packageName}: gather.Options): Promise<string[]> {
   if (packageName) {
     if (Array.isArray(packageName)) {
+      debug(`User specified ${packageName.length} packages`);
       return packageName.sort();
     } else {
+      debug('User specified a single package');
       return [packageName];
     }
   }
+
+  debug('User did not specify an packages; listing all packages');
   return (await list()).sort();
 }
 
@@ -158,7 +166,7 @@ export async function hasScript(
   packageName: string,
   scriptName: string,
 ): Promise<boolean> {
-  debug(`checking if "${packageName}" has a "${scriptName}" script`);
+  debug(`Checking if "${packageName}" has a "${scriptName}" script`);
   const pkg = await read(packageName);
   const has = !!(pkg.scripts && pkg.scripts[scriptName]);
   debug(
@@ -268,7 +276,7 @@ export namespace hoist {
 async function init(): Promise<void> {
   if (!initialized) {
     initialized = true;
-    debug('globbing for packages');
+    debug('Globbing for packages');
     const patterns = (await load()).include || [];
     for (const pattern of Array.isArray(patterns) ? patterns : [patterns]) {
       await listPackagesInGlob(pattern);
@@ -314,13 +322,15 @@ async function listPackagesInGlob(pattern: string): Promise<void> {
   debug(`Listing packages in "${pattern}"`);
   // I'm a little concerned just tacking package.json on the end could break
   // certain glob patterns, but I don't have any proof to back that up.
-  const paths = glob(`${pattern}/package.json`);
+  const paths = glob(`${pattern}/package.json`, {cwd: await findProjectRoot()});
   debug(`Found ${paths.length} directories in "${pattern}"`);
 
   for (const packagePath of paths) {
-    debug(`Checking if "${packagePath}" contains a package.json`);
+    debug(`Getting name of package at "${packagePath}" from package.json`);
     const dir = dirname(packagePath);
-    const pkg = JSON.parse(await readFile(packagePath, 'utf-8'));
+    const pkg = JSON.parse(
+      await readFile(resolve(await findProjectRoot(), packagePath), 'utf-8'),
+    );
     debug(`Found "${pkg.name}" in "${dir}"`);
     if (pathsByPackage.has(pkg.name) && pathsByPackage.get(pkg.name) !== dir) {
       throw new Error(
@@ -347,12 +357,13 @@ export async function listPaths(): Promise<string[]> {
  * @param packageName
  */
 export async function read(packageName: string) {
-  return JSON.parse(
-    await readFile(
-      resolve(await getPackagePath(packageName), 'package.json'),
-      'utf-8',
-    ),
+  const packagePath = resolve(
+    await findProjectRoot(),
+    await getPackagePath(packageName),
+    'package.json',
   );
+  debug(`Reading package "${packageName}" at path "${packagePath}"`);
+  return JSON.parse(await readFile(packagePath, 'utf-8'));
 }
 
 /**
@@ -361,8 +372,12 @@ export async function read(packageName: string) {
  * @param pkg
  */
 export async function write(packageName: string, pkg: object) {
-  return await writeFile(
-    resolve(await getPackagePath(packageName), 'package.json'),
-    `${JSON.stringify(pkg, null, 2)}\n`,
+  const packagePath = resolve(
+    await findProjectRoot(),
+    await getPackagePath(packageName),
+    'package.json',
   );
+  debug(`Writing package "${packageName}" at path "${packagePath}"`);
+
+  return await writeFile(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
 }

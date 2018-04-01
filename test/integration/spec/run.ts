@@ -39,4 +39,15 @@ describe('run', () => {
       assert.equal(result, 'not overridden\nthis is an override');
     });
   });
+
+  it('can be run from anywhere in the repo', async () => {
+    let result = await run('clark run override', 'monorepo/packages');
+    assert.equal(result, 'not overridden\nnot overridden\nthis is an override');
+
+    result = await run(
+      'clark run override --package @example/scoped-package-the-first',
+      'monorepo/packages/node_modules/not-scoped',
+    );
+    assert.equal(result, 'not overridden');
+  });
 });
