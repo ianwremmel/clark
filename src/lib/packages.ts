@@ -118,12 +118,12 @@ function filterEnv(env: object): object {
 export async function gather({packageName}: gather.Options): Promise<string[]> {
   if (packageName) {
     if (Array.isArray(packageName)) {
-      return packageName;
+      return packageName.sort();
     } else {
       return [packageName];
     }
   }
-  return await list();
+  return (await list()).sort();
 }
 
 export namespace gather {

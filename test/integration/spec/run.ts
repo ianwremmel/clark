@@ -25,20 +25,18 @@ describe('run', () => {
   });
 
   describe('when invoked with --package', () => {
-    it('invokes within only that package', () => {
-      it('executes the override or falls back to the .clarkrc version', async () => {
-        const result = await run('clark run override --package not-scoped');
-        assert.equal(result, 'this is an override');
-      });
+    it('invokes within only that package', async () => {
+      const result = await run('clark run override --package not-scoped');
+      assert.equal(result, 'this is an override');
     });
+  });
 
-    it('invokes within only that package', () => {
-      it('executes the override or falls back to the .clarkrc version', async () => {
-        const result = await run(
-          'run override --package not-scoped --package @example/scoped-package-the-first',
-        );
-        assert.equal(result, 'not overridden\nthis is an override');
-      });
+  describe('when invoked with --package twice', () => {
+    it('invokes within only those packages', async () => {
+      const result = await run(
+        'clark run override --package not-scoped --package @example/scoped-package-the-first',
+      );
+      assert.equal(result, 'not overridden\nthis is an override');
     });
   });
 });

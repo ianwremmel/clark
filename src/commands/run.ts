@@ -18,9 +18,16 @@ const RunCommand: CommandModule = {
           y.command(
             command,
             `the "${command}" command is generated from your local .clarkrc. It runs "${script} "in each package directory.`,
-            {},
-            async (): Promise<void> => {
-              for (const packageName of await gather({})) {
+            yargs2 => {
+              return yargs2.option('package-name', {
+                alias: ['p', 'package'],
+                describe:
+                  'The package against which to run this command. May be specified more than once.',
+                type: 'string',
+              });
+            },
+            async (argv): Promise<void> => {
+              for (const packageName of await gather(argv as gather.Options)) {
                 await execScript(command, packageName, script);
               }
             },
