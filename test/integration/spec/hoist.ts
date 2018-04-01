@@ -27,7 +27,7 @@ describe('hoist', () => {
   describe('when --package is specified', () => {
     it('migrates dependencies from the specified package to the root package.json', async () => {
       await run(
-        'hoist --package @example/scoped-package-the-first',
+        'clark hoist --package @example/scoped-package-the-first',
         'unhoisted-monorepo',
       );
       const root = JSON.parse(
@@ -51,7 +51,7 @@ describe('hoist', () => {
   describe('when the monorepo packages have conflicting dependencies', () => {
     it('cowardly refuses to overwrite a semver discrepancy', async () => {
       const err = ((await assert.isRejected(
-        run('hoist', 'conflicted-unhoisted-monorepo'),
+        run('clark hoist', 'conflicted-unhoisted-monorepo'),
       )) as any) as Error;
 
       assert.include(
@@ -93,7 +93,7 @@ describe('hoist', () => {
 
     describe('when invoked with --risky', () => {
       it('uses semver comparison to choose a reasonable version', async () => {
-        await run('hoist --risky', 'conflicted-unhoisted-monorepo');
+        await run('clark hoist --risky', 'conflicted-unhoisted-monorepo');
 
         const root = JSON.parse(
           await readFile('package.json', 'conflicted-unhoisted-monorepo'),
@@ -107,7 +107,7 @@ describe('hoist', () => {
   });
 
   it('migrates all dependencies from their packages to the top-level package.json', async () => {
-    await run('hoist', 'unhoisted-monorepo');
+    await run('clark hoist', 'unhoisted-monorepo');
     const root = JSON.parse(
       await readFile('package.json', 'unhoisted-monorepo'),
     );
@@ -130,7 +130,7 @@ describe('hoist', () => {
 
   describe('when the monorepo does not follow the alle layout', () => {
     it('migrates all dependencies from their packages to the top-level package.json and adds refs to local packages', async () => {
-      await run('hoist', 'unhoisted-non-alle-monorepo');
+      await run('clark hoist', 'unhoisted-non-alle-monorepo');
       const root = JSON.parse(
         await readFile('package.json', 'unhoisted-non-alle-monorepo'),
       );

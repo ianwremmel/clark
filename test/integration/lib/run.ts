@@ -12,11 +12,14 @@ export default async function run(
   const startDir = process.cwd();
   process.chdir(rootDir(fixture));
 
-  // reminder: this path is relative to the fixture directory
-  const toExec = `ts-node ${pathResolve(
-    __dirname,
-    '../../../src/cli.ts',
-  )} ${cmd}`;
+  let toExec = cmd;
+  if (cmd.startsWith('clark')) {
+    // reminder: this path is relative to the fixture directory
+    toExec = cmd.replace(
+      'clark',
+      `ts-node ${pathResolve(__dirname, '../../../src/cli.ts')}`,
+    );
+  }
 
   try {
     // pass {stdio: 'pipe'} to prevent error output from being printed in the test

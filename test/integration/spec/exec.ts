@@ -14,7 +14,7 @@ function stringToObject(str: string) {
 
 describe('exec', () => {
   it('executes a command in every directory', async () => {
-    const result = await run('exec pwd');
+    const result = await run('clark exec pwd');
     assert.lengthOf(result.split('\n'), 3);
     assert.equal(
       result,
@@ -30,8 +30,8 @@ describe('exec', () => {
     );
   });
 
-  it('requires a command arguments', async () => {
-    const err = ((await assert.isRejected(run('exec'))) as any) as Error;
+  it('requires a command argument', async () => {
+    const err = ((await assert.isRejected(run('clark exec'))) as any) as Error;
     assert.include(
       err.message,
       'Not enough non-option arguments: got 0, need at least 1',
@@ -39,12 +39,12 @@ describe('exec', () => {
   });
 
   it('supports commands with pipes', async () => {
-    const result = await run('exec "ls | wc -l"');
+    const result = await run('clark exec "ls | wc -l"');
     assert.match(result, /\s*2\n\s*2\n\s*3/g);
   });
 
   it('supports commands with spaces', async () => {
-    const result = await run('exec "ls -a"');
+    const result = await run('clark exec "ls -a"');
     assert.equal(
       result,
       '.\n..\ndist\npackage.json\n.\n..\ndist\npackage.json\n.\n..\ndist\npackage.json\ntest',
@@ -53,7 +53,7 @@ describe('exec', () => {
 
   it('injects useful environment variables', async () => {
     const result = await run(
-      'exec --package @example/scoped-package-the-first  "env | grep CLARK"',
+      'clark exec --package @example/scoped-package-the-first  "env | grep CLARK"',
     );
     // strip out this project's path so we can write consistent assertions
     const modified = result.replace(
@@ -76,7 +76,7 @@ describe('exec', () => {
 
   describe('with --package', () => {
     it('executes a comand in the specified package directory', async () => {
-      const result = await run('exec --package-name not-scoped pwd');
+      const result = await run('clark exec --package-name not-scoped pwd');
       assert.lengthOf(result.split('\n'), 1);
       assert.equal(
         result,
@@ -94,7 +94,7 @@ describe('exec', () => {
 
     it('executes a command in each specified package directory', async () => {
       const result = await run(
-        'exec --package-name @example/scoped-package-the-first --package-name @example/scoped-package-the-second pwd',
+        'clark exec --package-name @example/scoped-package-the-first --package-name @example/scoped-package-the-second pwd',
       );
       assert.lengthOf(result.split('\n'), 2);
       assert.equal(
@@ -116,7 +116,7 @@ describe('exec', () => {
 
     it('fails if the package does not exist', async () => {
       const err = ((await assert.isRejected(
-        run('exec --package-name not-a-package pwd'),
+        run('clark exec --package-name not-a-package pwd'),
       )) as any) as Error;
       assert.include(
         err.message,
