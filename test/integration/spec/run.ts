@@ -50,4 +50,14 @@ describe('run', () => {
     );
     assert.equal(result, 'not overridden');
   });
+
+  describe('when run from within a package directory', () => {
+    it('infers the package name from the directory', async () => {
+      const result = await run(
+        'clark run override',
+        'monorepo/packages/node_modules/not-scoped',
+      );
+      assert.equal(result, 'this is an override');
+    });
+  });
 });

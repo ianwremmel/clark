@@ -119,7 +119,9 @@ function filterEnv(env: object): object {
  * provided or not.
  * @param options
  */
-export async function gather({packageName}: gather.Options): Promise<string[]> {
+export async function gather(options: gather.Options): Promise<string[]> {
+  options = await infer(options);
+  const {packageName} = options;
   if (packageName) {
     if (Array.isArray(packageName)) {
       debug(`User specified ${packageName.length} packages`);
@@ -269,6 +271,61 @@ export namespace hoist {
     risky?: boolean;
   }
 }
+
+/**
+ * Attempts to infer the intended packageName from the current directory
+ * @param options
+ */
+export async function infer(
+  options: MaybeSpecifiesPackageName,
+): Promise<SpecifiesPackageName | DoesNotSpecifyPackageName> {
+  debug('Inferring packageName if necessary');
+  if (options.packageName) {
+    debug('packageName was specified, not inferring');
+    return options;
+  }
+
+  if (options.packageName === false) {
+    debug('packageName inferrence has been disabled');
+    return options;
+  }
+
+  debug('packageName was not specified');
+  await init();
+
+  const relCwd = process
+    .cwd()
+    .replace(await findProjectRoot(), '')
+    .replace(/^\//, '');
+
+  if (await isPackagePath(relCwd)) {
+    debug('Inferred packageName');
+    options.packageName = packagesByPath.get(relCwd);
+  } else {
+    debug('Could not infer packageName');
+  }
+
+  return options;
+}
+
+/**
+ * Describes an Options object that might have a packageName property
+ */
+export interface MaybeSpecifiesPackageName {
+  packageName?: string | string[] | false;
+}
+
+/**
+ * Describes an Options object that has a packageName property
+ */
+export interface SpecifiesPackageName {
+  packageName: string | string[];
+}
+
+/**
+ * Describes an Options object that does not have a packageName property
+ */
+export interface DoesNotSpecifyPackageName {}
 
 /**
  * Helper
