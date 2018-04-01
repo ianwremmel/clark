@@ -4,7 +4,7 @@ import run from '../lib/run';
 
 describe('list', () => {
   it('lists all packages in the project directory', async () => {
-    const result = await run('list');
+    const result = await run('clark list');
     assert.lengthOf(result.split('\n'), 3);
     assert.equal(
       result,
