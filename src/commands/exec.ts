@@ -13,11 +13,20 @@ const ExecCommand: CommandModule = {
         describe: 'The command to execute.',
         type: 'string',
       })
-      .option('package-name', {
-        alias: ['p', 'package'],
-        describe:
-          'The package against which to run this command. May be specified more than once.',
-        type: 'string',
+      .options({
+        'fail-fast': {
+          alias: 'ff',
+          default: false,
+          describe:
+            'Fail as soon as a command fails, rather than running all to completion',
+          type: 'boolean',
+        },
+        'package-name': {
+          alias: ['p', 'package'],
+          describe:
+            'The package against which to run this command. May be specified more than once.',
+          type: 'string',
+        },
       });
   },
 
