@@ -1,4 +1,5 @@
 import debugFactory from 'debug';
+import {log} from '../log';
 import {exec, gather} from '../packages';
 
 const debug = debugFactory('clark:lib:handlers:exec');
@@ -8,34 +9,50 @@ const debug = debugFactory('clark:lib:handlers:exec');
  */
 export namespace Exec {
   /**
-   * Wrapper around exec that includes debug statements
-   * @param command the command to run
-   * @param packageName the package against which to run the command
-   */
-  async function run(command: string, packageName: string): Promise<void> {
-    debug(`Running "${command}" against specified package "${packageName}"`);
-    await exec(command, packageName);
-    debug(`Ran "${command}" against specified package "${packageName}"`);
-  }
-
-  /**
    * Implementation of the exec command
    * @param options
    */
   export async function handler(options: Options): Promise<void> {
     const {command} = options;
     const packages = await gather(options);
-    debug(`Running "${command}" against ${packages.length} packages`);
-    for (const _packageName of packages) {
-      await run(command, _packageName);
+    log(
+      options,
+      debug,
+      `Running "${command}" against ${packages.length} packages`,
+    );
+    const errors = [];
+
+    for (const packageName of packages) {
+      log(options, debug, `Running ${command} against ${packageName}`);
+      try {
+        await exec(command, packageName);
+      } catch (err) {
+        errors.push(err);
+        log(
+          options,
+          debug,
+          `${command} failed against ${packageName} packages`,
+        );
+      }
+      log(options, debug, `Ran ${command} against ${packageName}`);
     }
-    debug(`Ran "${command}" against ${packages.length} packages`);
+    log(options, debug, `Ran "${command}" against ${packages.length} packages`);
+
+    if (errors.length) {
+      console.error(
+        `clark exec failed to execute the following command against ${
+          errors.length
+        } packages\n> ${command}\n`,
+      );
+      console.error(errors);
+      process.exit(1);
+    }
   }
 
   /**
    * Exec handler options
    */
-  export interface Options {
+  export interface Options extends log.Options {
     packageName?: string | string[];
     command: string;
   }

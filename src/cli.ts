@@ -8,7 +8,15 @@ yargs
   .commandDir('./commands', {
     extensions: __dirname.includes('src') ? ['js', 'ts'] : ['js'],
   })
+  .options({
+    silent: {
+      description: 'Suppresses output from all log statements',
+      default: false,
+      type: 'boolean',
+    },
+  })
   .demandCommand(1)
   .help()
   .recommendCommands()
+  .strict()
   .parse();

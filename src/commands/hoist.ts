@@ -20,7 +20,8 @@ const HoistCommand: CommandModule = {
         describe:
           'Indicates if clark should attempt to reconcile semver mismatches.',
         type: 'boolean',
-      });
+      })
+      .strict();
   },
 
   handler: Hoist.handler,

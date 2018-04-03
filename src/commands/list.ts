@@ -1,14 +1,14 @@
 import {CommandModule} from 'yargs';
-import {list} from '../lib/packages';
+import {List} from '../lib/handlers/list';
 
 const ExecCommand: CommandModule = {
   describe: 'List all packages',
 
-  async handler() {
-    for (const packageName of await list()) {
-      console.log(packageName);
-    }
+  builder(yargs) {
+    return yargs.strict();
   },
+
+  handler: List.handler,
 };
 
 export = ExecCommand;
