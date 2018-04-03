@@ -10,13 +10,13 @@ describe('run', () => {
   });
 
   it('executes a script in each package directory', async () => {
-    const result = await run('clark run local');
+    const result = await run('clark run local --silent');
     assert.equal(result, 'run\nrun\nrun');
   });
 
   describe('when a package has an npm script of the same name', () => {
     it('executes the override or falls back to the .clarkrc version', async () => {
-      const result = await run('clark run override');
+      const result = await run('clark run override --silent');
       assert.equal(
         result,
         'not overridden\nnot overridden\nthis is an override',
@@ -26,7 +26,9 @@ describe('run', () => {
 
   describe('when invoked with --package', () => {
     it('invokes within only that package', async () => {
-      const result = await run('clark run override --package not-scoped');
+      const result = await run(
+        'clark run override --silent --package not-scoped',
+      );
       assert.equal(result, 'this is an override');
     });
   });
@@ -34,18 +36,18 @@ describe('run', () => {
   describe('when invoked with --package twice', () => {
     it('invokes within only those packages', async () => {
       const result = await run(
-        'clark run override --package not-scoped --package @example/scoped-package-the-first',
+        'clark run override --silent --package not-scoped --package @example/scoped-package-the-first',
       );
       assert.equal(result, 'not overridden\nthis is an override');
     });
   });
 
   it('can be run from anywhere in the repo', async () => {
-    let result = await run('clark run override', 'monorepo/packages');
+    let result = await run('clark run override --silent', 'monorepo/packages');
     assert.equal(result, 'not overridden\nnot overridden\nthis is an override');
 
     result = await run(
-      'clark run override --package @example/scoped-package-the-first',
+      'clark run override --silent --package @example/scoped-package-the-first',
       'monorepo/packages/node_modules/not-scoped',
     );
     assert.equal(result, 'not overridden');
@@ -54,7 +56,7 @@ describe('run', () => {
   describe('when run from within a package directory', () => {
     it('infers the package name from the directory', async () => {
       const result = await run(
-        'clark run override',
+        'clark run override --silent',
         'monorepo/packages/node_modules/not-scoped',
       );
       assert.equal(result, 'this is an override');
