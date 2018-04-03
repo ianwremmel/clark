@@ -38,13 +38,23 @@ export namespace Run {
                 debug,
                 `Running ${command} against ${packages.length} packages`,
               );
+              const errors = [];
               for (const packageName of packages) {
                 log(
                   argv as log.Options,
                   debug,
                   `Running ${command} against ${packageName} packages`,
                 );
-                await execScript(command, packageName, script);
+                try {
+                  await execScript(command, packageName, script);
+                } catch (err) {
+                  log(
+                    argv as log.Options,
+                    debug,
+                    `${command} failed against ${packageName} packages`,
+                  );
+                  errors.push(err);
+                }
                 log(
                   argv as log.Options,
                   debug,
@@ -56,13 +66,38 @@ export namespace Run {
                 debug,
                 `Ran ${command} against ${packages.length} packages`,
               );
+
+              if (errors.length) {
+                console.error(
+                  argv as log.Options,
+                  debug,
+                  `clark run failed to execute the following command against ${
+                    errors.length
+                  } packages\n> ${command}\n`,
+                );
+                console.error(argv as log.Options, debug, errors);
+                process.exit(1);
+              }
             },
           ),
         yargs,
       );
     }
-
-    return yargs;
+    return yargs.options({
+      'fail-fast': {
+        alias: 'ff',
+        default: false,
+        describe:
+          'Fail as soon as a command fails, rather than running all to completion',
+        type: 'boolean',
+      },
+      'package-name': {
+        alias: ['p', 'package'],
+        describe:
+          'The package against which to run this command. May be specified more than once.',
+        type: 'string',
+      },
+    });
   }
 
   /**

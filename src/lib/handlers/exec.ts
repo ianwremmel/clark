@@ -20,12 +20,33 @@ export namespace Exec {
       debug,
       `Running "${command}" against ${packages.length} packages`,
     );
+    const errors = [];
+
     for (const packageName of packages) {
       log(options, debug, `Running ${command} against ${packageName}`);
-      await exec(command, packageName);
+      try {
+        await exec(command, packageName);
+      } catch (err) {
+        errors.push(err);
+        log(
+          options,
+          debug,
+          `${command} failed against ${packageName} packages`,
+        );
+      }
       log(options, debug, `Ran ${command} against ${packageName}`);
     }
     log(options, debug, `Ran "${command}" against ${packages.length} packages`);
+
+    if (errors.length) {
+      console.error(
+        `clark exec failed to execute the following command against ${
+          errors.length
+        } packages\n> ${command}\n`,
+      );
+      console.error(errors);
+      process.exit(1);
+    }
   }
 
   /**
