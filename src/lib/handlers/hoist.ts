@@ -1,4 +1,5 @@
 import debugFactory from 'debug';
+import {log} from '../log';
 import {gather, hoist} from '../packages';
 
 const debug = debugFactory('clark:lib:handlers:hoist');
@@ -13,19 +14,19 @@ export namespace Hoist {
    */
   export async function handler(options: Options) {
     const packages = await gather(options);
-    debug(`Hoisting ${packages.length} packages`);
+    log(options, debug, `Hoisting ${packages.length} packages`);
     for (const packageName of packages) {
-      debug(`hoisting deps from ${packageName}`);
+      log(options, debug, `hoisting deps from ${packageName}`);
       await hoist(packageName, {risky: options.risky});
-      debug(`hoisted deps from ${packageName}`);
+      log(options, debug, `hoisted deps from ${packageName}`);
     }
-    debug(`Hoisted ${packages.length} packages`);
+    log(options, debug, `Hoisted ${packages.length} packages`);
   }
 
   /**
    * Hoist handler options
    */
-  export interface Options {
+  export interface Options extends log.Options {
     packageName?: string | string[];
     risky?: boolean;
   }
