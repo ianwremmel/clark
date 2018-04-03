@@ -27,7 +27,8 @@ const ExecCommand: CommandModule = {
             'The package against which to run this command. May be specified more than once.',
           type: 'string',
         },
-      });
+      })
+      .strict();
   },
 
   handler: Exec.handler,

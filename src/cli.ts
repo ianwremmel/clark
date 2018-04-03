@@ -18,4 +18,5 @@ yargs
   .demandCommand(1)
   .help()
   .recommendCommands()
+  .strict()
   .parse();
