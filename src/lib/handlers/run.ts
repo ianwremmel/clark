@@ -51,14 +51,14 @@ export namespace Run {
                   log(
                     argv as log.Options,
                     debug,
-                    `${command} failed against ${packageName} packages`,
+                    `${command} failed against ${packageName}`,
                   );
                   errors.push(err);
                 }
                 log(
                   argv as log.Options,
                   debug,
-                  `Ran ${command} against ${packageName} packages`,
+                  `Ran ${command} against ${packageName}`,
                 );
               }
               log(
