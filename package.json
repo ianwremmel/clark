@@ -26,7 +26,7 @@
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
     "semantic-release": "semantic-release",
-    "test": "jest --maxWorkers=0"
+    "test": "jest --runInBand"
   },
   "engines": {
     "node": ">=8"
