@@ -1,8 +1,8 @@
-import debugFactory from 'debug';
+import {format as f, makeDebug} from '../debug';
 import {log} from '../log';
 import {exec, gather} from '../packages';
 
-const debug = debugFactory('clark:lib:handlers:exec');
+const debug = makeDebug(__dirname);
 
 /**
  * Contains the handler for the exec command
@@ -18,7 +18,7 @@ export namespace Exec {
     log(
       options,
       debug,
-      `Running "${command}" against ${packages.length} packages`,
+      f`Running ${command} against ${packages.length} packages`,
     );
     const errors = [];
 
@@ -31,16 +31,16 @@ export namespace Exec {
         log(
           options,
           debug,
-          `${command} failed against ${packageName} packages`,
+          f`${command} failed against ${packageName} packages`,
         );
       }
       log(options, debug, `Ran ${command} against ${packageName}`);
     }
-    log(options, debug, `Ran "${command}" against ${packages.length} packages`);
+    log(options, debug, `Ran ${command} against ${packages.length} packages`);
 
     if (errors.length) {
       console.error(
-        `clark exec failed to execute the following command against ${
+        f`clark exec failed to execute the following command against ${
           errors.length
         } packages\n> ${command}\n`,
       );

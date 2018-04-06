@@ -1,10 +1,10 @@
-import debugFactory from 'debug';
 import {Argv} from 'yargs';
 import {load} from '../config';
+import {format as f, makeDebug} from '../debug';
 import {log} from '../log';
 import {execScript, gather} from '../packages';
 
-const debug = debugFactory('clark:lib:handlers:run');
+const debug = makeDebug(__dirname);
 
 /**
  * Contains the handler for the run command
@@ -22,7 +22,7 @@ export namespace Run {
         (y, [command, script]: [string, string]): Argv =>
           y.command(
             command,
-            `the "${command}" command is generated from your local .clarkrc. It runs "${script} "in each package directory.`,
+            f`the ${command} command is generated from your local .clarkrc. It runs ${script} "in each package directory.`,
             yargs2 => {
               return yargs2.option('package-name', {
                 alias: ['p', 'package'],
@@ -36,14 +36,14 @@ export namespace Run {
               log(
                 argv as log.Options,
                 debug,
-                `Running ${command} against ${packages.length} packages`,
+                f`Running ${command} against ${packages.length} packages`,
               );
               const errors = [];
               for (const packageName of packages) {
                 log(
                   argv as log.Options,
                   debug,
-                  `Running ${command} against ${packageName} packages`,
+                  f`Running ${command} against ${packageName} packages`,
                 );
                 try {
                   await execScript(command, packageName, script);
@@ -51,27 +51,27 @@ export namespace Run {
                   log(
                     argv as log.Options,
                     debug,
-                    `${command} failed against ${packageName} packages`,
+                    f`${command} failed against ${packageName}`,
                   );
                   errors.push(err);
                 }
                 log(
                   argv as log.Options,
                   debug,
-                  `Ran ${command} against ${packageName} packages`,
+                  f`Ran ${command} against ${packageName}`,
                 );
               }
               log(
                 argv as log.Options,
                 debug,
-                `Ran ${command} against ${packages.length} packages`,
+                f`Ran ${command} against ${packages.length} packages`,
               );
 
               if (errors.length) {
                 console.error(
                   argv as log.Options,
                   debug,
-                  `clark run failed to execute the following command against ${
+                  f`clark run failed to execute the following command against ${
                     errors.length
                   } packages\n> ${command}\n`,
                 );
