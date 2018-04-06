@@ -5,7 +5,7 @@ import {resolve} from 'path';
 import run from '../lib/run';
 
 describe('init', () => {
-  afterEach('checkout', async () => {
+  afterEach(async () => {
     console.log(
       execSync('git checkout ./test/integration/fixtures/monorepo').toString(),
     );
