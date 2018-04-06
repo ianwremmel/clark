@@ -1,8 +1,8 @@
-import debugFactory from 'debug';
 import {sync as glob} from 'glob';
 import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
 import {load} from './config';
+import {format as f, makeDebug} from './debug';
 import {
   findProjectRoot,
   isAlleRepo,
@@ -13,7 +13,7 @@ import {spawn} from './spawn';
 import {sortObject} from './util';
 import {select} from './version';
 
-const debug = debugFactory('clark:lib:packages');
+const debug = makeDebug(__dirname);
 
 const pathsByPackage = new Map();
 const packagesByPath = new Map();
@@ -33,7 +33,7 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
     throw new Error(`"${packageName}" does not appear to identify a package`);
   }
 
-  debug(`running command "${cmd}" in directory for package "${packageName}"`);
+  debug(f`running command ${cmd} in directory for package ${packageName}`);
   const bin = 'bash';
   const args = ['-c', cmd];
   const {PATH, ...env} = process.env;
@@ -60,10 +60,10 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
         )}`,
       },
     });
-    debug(`ran command "${cmd}" in directory for package "${packageName}"`);
+    debug(f`ran command ${cmd} in directory for package ${packageName}`);
     return result;
   } catch (err) {
-    debug(`command "${cmd}" failed for package "${packageName}"`);
+    debug(f`command ${cmd} failed for package ${packageName}`);
     throw err;
   }
 }
@@ -82,7 +82,7 @@ export async function execScript(
   packageName: string,
   fallbackScript?: string,
 ): Promise<void> {
-  debug(`Running script "${scriptName}" in "${packageName}"`);
+  debug(f`Running script ${scriptName} in ${packageName}`);
   if (await hasScript(packageName, scriptName)) {
     debug('Using override script');
     return await exec(`npm run --silent ${scriptName}`, packageName);
@@ -90,12 +90,12 @@ export async function execScript(
 
   if (!fallbackScript) {
     debug(
-      `Neither override nor fallback script defined for script "${scriptName}"`,
+      f`Neither override nor fallback script defined for script ${scriptName}`,
     );
     throw new Error(`${packageName} does not implement ${scriptName}`);
   }
 
-  debug(`Falling back to run "${scriptName}" in "${packageName}"`);
+  debug(f`Falling back to run ${scriptName} in ${packageName}`);
   return await exec(fallbackScript, packageName);
 }
 
@@ -124,7 +124,7 @@ export async function gather(options: gather.Options): Promise<string[]> {
   const {packageName} = options;
   if (packageName) {
     if (Array.isArray(packageName)) {
-      debug(`User specified ${packageName.length} packages`);
+      debug(f`User specified ${packageName.length} packages`);
       return packageName.sort();
     } else {
       debug('User specified a single package');
@@ -153,7 +153,7 @@ export namespace gather {
 export async function getPackagePath(packageName: string): Promise<string> {
   await init();
   if (!await isPackage(packageName)) {
-    throw new Error(`"${packageName}" does not appear to identify a package`);
+    throw new Error(`${packageName} does not appear to identify a package`);
   }
   return pathsByPackage.get(packageName);
 }
@@ -168,13 +168,13 @@ export async function hasScript(
   packageName: string,
   scriptName: string,
 ): Promise<boolean> {
-  debug(`Checking if "${packageName}" has a "${scriptName}" script`);
+  debug(f`Checking if ${packageName} has a ${scriptName} script`);
   const pkg = await read(packageName);
   const has = !!(pkg.scripts && pkg.scripts[scriptName]);
   debug(
-    `"${packageName}" ${
+    f`${packageName} ${
       has ? ' has ' : ' does not have '
-    } a script named "${scriptName}"`,
+    } a script named ${scriptName}`,
   );
   return has;
 }
@@ -191,7 +191,7 @@ export async function hoist(
   packageName: string,
   options: hoist.Options = {risky: false},
 ): Promise<void> {
-  debug(`Reading deps from "${packageName}"`);
+  debug(f`Reading deps from ${packageName}`);
   const pkg = await read(packageName);
   const rootPkg = await readRootPackage();
 
@@ -207,23 +207,23 @@ export async function hoist(
 
     if (!rootVersion) {
       debug(
-        `Root package does not yet have a version of "${depName}", defaulting to "${packageName}"'s version of "${depVersion}"`,
+        f`Root package does not yet have a version of ${depName}, defaulting to ${packageName}'s version of ${depVersion}`,
       );
       rootPkg.dependencies[depName] = depVersion;
     } else if (options.risky) {
       debug(
-        `Checking if root "${depName}@${rootVersion}" is loosely compatible with "${depName}@${depVersion}"`,
+        f`Checking if root ${depName}@${rootVersion} is loosely compatible with ${depName}@${depVersion}`,
       );
 
       try {
         const toUseVersion = select(rootVersion, depVersion as string);
         rootPkg.dependencies[depName] = toUseVersion;
         debug(
-          `"root ${depName}@${rootVersion}" is loosely compatible with "${packageName}" "${depName}@${depVersion}"`,
+          f`"root ${depName}@${rootVersion} is loosely compatible with ${packageName} ${depName}@${depVersion}`,
         );
       } catch (err) {
         debug(
-          `"root ${depName}@${rootVersion}" is not loosely compatible with "${packageName}" "${depName}@${depVersion}"`,
+          f`"root ${depName}@${rootVersion} is not loosely compatible with ${packageName} ${depName}@${depVersion}`,
         );
         throw new Error(
           `Cowardly refusing to overwrite "${depName}@${rootVersion}" for "${depName}@${depVersion}" from "${packageName}"`,
@@ -231,18 +231,18 @@ export async function hoist(
       }
     } else {
       debug(
-        `Checking if root "${depName}@${rootVersion}" is strictly compatible with "${depName}@${depVersion}"`,
+        f`Checking if root ${depName}@${rootVersion} is strictly compatible with ${depName}@${depVersion}`,
       );
       if (rootVersion !== depVersion) {
         debug(
-          `"root ${depName}@${rootVersion}" is not strictly compatible with "${packageName}" "${depName}@${depVersion}"`,
+          f`"root ${depName}@${rootVersion} is not strictly compatible with ${packageName} ${depName}@${depVersion}`,
         );
         throw new Error(
           `Cowardly refusing to overwrite "${depName}@${rootVersion}" for "${depName}@${depVersion}" from "${packageName}"`,
         );
       }
       debug(
-        `"root ${depName}@${rootVersion}" is strictly compatible with "${packageName}" "${depName}@${depVersion}"`,
+        f`"root ${depName}@${rootVersion} is strictly compatible with ${packageName} ${depName}@${depVersion}`,
       );
       rootPkg.dependencies[depName] = depVersion;
     }
@@ -376,24 +376,24 @@ export async function list(): Promise<string[]> {
  * @param pattern
  */
 async function listPackagesInGlob(pattern: string): Promise<void> {
-  debug(`Listing packages in "${pattern}"`);
+  debug(f`Listing packages in ${pattern}`);
   // I'm a little concerned just tacking package.json on the end could break
   // certain glob patterns, but I don't have any proof to back that up.
   const paths = glob(`${pattern}/package.json`, {cwd: await findProjectRoot()});
-  debug(`Found ${paths.length} directories in "${pattern}"`);
+  debug(f`Found ${paths.length} directories in ${pattern}`);
 
   for (const packagePath of paths) {
-    debug(`Getting name of package at "${packagePath}" from package.json`);
+    debug(f`Getting name of package at ${packagePath} from package.json`);
     const dir = dirname(packagePath);
     const pkg = JSON.parse(
       await readFile(resolve(await findProjectRoot(), packagePath), 'utf-8'),
     );
-    debug(`Found "${pkg.name}" in "${dir}"`);
+    debug(f`Found ${pkg.name} in ${dir}`);
     if (pathsByPackage.has(pkg.name) && pathsByPackage.get(pkg.name) !== dir) {
       throw new Error(
-        `Package names must be unique. "${
+        `Package names must be unique. ${
           pkg.name
-        } found in "${dir}" and "${pathsByPackage.get(pkg.name)}"`,
+        } found in ${dir} and ${pathsByPackage.get(pkg.name)}`,
       );
     }
     pathsByPackage.set(pkg.name, dir);
@@ -419,7 +419,7 @@ export async function read(packageName: string) {
     await getPackagePath(packageName),
     'package.json',
   );
-  debug(`Reading package "${packageName}" at path "${packagePath}"`);
+  debug(f`Reading package ${packageName} at path ${packagePath}`);
   return JSON.parse(await readFile(packagePath, 'utf-8'));
 }
 
@@ -434,7 +434,7 @@ export async function write(packageName: string, pkg: object) {
     await getPackagePath(packageName),
     'package.json',
   );
-  debug(`Writing package "${packageName}" at path "${packagePath}"`);
+  debug(f`Writing package ${packageName} at path ${packagePath}`);
 
   return await writeFile(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
 }

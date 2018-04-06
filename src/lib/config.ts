@@ -1,7 +1,7 @@
-import debugFactory from 'debug';
 import rc from 'rc';
+import {format as f, makeDebug} from './debug';
 
-const debug = debugFactory('clark:lib:config');
+const debug = makeDebug(__dirname);
 
 /**
  * Root of the config object
@@ -34,7 +34,7 @@ export function load(): Config {
     include: 'packages/node_modules/{*,@*/*}',
   });
   if (conf.configs && conf.configs.length) {
-    debug(`Found "${conf.configs.length}" .clarkrc files`);
+    debug(f`Found ${conf.configs.length} .clarkrc files`);
     return conf;
   }
   debug('Did not find any .clarkrc files');

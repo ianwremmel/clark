@@ -1,10 +1,10 @@
-import debugFactory from 'debug';
 import findRoot from 'find-root';
 import {existsSync} from 'fs';
 import {readFile, writeFile} from 'mz/fs';
 import {resolve} from 'path';
+import {format as f, makeDebug} from './debug';
 
-const debug = debugFactory('clark:lib:project');
+const debug = makeDebug(__dirname);
 
 /**
  * Locates the monorepo's root based on various heuristics including existence
@@ -33,11 +33,9 @@ export async function findProjectRoot(): Promise<string> {
  * @param rootDir
  */
 export async function hasRc(rootDir: string): Promise<boolean> {
-  debug(`checking if "${rootDir}" contains '.clarkrc'`);
+  debug(f`checking if ${rootDir} contains '.clarkrc'`);
   const contains = existsSync(resolve(rootDir, '.clarkrc'));
-  debug(
-    `"${rootDir}" ${contains ? 'contains' : 'does not contain'} '.clarkrc'`,
-  );
+  debug(f`${rootDir} ${contains ? 'contains' : 'does not contain'} '.clarkrc'`);
   return contains;
 }
 
