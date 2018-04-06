@@ -140,15 +140,11 @@ The script will be invoked from within the package's directory.
 
 #### Run npm scripts with default fallbacks
 
-While Clark, obviously, provides its own commands, there's a set of very project specific commands that we simply can't dictate for you. These are commands like `build`, `lint`, and `test` that you want to run each independently against each package.
+In addition to `clark`'s own commands and the ability to run arbitrary commands against each package with `clark exec`, `clark` provides a facility for running arbitrary npm run scripts. These scripts receive the same environment variables as `clark exec`.
 
-> In documenation, we refer to "commands", but in `.clarkrc`, we use `scripts` to more closely mirror `package.json`.
+`clark run X` will run `npm run X` against each package. If the package does not define a script `X`, it will fall back to the X defined in `.clarkrc`.
 
-##### Package Commands
-
-Package commands are executed sequentially in each package directory. They may be overridden with an entry in the package's package.json.
-
-> Note: these scripts receive the same environment variables as `clark exec` and are executed within each package directory.
+> In general, we recommend defining your scripts in `.clarkrc` and overriding when necessary. In addition to centralizing your config, any script defined in `.clarkrc` will appear in the output of `clark run --help`.
 
 For example, your repository might use [mocha](https://mochajs.org/) to run your integration tests
 
