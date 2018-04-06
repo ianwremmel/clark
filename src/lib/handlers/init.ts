@@ -1,10 +1,10 @@
-import debugFactory from 'debug';
 import {writeFile} from 'mz/fs';
 import {resolve} from 'path';
 import {Config, ScriptConfig} from '../config';
+import {format as f, makeDebug} from '../debug';
 import {findProjectRoot, hasRc} from '../project';
 
-const debug = debugFactory('clark:lib:handlers:init');
+const debug = makeDebug(__dirname);
 
 /**
  * Contains the handler for the init command
@@ -45,12 +45,12 @@ export namespace Init {
       scripts,
     };
 
-    debug(`writing .clarkrc to ${rootDir}`);
+    debug(f`writing .clarkrc to ${rootDir}`);
     writeFile(
       resolve(rootDir, '.clarkrc'),
       `${JSON.stringify(config, null, 2)}\n`,
     );
-    debug(`wrote .clarkrc to ${rootDir}`);
+    debug(f`wrote .clarkrc to ${rootDir}`);
   }
 
   /**
