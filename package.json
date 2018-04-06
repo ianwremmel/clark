@@ -26,7 +26,7 @@
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
     "semantic-release": "semantic-release",
-    "test": "jest -w=0; mocha -r ts-node/register $(npm run --silent mocha-reporter-options) './test/*/spec/**/*.[jt]s'"
+    "test": "jest --maxWorkers=0"
   },
   "engines": {
     "node": ">=8"
@@ -101,7 +101,20 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-    "testMatch": ["<rootDir>/src/**/*.spec.[tj]s?(x)"]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/initialize.ts"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/*.spec.[tj]s?(x)",
+      "<rootDir>/test/*/spec/**/*.[tj]s?(x)"
+    ]
   }
 }
