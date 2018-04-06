@@ -1,7 +1,7 @@
-import debugFactory from 'debug';
 import semver from 'semver';
+import {format as f, makeDebug} from './debug';
 
-const debug = debugFactory('clark:lib:version');
+const debug = makeDebug(__dirname);
 
 /**
  * Range operators
@@ -93,7 +93,7 @@ function hasSameOperator(left: string, right: string): boolean {
  * @param right
  */
 export function select(left: string | null, right: string | null): string {
-  debug(`checking if "${left}" and "${right}" are compatible`);
+  debug(f`checking if ${left} and ${right} are compatible`);
 
   // There are *much* simpler ways to write this, but typescript disagrees.
 
@@ -112,18 +112,18 @@ export function select(left: string | null, right: string | null): string {
   }
 
   if (!semver.intersects(left, right)) {
-    debug(`"${left}" and "${right}" are not compatible`);
+    debug(f`${left} and ${right} are not compatible`);
     throw new Error(`"${left}" and "${right}" are not compatible`);
   }
 
-  debug(`"${left}" and "${right}" are compatible`);
+  debug(f`${left} and ${right} are compatible`);
 
   const leftExact = extractExactVersion(left);
   const rightExact = extractExactVersion(right);
 
-  debug(`checking if "${left}" and "${right}" have the same range operator`);
+  debug(f`checking if ${left} and ${right} have the same range operator`);
   if (hasSameOperator(left, right)) {
-    debug(`"${left}" and "${right}" have the same range operator`);
+    debug(f`${left} and ${right} have the same range operator`);
     if (semver.gt(leftExact, rightExact)) {
       return left;
     } else {
@@ -131,7 +131,7 @@ export function select(left: string | null, right: string | null): string {
     }
   }
 
-  debug(`"${left}" and "${right}" do not have the same range operator`);
+  debug(f`${left} and ${right} do not have the same range operator`);
 
   const operator = extractMostPermissiveOperator(left, right);
 
