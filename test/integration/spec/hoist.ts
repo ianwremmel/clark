@@ -4,7 +4,7 @@ import {sync as glob} from 'glob';
 import run, {readFile, rootDir} from '../lib/run';
 
 describe('hoist', () => {
-  afterEach('checkout', async () => {
+  afterEach(async () => {
     console.log(
       execSync(
         'git checkout ./test/integration/fixtures/unhoisted-monorepo',
