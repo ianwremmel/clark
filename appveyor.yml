@@ -11,7 +11,7 @@ install:
   - npm install
 
 test_script:
-  - npm run test:ci
+  - npm test
 
 build_script:
   - npm run build
