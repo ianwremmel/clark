@@ -92,7 +92,8 @@ export async function execScript(
     debug(
       f`Neither override nor fallback script defined for script ${scriptName}`,
     );
-    throw new Error(`${packageName} does not implement ${scriptName}`);
+    console.warn(f`${packageName} does not implement ${scriptName}, skipping`);
+    return;
   }
 
   debug(f`Falling back to run ${scriptName} in ${packageName}`);
