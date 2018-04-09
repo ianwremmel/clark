@@ -1,4 +1,8 @@
+import {readFileSync} from 'fs';
+import {sync as pkgUp} from 'pkg-up';
 import y, {Argv} from 'yargs';
+
+const pkg = JSON.parse(readFileSync(pkgUp(__dirname), 'utf-8'));
 
 // so, yargs's d.ts is...weird. This is an unfortunate set of castings to
 // convince typescript that all is well.
@@ -19,4 +23,5 @@ yargs
   .help()
   .recommendCommands()
   .strict()
+  .version(pkg.version)
   .parse();
