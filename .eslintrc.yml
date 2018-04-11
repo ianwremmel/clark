@@ -3,5 +3,11 @@ env:
   node: true
 extends:
   - "@ianwremmel/eslint-config-standard"
+  - prettier
 parserOptions:
-  sourceType: "script"
+  ecmaVersion: 2017
+  sourceType: script
+plugins:
+  - prettier
+rules:
+  prettier/prettier: error
