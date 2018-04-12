@@ -51,7 +51,10 @@ describe('hoist', () => {
   describe('when the monorepo packages have conflicting dependencies', () => {
     it('cowardly refuses to overwrite a semver discrepancy', async () => {
       const err = ((await assert.isRejected(
-        run('clark hoist --silent', 'conflicted-unhoisted-monorepo'),
+        run(
+          'clark hoist --silent --fail-fast',
+          'conflicted-unhoisted-monorepo',
+        ),
       )) as any) as Error;
 
       assert.include(

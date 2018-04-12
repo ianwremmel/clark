@@ -5,7 +5,7 @@ import run from '../lib/run';
 function stringToObject(str: string) {
   return str
     .split('\n')
-    .map(row => row.split('='))
+    .map((row) => row.split('='))
     .reduce((acc, [key, value]) => {
       acc[key] = value;
       return acc;
@@ -23,7 +23,7 @@ describe('exec', () => {
         '@example/scoped-package-the-second',
         'not-scoped',
       ]
-        .map(dir =>
+        .map((dir) =>
           resolve(__dirname, '../fixtures/monorepo/packages/node_modules', dir),
         )
         .join('\n'),
@@ -85,7 +85,7 @@ describe('exec', () => {
       assert.equal(
         result,
         ['not-scoped']
-          .map(dir =>
+          .map((dir) =>
             resolve(
               __dirname,
               '../fixtures/monorepo/packages/node_modules',
@@ -107,7 +107,7 @@ describe('exec', () => {
           '@example/scoped-package-the-first',
           '@example/scoped-package-the-second',
         ]
-          .map(dir =>
+          .map((dir) =>
             resolve(
               __dirname,
               '../fixtures/monorepo/packages/node_modules',
@@ -120,7 +120,7 @@ describe('exec', () => {
 
     it('fails if the package does not exist', async () => {
       const err = ((await assert.isRejected(
-        run('clark exec --silent --package-name not-a-package pwd'),
+        run('clark exec --fail-fast --silent --package-name not-a-package pwd'),
       )) as any) as Error;
       assert.include(
         err.message,

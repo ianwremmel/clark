@@ -1,8 +1,5 @@
-import {format as f, makeDebug} from '../debug';
-import {log} from '../log';
-import {exec, gather} from '../packages';
-
-const debug = makeDebug(__dirname);
+import {format as f} from '../debug';
+import {apply, exec} from '../packages';
 
 /**
  * Contains the handler for the exec command
@@ -14,45 +11,39 @@ export namespace Exec {
    */
   export async function handler(options: Options): Promise<void> {
     const {command} = options;
-    const packages = await gather(options);
-    log(
-      options,
-      debug,
-      f`Running ${command} against ${packages.length} packages`,
-    );
-    const errors = [];
+    await apply(
+      {
+        before: (packages) =>
+          f`Running ${command} against ${packages.length} packages`,
+        beforeEach: (packageName) =>
+          f`Running ${command} against ${packageName}`,
+        afterEach: (packageName, error) => {
+          if (error) {
+            return `${command} failed against ${packageName}`;
+          }
+          return `Ran ${command} against ${packageName}`;
+        },
+        after: (packages, errors) => {
+          if (errors.length) {
+            return f`clark exec failed to execute the following command against ${
+              errors.length
+            } packages\n> ${command}\n`;
+          }
 
-    for (const packageName of packages) {
-      log(options, debug, `Running ${command} against ${packageName}`);
-      try {
+          return `Ran ${command} successfully against ${packages.length}`;
+        },
+      },
+      async (packageName: string) => {
         await exec(command, packageName);
-      } catch (err) {
-        errors.push(err);
-        log(
-          options,
-          debug,
-          f`${command} failed against ${packageName} packages`,
-        );
-      }
-      log(options, debug, `Ran ${command} against ${packageName}`);
-    }
-    log(options, debug, `Ran ${command} against ${packages.length} packages`);
-
-    if (errors.length) {
-      console.error(
-        f`clark exec failed to execute the following command against ${
-          errors.length
-        } packages\n> ${command}\n`,
-      );
-      console.error(errors);
-      process.exit(1);
-    }
+      },
+      options,
+    );
   }
 
   /**
    * Exec handler options
    */
-  export interface Options extends log.Options {
+  export interface Options extends apply.InvocationOptions {
     packageName?: string | string[];
     command: string;
   }

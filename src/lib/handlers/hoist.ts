@@ -1,8 +1,6 @@
-import {format as f, makeDebug} from '../debug';
+import {format as f} from '../debug';
 import {log} from '../log';
-import {gather, hoist} from '../packages';
-
-const debug = makeDebug(__dirname);
+import {apply, hoist} from '../packages';
 
 /**
  * Contains the handler for the hoist command
@@ -13,14 +11,27 @@ export namespace Hoist {
    * @param options
    */
   export async function handler(options: Options) {
-    const packages = await gather(options);
-    log(options, debug, f`Hoisting ${packages.length} packages`);
-    for (const packageName of packages) {
-      log(options, debug, f`hoisting deps from ${packageName}`);
-      await hoist(packageName, {risky: options.risky});
-      log(options, debug, f`hoisted deps from ${packageName}`);
-    }
-    log(options, debug, f`Hoisted ${packages.length} packages`);
+    await apply(
+      {
+        before: (packages) => f`Hoisting ${packages.length} packages`,
+        beforeEach: (packageName) => f`Hoisting deps from ${packageName}`,
+        afterEach: (packageName, error) => {
+          if (error) {
+            return f`Failed to hoist deps from ${packageName}`;
+          }
+          return f`Hoisted deps from ${packageName}`;
+        },
+        after: (packages, errors) => {
+          if (errors.length) {
+            return `Failed to hoist deps in ${errors.length} packages`;
+          }
+          return f`Hoisted ${packages.length} packages`;
+        },
+      },
+      async (packageName: string) =>
+        await hoist(packageName, {risky: options.risky}),
+      options as apply.InvocationOptions,
+    );
   }
 
   /**

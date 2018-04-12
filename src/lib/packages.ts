@@ -3,6 +3,7 @@ import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
 import {load} from './config';
 import {format as f, makeDebug} from './debug';
+import {log} from './log';
 import {
   findProjectRoot,
   isAlleRepo,
@@ -21,6 +22,81 @@ let initialized = false;
 
 interface EnvObject {
   [key: string]: string;
+}
+
+/**
+ * Applies the `fn` to the packages specified by `options` and logs as
+ * appropriate.
+ */
+export async function apply(
+  {
+    before, // = defaultBefore,
+    beforeEach, // = defaultBeforeEach,
+    afterEach, // = defaultAfterEach,
+    after, // = defaultAfter,
+  }: apply.Options,
+  fn: apply.applyCallback,
+  options: apply.InvocationOptions,
+) {
+  const packages = await gather(options);
+  const errors = [];
+
+  log(options, debug, before(packages));
+  for (const packageName of packages) {
+    log(options, debug, beforeEach(packageName));
+
+    try {
+      await fn(packageName);
+      log(options, debug, afterEach(packageName));
+    } catch (err) {
+      if (options.failFast) {
+        errors.push(err);
+        log(options, debug, afterEach(packageName, err));
+      }
+    }
+  }
+  log(options, debug, after(packages, errors));
+
+  if (errors.length) {
+    console.error(errors);
+    process.exit(1);
+  }
+}
+
+export namespace apply {
+  /**
+   * Logger definitions
+   */
+  export interface Options {
+    before: (packages: string[]) => string;
+    beforeEach: (packageName: string) => string;
+    afterEach: (packageName: string, error?: Error) => string;
+    after: (packages: string[], errors: Error[]) => string;
+  }
+
+  /**
+   * Executed against each package
+   */
+  export type applyCallback = (packageName: string) => Promise<void>;
+
+  /**
+   * Options passed from the calling function, in part, to the applyCallback
+   */
+  export type InvocationOptions = BaseInvocationOptions &
+    gather.Options &
+    log.Options;
+
+  /**
+   * Portion of InvocationOptions relevant to {@link apply}.
+   */
+  export interface BaseInvocationOptions {
+    /**
+     * When true, apply will abort after the first failure, otherwise, it will
+     * collect errors and log them once all appropriate packages have been
+     * processed.
+     */
+    failFast: boolean;
+  }
 }
 
 /**
