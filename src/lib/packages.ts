@@ -36,7 +36,7 @@ export async function apply(
     after, // = defaultAfter,
   }: apply.Options,
   fn: apply.applyCallback,
-  options: gather.Options & log.Options,
+  options: apply.InvocationOptions,
 ) {
   const packages = await gather(options);
   const errors = [];
@@ -49,8 +49,10 @@ export async function apply(
       await fn(packageName);
       log(options, debug, afterEach(packageName));
     } catch (err) {
-      errors.push(err);
-      log(options, debug, afterEach(packageName, err));
+      if (options.failFast) {
+        errors.push(err);
+        log(options, debug, afterEach(packageName, err));
+      }
     }
   }
   log(options, debug, after(packages, errors));
@@ -76,6 +78,25 @@ export namespace apply {
    * Executed against each package
    */
   export type applyCallback = (packageName: string) => Promise<void>;
+
+  /**
+   * Options passed from the calling function, in part, to the applyCallback
+   */
+  export type InvocationOptions = BaseInvocationOptions &
+    gather.Options &
+    log.Options;
+
+  /**
+   * Portion of InvocationOptions relevant to {@link apply}.
+   */
+  export interface BaseInvocationOptions {
+    /**
+     * When true, apply will abort after the first failure, otherwise, it will
+     * collect errors and log them once all appropriate packages have been
+     * processed.
+     */
+    failFast: boolean;
+  }
 }
 
 /**
