@@ -120,7 +120,7 @@ describe('exec', () => {
 
     it('fails if the package does not exist', async () => {
       const err = ((await assert.isRejected(
-        run('clark exec --silent --package-name not-a-package pwd'),
+        run('clark exec --fail-fast --silent --package-name not-a-package pwd'),
       )) as any) as Error;
       assert.include(
         err.message,
