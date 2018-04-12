@@ -1,5 +1,4 @@
 import {format as f} from '../debug';
-import {log} from '../log';
 import {apply, exec} from '../packages';
 
 /**
@@ -44,7 +43,7 @@ export namespace Exec {
   /**
    * Exec handler options
    */
-  export interface Options extends log.Options {
+  export interface Options extends apply.InvocationOptions {
     packageName?: string | string[];
     command: string;
   }

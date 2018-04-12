@@ -1,9 +1,7 @@
 import {Argv} from 'yargs';
 import {load} from '../config';
 import {format as f} from '../debug';
-import {log} from '../log';
 import {apply, execScript} from '../packages';
-
 /**
  * Contains the handler for the run command
  */
@@ -18,18 +16,17 @@ export namespace Run {
     if (config.scripts && config.scripts) {
       return Object.entries(config.scripts).reduce(
         (y, [command, script]: [string, string]): Argv =>
-          y.command(
+          y.command({
             command,
-            f`the ${command} command is generated from your local .clarkrc. It runs ${script} "in each package directory.`,
-            (yargs2) => {
-              return yargs2.option('package-name', {
+            describe: f`the ${command} command is generated from your local .clarkrc. It runs ${script} "in each package directory.`,
+            builder: (yargs2: Argv) =>
+              yargs2.option('package-name', {
                 alias: ['p', 'package'],
                 describe:
                   'The package against which to run this command. May be specified more than once.',
                 type: 'string',
-              });
-            },
-            async (argv): Promise<void> => {
+              }),
+            handler: async (argv: apply.InvocationOptions): Promise<void> => {
               await apply(
                 {
                   before: (packages) =>
@@ -57,10 +54,10 @@ export namespace Run {
                 async (packageName) => {
                   await execScript(command, packageName, script);
                 },
-                argv as log.Options,
+                argv,
               );
             },
-          ),
+          }),
         yargs,
       );
     }
