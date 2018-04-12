@@ -55,7 +55,7 @@ describe('exec', () => {
 
   it('injects useful environment variables', async () => {
     const result = await run(
-      'clark exec --silent --package @example/scoped-package-the-first  "env | grep CLARK"',
+      'clark exec --silent --package @example/scoped-package-the-first  "env | grep CLARK | grep -v CLARK_ENV"',
     );
     // strip out this project's path so we can write consistent assertions
     const modified = result.replace(
