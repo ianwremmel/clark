@@ -14,7 +14,7 @@ export namespace Run {
     const config = load();
 
     if (config.scripts && config.scripts) {
-      return Object.entries(config.scripts).reduce(
+      yargs = Object.entries(config.scripts).reduce(
         (y, [command, script]: [string, string]): Argv =>
           y.command({
             command,
@@ -27,41 +27,17 @@ export namespace Run {
                 type: 'string',
               }),
             handler: async (argv: apply.InvocationOptions): Promise<void> => {
-              await apply(
-                {
-                  before: (packages) =>
-                    f`Running ${command} against ${packages.length} packages`,
-                  beforeEach: (packageName) =>
-                    f`Running ${command} against ${packageName}`,
-                  afterEach: (packageName, error) => {
-                    if (error) {
-                      return `${command} failed against ${packageName}`;
-                    }
-                    return `Ran ${command} against ${packageName}`;
-                  },
-                  after: (packages, errors) => {
-                    if (errors.length) {
-                      return f`clark run failed to execute the following command against ${
-                        errors.length
-                      } packages\n> ${command}\n`;
-                    }
-
-                    return `Ran ${command} successfully against ${
-                      packages.length
-                    }`;
-                  },
-                },
-                async (packageName) => {
-                  await execScript(command, packageName, script);
-                },
-                argv,
-              );
+              await handle(command, script, argv);
             },
           }),
         yargs,
       );
     }
     return yargs
+      .positional('script', {
+        describe: 'npm run script to execute in each package that defines it. ',
+        type: 'string',
+      })
       .options({
         'fail-fast': {
           alias: 'ff',
@@ -81,10 +57,48 @@ export namespace Run {
   }
 
   /**
+   * Helper
+   */
+  async function handle(
+    command: string,
+    script: string,
+    argv: apply.InvocationOptions,
+  ) {
+    await apply(
+      {
+        before: (packages) =>
+          f`Running ${command} against ${packages.length} packages`,
+        beforeEach: (packageName) =>
+          f`Running ${command} against ${packageName}`,
+        afterEach: (packageName, error) => {
+          if (error) {
+            return `${command} failed against ${packageName}`;
+          }
+          return `Ran ${command} against ${packageName}`;
+        },
+        after: (packages, errors) => {
+          if (errors.length) {
+            return f`clark run failed to execute the following command against ${
+              errors.length
+            } packages\n> ${command}\n`;
+          }
+
+          return `Ran ${command} successfully against ${packages.length}`;
+        },
+      },
+      async (packageName) => {
+        await execScript(command, packageName, script);
+      },
+      argv,
+    );
+  }
+  /**
    * Implementation of the run command
    * @param options
    */
-  export async function handler(): Promise<void> {
-    // noop
+  export async function handler(
+    argv: apply.InvocationOptions & {script: string},
+  ): Promise<void> {
+    await handle(argv.script, '', argv);
   }
 }
