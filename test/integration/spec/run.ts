@@ -62,4 +62,18 @@ describe('run', () => {
       assert.equal(result, 'this is an override');
     });
   });
+
+  describe('when invoked with a script not in .clarkrc', () => {
+    it('runs that script in any package that defines it', async () => {
+      const result = await run('clark run --silent not-in-clarkrc');
+      assert.equal(result, '1\n2');
+    });
+
+    it('supports --package', async () => {
+      const result = await run(
+        'clark run --silent --package @example/scoped-package-the-first not-in-clarkrc',
+      );
+      assert.equal(result, '1');
+    });
+  });
 });
