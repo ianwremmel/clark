@@ -23,7 +23,7 @@ export namespace Run {
           y.command(
             command,
             f`the ${command} command is generated from your local .clarkrc. It runs ${script} "in each package directory.`,
-            yargs2 => {
+            (yargs2) => {
               return yargs2.option('package-name', {
                 alias: ['p', 'package'],
                 describe:
