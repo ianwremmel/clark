@@ -25,7 +25,7 @@
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
     "semantic-release": "semantic-release",
-    "test": "jest --runInBand"
+    "test": "CLARK_ENV=development jest --runInBand"
   },
   "engines": {
     "node": ">=8"
@@ -101,20 +101,8 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
-    "setupFiles": [
-      "<rootDir>/test/initialize.ts"
-    ],
-    "testMatch": [
-      "<rootDir>/src/**/*.spec.[tj]s?(x)",
-      "<rootDir>/test/*/spec/**/*.[tj]s?(x)"
-    ]
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "setupFiles": ["<rootDir>/test/initialize.ts"],
+    "testMatch": ["<rootDir>/src/**/*.spec.[tj]s?(x)", "<rootDir>/test/*/spec/**/*.[tj]s?(x)"]
   }
 }
