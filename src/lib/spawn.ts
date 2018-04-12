@@ -27,12 +27,12 @@ export function spawn(
 
     let data = '';
     if (child.stderr) {
-      child.stderr.on('data', d => {
+      child.stderr.on('data', (d) => {
         data += d;
       });
     }
 
-    child.on('close', code => {
+    child.on('close', (code) => {
       if (code) {
         const e = new spawn.ExitError(`${cmd} exited with code "${code}"`);
         e.code = code;
