@@ -1,11 +1,7 @@
 import {Argv} from 'yargs';
 import {load} from '../config';
-import {format as f, makeDebug} from '../debug';
-import {log} from '../log';
-import {execScript, gather} from '../packages';
-
-const debug = makeDebug(__dirname);
-
+import {format as f} from '../debug';
+import {apply, execScript} from '../packages';
 /**
  * Contains the handler for the run command
  */
@@ -20,66 +16,48 @@ export namespace Run {
     if (config.scripts && config.scripts) {
       return Object.entries(config.scripts).reduce(
         (y, [command, script]: [string, string]): Argv =>
-          y.command(
+          y.command({
             command,
-            f`the ${command} command is generated from your local .clarkrc. It runs ${script} "in each package directory.`,
-            yargs2 => {
-              return yargs2.option('package-name', {
+            describe: f`the ${command} command is generated from your local .clarkrc. It runs ${script} "in each package directory.`,
+            builder: (yargs2: Argv) =>
+              yargs2.option('package-name', {
                 alias: ['p', 'package'],
                 describe:
                   'The package against which to run this command. May be specified more than once.',
                 type: 'string',
-              });
-            },
-            async (argv): Promise<void> => {
-              const packages = await gather(argv as gather.Options);
-              log(
-                argv as log.Options,
-                debug,
-                f`Running ${command} against ${packages.length} packages`,
-              );
-              const errors = [];
-              for (const packageName of packages) {
-                log(
-                  argv as log.Options,
-                  debug,
-                  f`Running ${command} against ${packageName} packages`,
-                );
-                try {
-                  await execScript(command, packageName, script);
-                } catch (err) {
-                  log(
-                    argv as log.Options,
-                    debug,
-                    f`${command} failed against ${packageName}`,
-                  );
-                  errors.push(err);
-                }
-                log(
-                  argv as log.Options,
-                  debug,
-                  f`Ran ${command} against ${packageName}`,
-                );
-              }
-              log(
-                argv as log.Options,
-                debug,
-                f`Ran ${command} against ${packages.length} packages`,
-              );
+              }),
+            handler: async (argv: apply.InvocationOptions): Promise<void> => {
+              await apply(
+                {
+                  before: (packages) =>
+                    f`Running ${command} against ${packages.length} packages`,
+                  beforeEach: (packageName) =>
+                    f`Running ${command} against ${packageName}`,
+                  afterEach: (packageName, error) => {
+                    if (error) {
+                      return `${command} failed against ${packageName}`;
+                    }
+                    return `Ran ${command} against ${packageName}`;
+                  },
+                  after: (packages, errors) => {
+                    if (errors.length) {
+                      return f`clark run failed to execute the following command against ${
+                        errors.length
+                      } packages\n> ${command}\n`;
+                    }
 
-              if (errors.length) {
-                console.error(
-                  argv as log.Options,
-                  debug,
-                  f`clark run failed to execute the following command against ${
-                    errors.length
-                  } packages\n> ${command}\n`,
-                );
-                console.error(argv as log.Options, debug, errors);
-                process.exit(1);
-              }
+                    return `Ran ${command} successfully against ${
+                      packages.length
+                    }`;
+                  },
+                },
+                async (packageName) => {
+                  await execScript(command, packageName, script);
+                },
+                argv,
+              );
             },
-          ),
+          }),
         yargs,
       );
     }
