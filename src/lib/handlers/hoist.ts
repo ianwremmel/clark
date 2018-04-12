@@ -30,7 +30,7 @@ export namespace Hoist {
       },
       async (packageName: string) =>
         await hoist(packageName, {risky: options.risky}),
-      options,
+      options as apply.InvocationOptions,
     );
   }
 
