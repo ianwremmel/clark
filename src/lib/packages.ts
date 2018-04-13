@@ -58,7 +58,7 @@ export async function apply(
   log(options, debug, after(packages, errors));
 
   if (errors.length) {
-    console.error(errors);
+    errors.forEach((e) => console.error(e.toString()));
     process.exit(1);
   }
 }
