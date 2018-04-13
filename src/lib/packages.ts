@@ -49,8 +49,8 @@ export async function apply(
       await fn(packageName);
       log(options, debug, afterEach(packageName));
     } catch (err) {
+      errors.push(err);
       if (options.failFast) {
-        errors.push(err);
         log(options, debug, afterEach(packageName, err));
       }
     }
