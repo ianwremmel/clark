@@ -129,11 +129,11 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
       cwd: resolve(await findProjectRoot(), await getPackagePath(packageName)),
       env: {
         ...clarkEnv,
-        PATH: `${PATH}:${resolve(
+        PATH: `${resolve(
           await findProjectRoot(),
           'node_modules',
           '.bin',
-        )}`,
+        )}:${PATH}`,
       },
     });
     debug(f`ran command ${cmd} in directory for package ${packageName}`);
