@@ -76,4 +76,28 @@ describe('run', () => {
       assert.equal(result, '1');
     });
   });
+
+  it('forwards additional options to to the script a la npm run', async () => {
+    let result = await run('clark run --silent --package not-scoped arguable');
+    console.log(111);
+    console.log(result);
+    console.log(111);
+    assert.equal(result, '');
+
+    result = await run(
+      'clark run --silent --package not-scoped arguable -- firstargument',
+    );
+    console.log(222);
+    console.log(result);
+    console.log(222);
+    assert.equal(result, 'firstargument');
+
+    result = await run(
+      "clark run --silent --package not-scoped arguable -- '${CLARK_PACKAGE_NAME}'",
+    );
+    console.log(333);
+    console.log(result);
+    console.log(333);
+    assert.equal(result, 'not-scoped');
+  });
 });

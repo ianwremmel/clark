@@ -8,7 +8,7 @@ const pkg = JSON.parse(readFileSync(pkgUp(__dirname), 'utf-8'));
 // convince typescript that all is well.
 const yargs = (y as any) as Argv;
 
-yargs
+const argv = yargs
   // support ts extensions during development
   .commandDir('./commands', {
     extensions: process.env.CLARK_ENV === 'development' ? ['js', 'ts'] : ['js'],
@@ -23,6 +23,7 @@ yargs
   .demandCommand(1)
   .help()
   .recommendCommands()
-  .strict()
   .version(pkg.version)
   .parse();
+
+console.log(argv);

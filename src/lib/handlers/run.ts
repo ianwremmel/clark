@@ -52,8 +52,7 @@ export namespace Run {
             'The package against which to run this command. May be specified more than once.',
           type: 'string',
         },
-      })
-      .strict();
+      });
   }
 
   /**
@@ -99,6 +98,7 @@ export namespace Run {
   export async function handler(
     argv: apply.InvocationOptions & {script: string},
   ): Promise<void> {
+    console.log(argv);
     await handle(argv.script, '', argv);
   }
 }

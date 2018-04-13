@@ -103,6 +103,7 @@
     },
     "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
     "setupFiles": ["<rootDir>/test/initialize.ts"],
+    "testEnvironment": "node",
     "testMatch": ["<rootDir>/src/**/*.spec.[tj]s?(x)", "<rootDir>/test/*/spec/**/*.[tj]s?(x)"]
   }
 }

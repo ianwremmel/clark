@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 
 'use strict';
 
@@ -7,13 +7,13 @@ const path = require('path');
 
 const findRoot = require('find-root');
 
-const {makeDebug} = require('../lib/lib/debug');
+const {makeDebug} = require('../src/lib/debug');
 
 const debug = makeDebug(__filename);
 
 try {
   debug('looking for locally installed clark');
-  const root = findRoot(process.cwd(), dir => {
+  const root = findRoot(process.cwd(), (dir) => {
     const clarkPath = path.resolve(dir, 'node_modules', '.bin', 'clark');
     // eslint-disable-next-line no-sync
     return fs.existsSync(clarkPath);
@@ -39,7 +39,7 @@ try {
     debug('did not find locally installed clark');
     debug('falling back to global clark');
     // eslint-disable-next-line import/no-unassigned-import
-    require('../lib/cli');
+    require('../src/cli');
     debug('loaded globally installed clark');
   } else {
     throw err;
