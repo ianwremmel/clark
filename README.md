@@ -29,6 +29,7 @@ Clark is a toolkit for interacting with [alle-inspired](https://github.com/boenn
 
 ## Table of Contents
 
+<!-- toc -->
 *   [Install](#install)
 *   [Usage](#usage)
     *   [Alle](#alle)
@@ -38,6 +39,7 @@ Clark is a toolkit for interacting with [alle-inspired](https://github.com/boenn
 *   [Contribute](#contribute)
     *   [Development](#development)
 *   [License](#license)
+<!-- tocstop -->
 
 ## Install
 
@@ -88,6 +90,11 @@ Simply add your package directories the `include` section of `.clarkrc`.
 *   Likely requires a very recent version of npm. (Though, clark requires node 8 or later, so this may not be an issue).
 
 ### Commands
+
+<!-- usage -->
+<!-- usagestop -->
+
+<!-- commands -->
 
 #### List all commands
 
@@ -169,6 +176,7 @@ but if one of the packages in your monorepo is a React project, you might need t
     }
 }
 ```
+<!-- commandsstop -->
 
 ## Maintainer
 

@@ -1,4 +1,11 @@
+*-debug.log
+*-error.log
 .nyc_output
-coverage
+.oclif.manifest.json
+/dist
+/lib
 /node_modules
-
+/tmp
+/yarn.lock
+coverage
+node_modules
