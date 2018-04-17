@@ -68,7 +68,7 @@
     "rimraf": "^2.6.2",
     "semantic-release": "^15.0.3",
     "ts-jest": "^22.4.2",
-    "ts-node": "^5.0.1",
+    "ts-node": "^6.0.0",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
     "tslint-language-service": "^0.9.8",
