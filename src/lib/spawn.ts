@@ -3,8 +3,11 @@ import {
   spawn as cpSpawn,
   SpawnOptions as cpSpawnOptions,
 } from 'child_process';
-
 import invariant from 'invariant';
+
+import {format as f, makeDebug} from '../lib/debug';
+
+const debug = makeDebug(__filename);
 
 /**
  * Simplified spawn
@@ -17,6 +20,8 @@ export function spawn(
   return new Promise((resolve, reject) => {
     invariant(cmd, '"cmd" is required');
     invariant(Array.isArray(args), '"args" is required and must be an Array');
+
+    debug(f`Running ${cmd} ${args.join(' ')}`);
 
     const opts = {
       detached: false,
@@ -46,6 +51,9 @@ export function spawn(
         console.log(stdout);
         console.error(stderr);
       }
+
+      debug(f`Ran ${cmd} ${args.join(' ')}`);
+
       if (code) {
         const e = new spawn.ExitError(`${cmd} exited with code "${code}"`);
         e.code = code;
