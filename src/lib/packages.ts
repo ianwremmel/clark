@@ -1,6 +1,7 @@
 import {sync as glob} from 'glob';
 import {readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
+
 import {load} from './config';
 import {format as f, makeDebug} from './debug';
 import {log} from './log';
@@ -59,7 +60,7 @@ export async function apply(
 
   if (errors.length) {
     errors.forEach((e) => console.error(e.toString()));
-    process.exit(1);
+    throw errors[0];
   }
 }
 
