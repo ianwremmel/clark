@@ -1,3 +1,11 @@
+<a name="4.0.1"></a>
+## [4.0.1](https://github.com/ianwremmel/clark/compare/v4.0.0...v4.0.1) (2018-04-18)
+
+
+### Bug Fixes
+
+* **ci:** empty commit to retrigger semrel ([10f5b44](https://github.com/ianwremmel/clark/commit/10f5b44))
+
 <a name="4.0.0"></a>
 # [4.0.0](https://github.com/ianwremmel/clark/compare/v3.3.4...v4.0.0) (2018-04-18)
 
