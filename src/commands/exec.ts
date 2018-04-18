@@ -54,13 +54,6 @@ export default class Exec extends Command {
     },
   ];
 
-  // TODO determine if we should disable strict mode or simply require commands
-  // be wrapped in quotes
-  /**
-   * Disable strict mode
-   */
-  static strict = false;
-
   /**
    * implementation
    */
