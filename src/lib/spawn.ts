@@ -20,23 +20,36 @@ export function spawn(
 
     const opts = {
       detached: false,
-      stdio: 'inherit',
+      stdio: process.env.NODE_ENV === 'test' ? undefined : 'inherit',
       ...options,
     };
     const child = cpSpawn(cmd, args, opts);
 
-    let data = '';
+    let stderr = '';
     if (child.stderr) {
       child.stderr.on('data', (d) => {
-        data += d;
+        stderr += d;
+      });
+    }
+
+    let stdout = '';
+    if (child.stdout) {
+      child.stdout.on('data', (d) => {
+        stdout += d;
       });
     }
 
     child.on('close', (code) => {
+      // the oclif test helpers don't propagate inherited stdio, so we need to
+      // fake it for test purposes :(
+      if (process.env.NODE_ENV === 'test') {
+        console.log(stdout);
+        console.error(stderr);
+      }
       if (code) {
         const e = new spawn.ExitError(`${cmd} exited with code "${code}"`);
         e.code = code;
-        e.data = data;
+        e.data = stderr;
 
         return reject(e);
       }

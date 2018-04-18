@@ -1,3 +1,5 @@
+import S from 'string';
+
 interface AnyObject {
   [key: string]: any;
 }
@@ -18,8 +20,22 @@ export function sortObject(obj: object): object {
 
       return 0;
     })
-    .reduce<AnyObject>((acc, [key, value]) => {
-      acc[key] = value;
+    .reduce(
+      (acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      },
+      {} as AnyObject,
+    );
+}
+
+export function camelizeObject(obj: object): object {
+  return Object.keys(obj).reduce(
+    (acc, key) => {
+      const camelizedKey = S(key).camelize().s;
+      acc[camelizedKey] = acc[key];
       return acc;
-    }, {});
+    },
+    obj as AnyObject,
+  );
 }
