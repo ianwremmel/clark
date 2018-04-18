@@ -1,16 +1,20 @@
+import {test} from '@oclif/test';
 import {assert} from 'chai';
-
-import run from '../lib/run';
+import {resolve} from 'path';
 
 describe('list', () => {
-  it('lists all packages in the project directory', async () => {
-    const result = await run('clark list');
-    assert.lengthOf(result.split('\n'), 3);
-    assert.equal(
-      result,
-      `@example/scoped-package-the-first
+  test
+    .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
+    .stdout()
+    .stderr()
+    .command(['list'])
+    .it('lists all packages in the project directory', async (ctx) => {
+      assert.equal(
+        ctx.stdout,
+        `@example/scoped-package-the-first
 @example/scoped-package-the-second
-not-scoped`,
-    );
-  });
+not-scoped
+`,
+      );
+    });
 });

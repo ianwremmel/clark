@@ -1,5 +1,5 @@
 {
-  "extends": ["@urbandoor/lint", "tslint-config-prettier"],
+  "extends": ["@oclif/tslint", "tslint-config-prettier"],
   "rules": {
     "completed-docs": [
       true,

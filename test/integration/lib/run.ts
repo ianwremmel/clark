@@ -1,37 +1,5 @@
-import {execSync} from 'child_process';
 import {readFile as fsReadFile} from 'mz/fs';
 import {resolve as pathResolve} from 'path';
-
-/**
- * Run a command in the fixture directory.
- */
-export default async function run(
-  cmd: string,
-  fixture: string = 'monorepo',
-): Promise<string> {
-  const startDir = process.cwd();
-  process.chdir(rootDir(fixture));
-
-  let toExec = cmd;
-  if (cmd.startsWith('clark')) {
-    // reminder: this path is relative to the fixture directory
-    toExec = cmd.replace(
-      'clark',
-      `ts-node ${pathResolve(__dirname, '../../../src/cli.ts')}`,
-    );
-  }
-
-  try {
-    // pass {stdio: 'pipe'} to prevent error output from being printed in the test
-    // report.
-    const result = execSync(toExec, {stdio: 'pipe'})
-      .toString()
-      .trim();
-    return result;
-  } finally {
-    process.chdir(startDir);
-  }
-}
 
 /**
  * Reads a file in the specified fixture directory
@@ -43,7 +11,7 @@ export async function readFile(
   fixture: string = 'monorepo',
 ): Promise<string> {
   const fullFileName = pathResolve(rootDir(fixture), filename);
-  return await fsReadFile(fullFileName, 'utf-8');
+  return fsReadFile(fullFileName, 'utf-8');
 }
 
 /**

@@ -1,13 +1,13 @@
 {
   "name": "@ianwremmel/clark",
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "description": "Monorepo tools",
   "bin": {
-    "clark": "bin/clark"
+    "clark": "bin/run"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ianwremmel/clark.git"
+    "url": "ianwremmel/clark"
   },
   "scripts": {
     "prebuild": "npm run clean",
@@ -17,74 +17,29 @@
     "lint": "npm run --silent lint:js && npm run --silent lint:ts && npm run --silent lint:changelog",
     "lint:changelog": "commitlint --from origin/master --to HEAD",
     "lint:commitmsg": "commitlint -e",
-    "lint:eslint": "eslint --ignore --ignore-path .gitignore",
+    "lint:eslint": "eslint --ignore-pattern bin/run.cmd --ignore-path .gitignore",
     "lint:js": "npm run --silent lint:eslint -- .",
     "lint:tslint": "tslint --project tsconfig.json -t stylish",
     "lint:ts": "npm run --slient lint:tslint -- './src/**/*.ts' && tsc --noemit",
     "lint:staged": "lint-staged",
+    "mocha-reporter-options": "[ -n \"${CI}\" ] && echo '--reporter xunit --reporter-options output=reports/junit/mocha.xml'",
     "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
-    "semantic-release": "semantic-release",
-    "test": "CLARK_ENV=development jest --runInBand"
-  },
-  "engines": {
-    "node": ">=8"
-  },
-  "keywords": [],
-  "author": "Ian Remmel <1182361+ianwremmel@users.noreply.github.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "@commitlint/cli": "^6.1.3",
-    "@commitlint/config-angular": "^6.1.3",
-    "@ianwremmel/eslint-config-base": "^1.0.0",
-    "@ianwremmel/eslint-config-standard": "^1.2.0",
-    "@types/chai": "^4.1.2",
-    "@types/chai-as-promised": "^7.1.0",
-    "@types/debug": "0.0.30",
-    "@types/find-root": "^1.1.0",
-    "@types/glob": "^5.0.35",
-    "@types/invariant": "^2.2.29",
-    "@types/jest": "^22.2.2",
-    "@types/mz": "0.0.32",
-    "@types/node": "^9.4.7",
-    "@types/rc": "0.0.1",
-    "@types/semver": "^5.5.0",
-    "@types/supports-color": "^5.3.0",
-    "@types/yargs": "^11.0.0",
-    "@urbandoor/lint": "0.0.6",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
-    "condition-circle": "^2.0.1",
-    "eslint": "^4.18.2",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-mocha": "^5.0.0",
-    "eslint-plugin-prettier": "^2.6.0",
-    "husky": "^0.14.3",
-    "jest": "^22.4.3",
-    "jest-junit": "^3.6.0",
-    "lint-staged": "^7.0.0",
-    "prettier": "^1.11.1",
-    "rimraf": "^2.6.2",
-    "semantic-release": "^15.0.3",
-    "ts-jest": "^22.4.2",
-    "ts-node": "^6.0.0",
-    "tslint": "^5.9.1",
-    "tslint-config-prettier": "^1.10.0",
-    "tslint-language-service": "^0.9.8",
-    "tslint-plugin-prettier": "^1.3.0",
-    "typescript": "^2.7.2"
-  },
-  "lint-staged": {
-    "**/*.js": "npm run lint:eslint -- ",
-    "**/*.ts": "tslint",
-    "bin/**": "npm run lint:eslint -- "
-  },
-  "release": {
-    "verifyConditions": "condition-circle"
+    "semantic-release": "semantic-release -e @oclif/semantic-release",
+    "postpack": "rm -f .oclif.manifest.json",
+    "prepack": "rm -rf lib && tsc && oclif-dev manifest && npm run --silent readme",
+    "readme": "oclif-dev readme",
+    "postreadme": "sed -i.bak 's/^## `clark/#### `clark/' README.md && rm README.md.bak",
+    "test": "NODE_ENV=test mocha $(npm run --silent mocha-reporter-options) 'test/**/*.test.ts' './src/**/*.spec.[jt]s' './test/*/spec/**/*.[jt]s'",
+    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "chalk": "^2.3.2",
+    "@oclif/command": "^1.4.13",
+    "@oclif/config": "^1.6.4",
+    "@oclif/errors": "^1.0.4",
+    "@oclif/plugin-help": "^1.2.4",
+    "chalk": "^2.4.0",
     "debug": "^3.1.0",
     "find-root": "^1.1.0",
     "glob": "^7.1.2",
@@ -93,16 +48,67 @@
     "pkg-up": "^2.0.0",
     "rc": "^1.2.6",
     "semver": "^5.5.0",
-    "supports-color": "^5.3.0",
-    "tslib": "^1.9.0",
-    "yargs": "^11.0.0"
+    "string": "^3.3.3",
+    "supports-color": "^5.4.0"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-    "setupFiles": ["<rootDir>/test/initialize.ts"],
-    "testMatch": ["<rootDir>/src/**/*.spec.[tj]s?(x)", "<rootDir>/test/*/spec/**/*.[tj]s?(x)"]
+  "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
+    "@commitlint/config-angular": "^6.1.3",
+    "@ianwremmel/eslint-config-base": "^1.0.0",
+    "@ianwremmel/eslint-config-standard": "^1.2.0",
+    "@oclif/dev-cli": "^1.13.1",
+    "@oclif/semantic-release": "^3.0.4",
+    "@oclif/test": "^1.0.4",
+    "@oclif/tslint": "^1.1.0",
+    "@types/chai": "^4.1.2",
+    "@types/debug": "0.0.30",
+    "@types/find-root": "^1.1.0",
+    "@types/glob": "^5.0.35",
+    "@types/invariant": "^2.2.29",
+    "@types/mocha": "^5.0.0",
+    "@types/mz": "0.0.32",
+    "@types/node": "^9.6.5",
+    "@types/rc": "0.0.1",
+    "@types/semver": "^5.5.0",
+    "@types/string": "0.0.29",
+    "@types/supports-color": "^5.3.0",
+    "chai": "^4.1.2",
+    "condition-circle": "^2.0.1",
+    "eslint": "^4.18.2",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.0",
+    "mocha": "^5.1.0",
+    "oclif": "^1.7.31",
+    "prettier": "^1.12.1",
+    "rimraf": "^2.6.2",
+    "semantic-release": "^15.0.3",
+    "ts-node": "^6.0.0",
+    "tslib": "^1.9.0",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.10.0",
+    "tslint-language-service": "^0.9.8",
+    "tslint-plugin-prettier": "^1.3.0",
+    "typescript": "^2.8.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "lint-staged": {
+    "**/*.js": "npm run lint:eslint -- ",
+    "**/*.ts": "tslint",
+    "bin/**": "npm run lint:eslint -- "
+  },
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "clark",
+    "plugins": ["@oclif/plugin-help"]
+  },
+  "types": "lib/index.d.ts",
+  "release": {
+    "verifyConditions": "condition-circle"
   }
 }

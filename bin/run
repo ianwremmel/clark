@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+
+const findRoot = require('find-root');
+
+require('@oclif/command')
+  .run(undefined, findLocalClark())
+  .catch(require('@oclif/errors/handle'));
+
+/**
+ * Attempts to determine if there's a non-globally-installed version of clark
+ * somewhere in the local folder hierarchy.
+ * @private
+ * @returns {string|undefined}
+ */
+function findLocalClark() {
+  try {
+    const root = findRoot(process.cwd(), (dir) => {
+      const clarkPath = path.resolve(dir, 'node_modules', '.bin', 'clark');
+      // eslint-disable-next-line no-sync
+      return fs.existsSync(clarkPath);
+    });
+
+    // This isn't perfect; it could break for certain layouts of node_modules, but
+    // I'm not sure those layouts can happen in a way that would also allow clark
+    // to work in a project.
+    const localPath = path.resolve(
+      root,
+      'node_modules',
+      '@ianwremmel',
+      'clark',
+    );
+    return localPath;
+  } catch (err) {
+    if (err.message.includes('package.json not found in path')) {
+      // eslint-disable-next-line import/no-unassigned-import
+      return undefined;
+    }
+    throw err;
+  }
+}

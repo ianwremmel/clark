@@ -1,14 +1,22 @@
-import {CommandModule} from 'yargs';
-import {List} from '../lib/handlers/list';
+import {Command} from '@oclif/command';
 
-const ExecCommand: CommandModule = {
-  describe: 'List all packages',
+import {list} from '../lib/packages';
 
-  builder(yargs) {
-    return yargs.strict();
-  },
+/**
+ * List all packages
+ */
+export default class List extends Command {
+  /**
+   * description
+   */
+  static description = 'List all packages';
 
-  handler: List.handler,
-};
-
-export = ExecCommand;
+  /**
+   * implementation
+   */
+  async run() {
+    for (const packageName of await list()) {
+      console.log(packageName);
+    }
+  }
+}
