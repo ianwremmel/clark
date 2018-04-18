@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Monorepo tools",
   "bin": {
-    "clark": "bin/clark"
+    "clark": "bin/run"
   },
   "repository": {
     "type": "git",
