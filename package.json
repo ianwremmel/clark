@@ -9,6 +9,7 @@
     "type": "git",
     "url": "ianwremmel/clark"
   },
+  "main": "/lib/index.js",
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc",
@@ -97,6 +98,11 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "/bin",
+    "/lib"
+  ],
   "lint-staged": {
     "**/*.js": "npm run lint:eslint -- ",
     "**/*.ts": "tslint",
