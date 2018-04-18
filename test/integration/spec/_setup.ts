@@ -1,4 +1,3 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import {reset} from '../../../src/lib/packages';
 
-chai.use(chaiAsPromised);
+beforeEach(() => reset());
