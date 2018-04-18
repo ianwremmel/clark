@@ -3,7 +3,6 @@ import {Command, flags} from '@oclif/command';
 import {load} from '../lib/config';
 import {format as f} from '../lib/debug';
 import {apply, execScript} from '../lib/packages';
-import {camelizeObject} from '../lib/util';
 
 /**
  * Runs a script in each package directory. This is different from `exec` in
@@ -22,14 +21,25 @@ export default class Run extends Command {
    * flags
    */
   static flags = {
-    'fail-fast': flags.boolean({
+    failFast: flags.boolean({
       description:
         'Fail as soon as a command fails, rather than running all to completion',
     }),
-    'package-name': flags.string({
+    'fail-fast': flags.boolean({
+      description: 'Alias of --failFast',
+    }),
+    packageName: flags.string({
       char: 'p',
       description:
         'The package against which to run this command. May be specified more than once.',
+      multiple: true,
+    }),
+    package: flags.string({
+      description: 'alias of --packageName',
+      multiple: true,
+    }),
+    'package-name': flags.string({
+      description: 'alias of --packageName',
       multiple: true,
     }),
     silent: flags.boolean({
@@ -52,16 +62,26 @@ export default class Run extends Command {
    * implementation
    */
   async run() {
-    const {flags, args} = this.parse(Run);
+    const {args, flags} = this.parse(Run);
     // saving this for a future feature
     // const {flags, args, argv} = this.parse(Run);
 
+    flags.packageName = ([] as string[])
+      .concat(flags.packageName)
+      .concat(flags['package-name'])
+      .concat(flags.package)
+      .filter(Boolean);
+
+    if (!flags.packageName.length) {
+      delete flags.packageName;
+    }
+
+    flags.failFast = flags.failFast || flags['fail-fast'];
+
     const options = {
-      ...camelizeObject(flags),
-      ...camelizeObject(args),
-      // yes, this cast is terrible. I'm planning to refining all of this
-      // soonish, but not as part of the first pass with oclif
-    } as apply.InvocationOptions & {script: string};
+      ...flags,
+      ...args,
+    };
 
     const script = options.script;
     // saving this for a future feature

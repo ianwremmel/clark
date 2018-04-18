@@ -43,7 +43,7 @@ describe('hoist', () => {
       .command([
         'hoist',
         '--silent',
-        '--package-name',
+        '--package',
         '@example/scoped-package-the-first',
       ])
       .it(

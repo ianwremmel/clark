@@ -79,7 +79,7 @@ describe('exec', () => {
     .command([
       'exec',
       '--silent',
-      '--package-name',
+      '--package',
       '@example/scoped-package-the-first',
       'env | grep CLARK | grep -v CLARK_ENV',
     ])
@@ -113,7 +113,7 @@ describe('exec', () => {
       .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
       .stdout()
       .stderr()
-      .command(['exec', '--silent', '--package-name', 'not-scoped', 'pwd'])
+      .command(['exec', '--silent', '--package', 'not-scoped', 'pwd'])
       .it(
         'executes a comand in the specified package directory',
         async (ctx) => {
@@ -139,9 +139,9 @@ describe('exec', () => {
       .command([
         'exec',
         '--silent',
-        '--package-name',
+        '--package',
         '@example/scoped-package-the-first',
-        '--package-name',
+        '--package',
         '@example/scoped-package-the-second',
         'pwd',
       ])
@@ -174,7 +174,7 @@ describe('exec', () => {
         'exec',
         '--fail-fast',
         '--silent',
-        '--package-name',
+        '--package',
         'not-a-package',
         'pwd',
       ])
