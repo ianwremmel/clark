@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+
 import {select} from './version';
 
 describe('version', () => {

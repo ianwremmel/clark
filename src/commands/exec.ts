@@ -4,9 +4,19 @@ import {format as f} from '../lib/debug';
 import {apply, exec} from '../lib/packages';
 import {camelizeObject} from '../lib/util';
 
+/**
+ * Execute a command in each package directory. Note: commands with spaces and
+ * pipes are supported, but must be wrapped in quotes.
+ */
 export default class Exec extends Command {
+  /**
+   * description
+   */
   static description = 'Execute a command in each package directory. Note: commands with spaces and pipes are supported, but must be wrapped in quotes.';
 
+  /**
+   * flags
+   */
   static flags = {
     'fail-fast': flags.boolean({
       description:
@@ -24,6 +34,9 @@ export default class Exec extends Command {
     }),
   };
 
+  /**
+   * args
+   */
   static args = [
     {
       name: 'command',
@@ -31,8 +44,16 @@ export default class Exec extends Command {
     },
   ];
 
+  // TODO determine if we should disable strict mode or simply require commands
+  // be wrapped in quotes
+  /**
+   * Disable strict mode
+   */
   static strict = false;
 
+  /**
+   * implementation
+   */
   async run() {
     const {flags, args, argv} = this.parse(Exec);
 

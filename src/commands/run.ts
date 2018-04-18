@@ -5,9 +5,22 @@ import {format as f} from '../lib/debug';
 import {apply, execScript} from '../lib/packages';
 import {camelizeObject} from '../lib/util';
 
+/**
+ * Runs a script in each package directory. This is different from `exec` in
+ * that scripts should be defined in .clarkrc and may be overridden on a
+ * per-package basis via npm scripts. npm scripts defined only in subpackage
+ * package.jsons can be run this way, but only scripts named in .clarkrc will
+ * populate the help output.
+ */
 export default class Run extends Command {
+  /**
+   * description
+   */
   static description = 'Runs a script in each package directory. This is different from `exec` in that scripts should be defined in .clarkrc and may be overridden on a per-package basis via npm scripts. npm scripts defined only in subpackage package.jsons can be run this way, but only scripts named in .clarkrc will populate the help output.';
 
+  /**
+   * flags
+   */
   static flags = {
     'fail-fast': flags.boolean({
       description:
@@ -25,27 +38,37 @@ export default class Run extends Command {
     }),
   };
 
+  /**
+   * args
+   */
   static args = [{name: 'script', required: true}];
 
+  /**
+   * Disable strict mode
+   */
   static strict = false;
 
+  /**
+   * implementation
+   */
   async run() {
-    const {flags, args, argv} = this.parse(Run);
+    const {flags, args} = this.parse(Run);
+    // saving this for a future feature
+    // const {flags, args, argv} = this.parse(Run);
 
     const options = {
       ...camelizeObject(flags),
       ...camelizeObject(args),
-    } as apply.InvocationOptions;
+      // yes, this cast is terrible. I'm planning to refining all of this
+      // soonish, but not as part of the first pass with oclif
+    } as apply.InvocationOptions & {script: string};
 
     const script = options.script;
-    const extra = argv.join(' ').replace(script, '');
+    // saving this for a future feature
+    // const extra = argv.join(' ').replace(script, '');
 
     const config = load();
-    const fallbackScript = config.scripts[script];
-
-    // console.log('options:', options);
-    // console.log('scriptName:', script);
-    // console.log('extra:', extra);
+    const fallbackScript = config.scripts && config.scripts[script];
 
     await apply(
       {

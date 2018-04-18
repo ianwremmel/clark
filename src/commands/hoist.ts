@@ -3,9 +3,19 @@ import {Command, flags} from '@oclif/command';
 import {format as f} from '../lib/debug';
 import {apply, hoist} from '../lib/packages';
 
+/**
+ * Migrate dependencies and dev dependencies from a sub package to the root
+ * package.json
+ */
 export default class Hoist extends Command {
+  /**
+   * description
+   */
   static description = 'Migrate dependencies and dev dependencies from a sub package to the root package.json';
 
+  /**
+   * flags
+   */
   static flags = {
     'fail-fast': flags.boolean({
       description:
@@ -26,6 +36,9 @@ export default class Hoist extends Command {
     }),
   };
 
+  /**
+   * implementation
+   */
   async run() {
     const {flags} = this.parse(Hoist);
 
