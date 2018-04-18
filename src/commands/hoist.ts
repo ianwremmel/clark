@@ -17,14 +17,25 @@ export default class Hoist extends Command {
    * flags
    */
   static flags = {
-    'fail-fast': flags.boolean({
+    failFast: flags.boolean({
       description:
         'Fail upon encountering a package that cannot be hoisted, rather than running all to completion',
     }),
-    'package-name': flags.string({
+    'fail-fast': flags.boolean({
+      description: 'Alias of --failFast',
+    }),
+    packageName: flags.string({
       char: 'p',
       description:
         'The package against which to run this command. May be specified more than once.',
+      multiple: true,
+    }),
+    package: flags.string({
+      description: 'alias of --packageName',
+      multiple: true,
+    }),
+    'package-name': flags.string({
+      description: 'alias of --packageName',
       multiple: true,
     }),
     risky: flags.boolean({
@@ -32,6 +43,7 @@ export default class Hoist extends Command {
         'Indicates if clark should attempt to reconcile semver mismatches.',
     }),
     silent: flags.boolean({
+      char: 's',
       description: 'Indicates nothing should be printed to the stdout',
     }),
   };
@@ -40,10 +52,23 @@ export default class Hoist extends Command {
    * implementation
    */
   async run() {
-    const {flags} = this.parse(Hoist);
+    const {args, flags} = this.parse(Hoist);
+
+    flags.packageName = ([] as string[])
+      .concat(flags.packageName)
+      .concat(flags['package-name'])
+      .concat(flags.package)
+      .filter(Boolean);
+
+    if (!flags.packageName.length) {
+      delete flags.packageName;
+    }
+
+    flags.failFast = flags.failFast || flags['fail-fast'];
 
     const options = {
-      packageName: flags['package-name'],
+      ...args,
+      ...flags,
     };
 
     await apply(
@@ -67,9 +92,9 @@ export default class Hoist extends Command {
         },
       },
       async (packageName: string) => {
-        return hoist(packageName, {risky: flags.risky});
+        return hoist(packageName, options);
       },
-      options as apply.InvocationOptions,
+      options,
     );
   }
 }

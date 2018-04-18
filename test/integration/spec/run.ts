@@ -45,7 +45,7 @@ describe('run', () => {
       .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
       .stdout()
       .stderr()
-      .command(['run', 'override', '--silent', '--package-name', 'not-scoped'])
+      .command(['run', 'override', '--silent', '--package', 'not-scoped'])
       .it('invokes within only that package', async (ctx) => {
         assert.equal(ctx.stdout, 'this is an override\n\n');
       });
@@ -60,9 +60,9 @@ describe('run', () => {
         'run',
         'override',
         '--silent',
-        '--package-name',
+        '--package',
         'not-scoped',
-        '--package-name',
+        '--package',
         '@example/scoped-package-the-first',
       ])
       .it('invokes within only those packages', async (ctx) => {
@@ -116,7 +116,7 @@ describe('run', () => {
         'run',
         'override',
         '--silent',
-        '--package-name',
+        '--package',
         '@example/scoped-package-the-first',
       ])
       .it('prefers the packages switch to inferrence', async (ctx) => {
@@ -141,7 +141,7 @@ describe('run', () => {
       .command([
         'run',
         '--silent',
-        '--package-name',
+        '--package',
         '@example/scoped-package-the-first',
         'not-in-clarkrc',
       ])

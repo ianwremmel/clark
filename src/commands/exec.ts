@@ -2,7 +2,6 @@ import {Command, flags} from '@oclif/command';
 
 import {format as f} from '../lib/debug';
 import {apply, exec} from '../lib/packages';
-import {camelizeObject} from '../lib/util';
 
 /**
  * Execute a command in each package directory. Note: commands with spaces and
@@ -18,14 +17,25 @@ export default class Exec extends Command {
    * flags
    */
   static flags = {
-    'fail-fast': flags.boolean({
+    failFast: flags.boolean({
       description:
         'Fail as soon as a command fails, rather than running all to completion',
     }),
-    'package-name': flags.string({
+    'fail-fast': flags.boolean({
+      description: 'Alias of --failFast',
+    }),
+    packageName: flags.string({
       char: 'p',
       description:
         'The package against which to run this command. May be specified more than once.',
+      multiple: true,
+    }),
+    package: flags.string({
+      description: 'alias of --packageName',
+      multiple: true,
+    }),
+    'package-name': flags.string({
+      description: 'alias of --packageName',
       multiple: true,
     }),
     silent: flags.boolean({
@@ -55,12 +65,24 @@ export default class Exec extends Command {
    * implementation
    */
   async run() {
-    const {flags, args, argv} = this.parse(Exec);
+    const {args, argv, flags} = this.parse(Exec);
+
+    flags.packageName = ([] as string[])
+      .concat(flags.packageName)
+      .concat(flags['package-name'])
+      .concat(flags.package)
+      .filter(Boolean);
+
+    if (!flags.packageName.length) {
+      delete flags.packageName;
+    }
+
+    flags.failFast = flags.failFast || flags['fail-fast'];
 
     const options = {
-      ...camelizeObject(flags),
-      ...camelizeObject(args),
-    } as apply.InvocationOptions;
+      ...flags,
+      ...args,
+    };
 
     const command = argv.join(' ');
 
