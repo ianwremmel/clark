@@ -67,7 +67,6 @@ export function spawn(
 
     if (options && options.detached) {
       child.unref();
-      /* eslint no-param-reassign: [0] */
       options.child = child;
     }
   });

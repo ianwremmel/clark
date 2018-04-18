@@ -29,6 +29,10 @@ export function sortObject(obj: object): object {
     );
 }
 
+/**
+ * Additively camleizes the properties of the provided object
+ * @param obj
+ */
 export function camelizeObject(obj: object): object {
   return Object.keys(obj).reduce(
     (acc, key) => {

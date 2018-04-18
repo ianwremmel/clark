@@ -1,4 +1,5 @@
 import rc from 'rc';
+
 import {format as f, makeDebug} from './debug';
 
 const debug = makeDebug(__dirname);

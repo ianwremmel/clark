@@ -8,9 +8,18 @@ import {findProjectRoot, hasRc} from '../lib/project';
 
 const debug = makeDebug(__dirname);
 
+/**
+ * Create a .clarkrc file in your project root
+ */
 export default class Init extends Command {
+  /**
+   * description
+   */
   static description = 'Create a .clarkrc file in your project root';
 
+  /**
+   * flags
+   */
   static flags = {
     force: flags.boolean({
       char: 'f',
@@ -23,6 +32,9 @@ export default class Init extends Command {
     }),
   };
 
+  /**
+   * implementation
+   */
   async run() {
     const {flags: options} = this.parse(Init);
 
@@ -57,7 +69,7 @@ export default class Init extends Command {
     };
 
     debug(f`writing .clarkrc to ${rootDir}`);
-    writeFile(
+    await writeFile(
       resolve(rootDir, '.clarkrc'),
       `${JSON.stringify(config, null, 2)}\n`,
     );

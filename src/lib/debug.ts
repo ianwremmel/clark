@@ -1,9 +1,8 @@
 import chalk from 'chalk';
 import debugFactory, {IDebugger} from 'debug';
 import {readFileSync} from 'fs';
-import invariant from 'invariant';
 import {sync as pkgUp} from 'pkg-up';
-import supportsColor from 'supports-color';
+import * as supportsColor from 'supports-color';
 
 interface ExtendedSupportsColor {
   stdout: boolean;
@@ -19,9 +18,6 @@ const pkg = JSON.parse(readFileSync(pkgUp(__dirname), 'utf-8'));
  * d(f`a string with ${1} variable`);
  */
 export function makeDebug(filename: string): IDebugger {
-  invariant(filename, '$filename is required');
-  invariant(typeof filename === 'string', '$filename must be a string');
-
   const rootName = pkg.name.includes('/')
     ? (pkg.name.split('/').pop() as string)
     : pkg.name;

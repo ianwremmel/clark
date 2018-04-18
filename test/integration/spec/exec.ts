@@ -2,6 +2,10 @@ import {test} from '@oclif/test';
 import {assert} from 'chai';
 import {resolve} from 'path';
 
+/**
+ * helper
+ * @param str
+ */
 function stringToObject(str: string) {
   return str
     .split('\n')

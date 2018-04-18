@@ -69,10 +69,10 @@ export namespace apply {
    * Logger definitions
    */
   export interface Options {
-    before: (packages: string[]) => string;
-    beforeEach: (packageName: string) => string;
-    afterEach: (packageName: string, error?: Error) => string;
-    after: (packages: string[], errors: Error[]) => string;
+    before(packages: string[]): string;
+    beforeEach(packageName: string): string;
+    afterEach(packageName: string, error?: Error): string;
+    after(packages: string[], errors: Error[]): string;
   }
 
   /**
@@ -106,7 +106,7 @@ export namespace apply {
  * @param packageName
  */
 export async function exec(cmd: string, packageName: string): Promise<void> {
-  if (!await isPackage(packageName)) {
+  if (!(await isPackage(packageName))) {
     throw new Error(`"${packageName}" does not appear to identify a package`);
   }
 
@@ -162,7 +162,7 @@ export async function execScript(
   debug(f`Running script ${scriptName} in ${packageName}`);
   if (await hasScript(packageName, scriptName)) {
     debug('Using override script');
-    return await exec(`npm run --silent ${scriptName}`, packageName);
+    return exec(`npm run --silent ${scriptName}`, packageName);
   }
 
   if (!fallbackScript) {
@@ -174,7 +174,7 @@ export async function execScript(
   }
 
   debug(f`Falling back to run ${scriptName} in ${packageName}`);
-  return await exec(fallbackScript, packageName);
+  return exec(fallbackScript, packageName);
 }
 
 /**
@@ -210,7 +210,7 @@ export async function gather(options: gather.Options): Promise<string[]> {
     }
   }
 
-  debug('User did not specify an packages; listing all packages');
+  debug('User did not specify any packages; listing all packages');
   return (await list()).sort();
 }
 
@@ -230,7 +230,7 @@ export namespace gather {
  */
 export async function getPackagePath(packageName: string): Promise<string> {
   await init();
-  if (!await isPackage(packageName)) {
+  if (!(await isPackage(packageName))) {
     throw new Error(`${packageName} does not appear to identify a package`);
   }
   return pathsByPackage.get(packageName);
@@ -299,7 +299,7 @@ export async function hoist(
         debug(
           f`"root ${depName}@${rootVersion} is loosely compatible with ${packageName} ${depName}@${depVersion}`,
         );
-      } catch (err) {
+      } catch {
         debug(
           f`"root ${depName}@${rootVersion} is not loosely compatible with ${packageName} ${depName}@${depVersion}`,
         );
@@ -465,10 +465,11 @@ export async function list(): Promise<string[]> {
  * @param pattern
  */
 async function listPackagesInGlob(pattern: string): Promise<void> {
-  debug(f`Listing packages in ${pattern}`);
+  const cwd = await findProjectRoot();
+  debug(f`Listing packages in ${cwd} matchign ${pattern}`);
   // I'm a little concerned just tacking package.json on the end could break
   // certain glob patterns, but I don't have any proof to back that up.
-  const paths = glob(`${pattern}/package.json`, {cwd: await findProjectRoot()});
+  const paths = glob(`${pattern}/package.json`, {cwd});
   debug(f`Found ${paths.length} directories in ${pattern}`);
 
   for (const packagePath of paths) {
@@ -525,5 +526,5 @@ export async function write(packageName: string, pkg: object) {
   );
   debug(f`Writing package ${packageName} at path ${packagePath}`);
 
-  return await writeFile(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
+  return writeFile(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
 }
