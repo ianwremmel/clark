@@ -17,8 +17,8 @@ import {select} from './version';
 
 const debug = makeDebug(__dirname);
 
-const pathsByPackage = new Map();
-const packagesByPath = new Map();
+let pathsByPackage = new Map();
+let packagesByPath = new Map();
 let initialized = false;
 
 interface EnvObject {
@@ -417,6 +417,17 @@ async function init(): Promise<void> {
       await listPackagesInGlob(pattern);
     }
   }
+}
+
+/**
+ * Only here for testing, this function resets state between tests. (oclif's
+ * test framework runs everything in band, so the way the cache is setup fails
+ * miserably).
+ */
+export function reset() {
+  pathsByPackage = new Map();
+  packagesByPath = new Map();
+  initialized = false;
 }
 
 /**
