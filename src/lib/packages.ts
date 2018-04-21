@@ -485,7 +485,7 @@ export async function list(): Promise<string[]> {
  */
 async function listPackagesInGlob(pattern: string): Promise<void> {
   const cwd = await findProjectRoot();
-  debug(f`Listing packages in ${cwd} matchign ${pattern}`);
+  debug(f`Listing packages in ${cwd} matching ${pattern}`);
   // I'm a little concerned just tacking package.json on the end could break
   // certain glob patterns, but I don't have any proof to back that up.
   const paths = glob(`${pattern}/package.json`, {cwd});
