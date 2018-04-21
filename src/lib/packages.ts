@@ -154,15 +154,19 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
  * @param packageName
  * @param fallbackScript
  */
-export async function execScript(
-  scriptName: string,
-  packageName: string,
-  fallbackScript?: string,
-): Promise<void> {
+export async function execScript({
+  args,
+  fallbackScript,
+  packageName,
+  scriptName,
+}: execScript.Options): Promise<void> {
   debug(f`Running script ${scriptName} in ${packageName}`);
   if (await hasScript(packageName, scriptName)) {
     debug('Using override script');
-    return exec(`npm run --silent ${scriptName}`, packageName);
+    return exec(
+      `npm run --silent ${args ? `${scriptName} -- ${args}` : scriptName}`,
+      packageName,
+    );
   }
 
   if (!fallbackScript) {
@@ -174,7 +178,22 @@ export async function execScript(
   }
 
   debug(f`Falling back to run ${scriptName} in ${packageName}`);
-  return exec(fallbackScript, packageName);
+  return exec(
+    args ? `${fallbackScript} -- ${args}` : fallbackScript,
+    packageName,
+  );
+}
+
+export namespace execScript {
+  /**
+   * Options for execScript()
+   */
+  export interface Options {
+    args?: string;
+    fallbackScript?: string;
+    packageName: string;
+    scriptName: string;
+  }
 }
 
 /**
@@ -466,7 +485,7 @@ export async function list(): Promise<string[]> {
  */
 async function listPackagesInGlob(pattern: string): Promise<void> {
   const cwd = await findProjectRoot();
-  debug(f`Listing packages in ${cwd} matchign ${pattern}`);
+  debug(f`Listing packages in ${cwd} matching ${pattern}`);
   // I'm a little concerned just tacking package.json on the end could break
   // certain glob patterns, but I don't have any proof to back that up.
   const paths = glob(`${pattern}/package.json`, {cwd});
