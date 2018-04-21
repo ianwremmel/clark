@@ -149,4 +149,69 @@ describe('run', () => {
         assert.equal(ctx.stdout, '1\n\n');
       });
   });
+
+  describe('when called with arguments', () => {
+    test
+      .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
+      .stdout()
+      .stderr()
+      .command(['run', '--silent', '--package', 'not-scoped', 'arguable'])
+      .it('proves the example command works', (ctx) => {
+        assert.equal(ctx.stdout, '\n\n');
+      });
+
+    test
+      .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
+      .stdout()
+      .stderr()
+      .command([
+        'run',
+        '--silent',
+        '--package',
+        'not-scoped',
+        'arguable',
+        '--',
+        'firstargument',
+      ])
+      .it('accepts an argument', (ctx) => {
+        assert.equal(ctx.stdout, 'firstargument\n\n');
+      });
+
+    test
+      .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
+      .stdout()
+      .stderr()
+      .command([
+        'run',
+        '--silent',
+        '--package',
+        'not-scoped',
+        'arguable',
+        '--',
+        'firstargument secondargument',
+      ])
+      .it('accepts multiple arguments', (ctx) => {
+        assert.equal(ctx.stdout, 'firstargument secondargument\n\n');
+      });
+
+    test
+      .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
+      .stdout()
+      .stderr()
+      .command([
+        'run',
+        '--silent',
+        '--package',
+        'not-scoped',
+        'arguable',
+        '--',
+        // Our goal is to pass an interpolable string to bash, *not* to have
+        // js interpolate it
+        // tslint:disable-next-line no-invalid-template-strings
+        "'${CLARK_PACKAGE_NAME}'",
+      ])
+      .it('injects environment variables', (ctx) => {
+        assert.equal(ctx.stdout, 'not-scoped\n\n');
+      });
+  });
 });
