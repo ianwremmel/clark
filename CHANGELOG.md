@@ -1,3 +1,11 @@
+<a name="4.1.0"></a>
+# [4.1.0](https://github.com/ianwremmel/clark/compare/v4.0.1...v4.1.0) (2018-04-21)
+
+
+### Features
+
+* **run:** support arbitrary arguments ([a1dcce7](https://github.com/ianwremmel/clark/commit/a1dcce7)), closes [#82](https://github.com/ianwremmel/clark/issues/82)
+
 <a name="4.0.1"></a>
 ## [4.0.1](https://github.com/ianwremmel/clark/compare/v4.0.0...v4.0.1) (2018-04-18)
 
