@@ -62,9 +62,7 @@ export default class Run extends Command {
    * implementation
    */
   async run() {
-    const {args, flags} = this.parse(Run);
-    // saving this for a future feature
-    // const {flags, args, argv} = this.parse(Run);
+    const {flags, args, argv} = this.parse(Run);
 
     flags.packageName = ([] as string[])
       .concat(flags.packageName)
@@ -84,8 +82,9 @@ export default class Run extends Command {
     };
 
     const script = options.script;
-    // saving this for a future feature
-    // const extra = argv.join(' ').replace(script, '');
+    const extra = argv.join(' ').replace(script, '');
+
+    console.error(argv.join(' '), '\n', extra);
 
     const config = load();
     const fallbackScript = config.scripts && config.scripts[script];
@@ -113,7 +112,12 @@ export default class Run extends Command {
         },
       },
       async (packageName) => {
-        await execScript(script, packageName, fallbackScript);
+        await execScript({
+          args: extra,
+          fallbackScript,
+          packageName,
+          scriptName: script,
+        });
       },
       options,
     );
