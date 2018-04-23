@@ -178,10 +178,7 @@ export async function execScript({
   }
 
   debug(f`Falling back to run ${scriptName} in ${packageName}`);
-  return exec(
-    args ? `${fallbackScript} -- ${args}` : fallbackScript,
-    packageName,
-  );
+  return exec(args ? `${fallbackScript} ${args}` : fallbackScript, packageName);
 }
 
 export namespace execScript {
