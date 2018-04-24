@@ -1,3 +1,11 @@
+<a name="4.1.1"></a>
+## [4.1.1](https://github.com/ianwremmel/clark/compare/v4.1.0...v4.1.1) (2018-04-24)
+
+
+### Bug Fixes
+
+* **run:** inject -- only when appropriate ([036cba7](https://github.com/ianwremmel/clark/commit/036cba7)), closes [#120](https://github.com/ianwremmel/clark/issues/120)
+
 <a name="4.1.0"></a>
 # [4.1.0](https://github.com/ianwremmel/clark/compare/v4.0.1...v4.1.0) (2018-04-21)
 
