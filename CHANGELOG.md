@@ -1,3 +1,11 @@
+<a name="4.1.2"></a>
+## [4.1.2](https://github.com/ianwremmel/clark/compare/v4.1.1...v4.1.2) (2018-04-26)
+
+
+### Bug Fixes
+
+* **dependencies:** move tslib to normal dep ([1eaac43](https://github.com/ianwremmel/clark/commit/1eaac43))
+
 <a name="4.1.1"></a>
 ## [4.1.1](https://github.com/ianwremmel/clark/compare/v4.1.0...v4.1.1) (2018-04-24)
 
