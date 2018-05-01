@@ -1,3 +1,11 @@
+<a name="4.1.3"></a>
+## [4.1.3](https://github.com/ianwremmel/clark/compare/v4.1.2...v4.1.3) (2018-05-01)
+
+
+### Bug Fixes
+
+* **tooling:** use sem-rel context for release phase ([d31cd00](https://github.com/ianwremmel/clark/commit/d31cd00)), closes [#140](https://github.com/ianwremmel/clark/issues/140)
+
 <a name="4.1.2"></a>
 ## [4.1.2](https://github.com/ianwremmel/clark/compare/v4.1.1...v4.1.2) (2018-04-26)
 
