@@ -114,7 +114,7 @@ OPTIONS
   --package-name=package-name    alias of --packageName
 ```
 
-_See code: [src/commands/exec.ts](https://github.com/ianwremmel/clark/blob/v4.1.2/src/commands/exec.ts)_
+_See code: [src/commands/exec.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/exec.ts)_
 
 ## `clark help [COMMAND]`
 
@@ -131,7 +131,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.5/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.6/src/commands/help.ts)_
 
 ## `clark hoist`
 
@@ -156,7 +156,7 @@ OPTIONS
   --risky                        Indicates if clark should attempt to reconcile semver mismatches.
 ```
 
-_See code: [src/commands/hoist.ts](https://github.com/ianwremmel/clark/blob/v4.1.2/src/commands/hoist.ts)_
+_See code: [src/commands/hoist.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/hoist.ts)_
 
 ## `clark init`
 
@@ -171,7 +171,7 @@ OPTIONS
   -s, --script=script  Identifies a script to add to the config file
 ```
 
-_See code: [src/commands/init.ts](https://github.com/ianwremmel/clark/blob/v4.1.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/init.ts)_
 
 ## `clark list`
 
@@ -182,7 +182,7 @@ USAGE
   $ clark list
 ```
 
-_See code: [src/commands/list.ts](https://github.com/ianwremmel/clark/blob/v4.1.2/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/list.ts)_
 
 ## `clark run SCRIPT`
 
@@ -201,7 +201,7 @@ OPTIONS
   --package-name=package-name    alias of --packageName
 ```
 
-_See code: [src/commands/run.ts](https://github.com/ianwremmel/clark/blob/v4.1.2/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/run.ts)_
 <!-- commandsstop -->
 
 ## Maintainer
