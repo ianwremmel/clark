@@ -65,7 +65,7 @@ workflows:
           # token to install dev dependencies
           context: read-only
       - release:
-          context: org-global
+          context: semantic-release
           filters:
             branches:
               only: master
