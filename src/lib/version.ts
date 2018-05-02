@@ -2,7 +2,7 @@ import semver from 'semver';
 
 import {format as f, makeDebug} from './debug';
 
-const debug = makeDebug(__dirname);
+const debug = makeDebug(__filename);
 
 /**
  * Range operators
