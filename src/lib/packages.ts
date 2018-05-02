@@ -1,5 +1,5 @@
 import {sync as glob} from 'glob';
-import {readFile, writeFile} from 'mz/fs';
+import {exists, existsSync, readFile, writeFile} from 'mz/fs';
 import {dirname, resolve} from 'path';
 
 import {load} from './config';
@@ -206,6 +206,74 @@ function filterEnv(env: object): object {
 
     return acc;
   }, {});
+}
+
+/**
+ * Lists all the entry points for the specified package
+ * @param packageName
+ */
+export async function findEntryPoints(packageName: string): Promise<string[]> {
+  const pkg = await read(packageName);
+
+  debug(f`listing entrypoints for ${pkg.name}`);
+  if (!pkg.name) {
+    throw new Error('cannot read dependencies for unnamed package');
+  }
+
+  let paths = [];
+
+  if (pkg.main) {
+    debug(f`found main path for ${pkg.name}`);
+    paths.push(pkg.main);
+  }
+
+  if (pkg.bin) {
+    debug(f`found bin entry(s) for ${pkg.name}`);
+    paths = paths.concat(Object.values(pkg.bin));
+  }
+
+  if (pkg.browser) {
+    debug(f`found browser entry(s) for ${pkg.name}`);
+    paths = paths.concat(
+      Object.values(pkg.browser as {
+        [key: string]: string;
+      }).filter((p) => p && !p.startsWith('@')),
+    );
+  }
+
+  const packagePath = await getPackagePath(packageName);
+  const tsconfigPath = resolve(packagePath, 'tsconfig.json');
+
+  debug('checking if this is a typescript project');
+  if (await exists(tsconfigPath)) {
+    debug('this is a typescript project');
+    debug('using tsconfig.json to find all entrypoints');
+    const tsconfig = JSON.parse(await readFile(tsconfigPath, 'utf-8')) as {
+      include: string[];
+    };
+
+    for (const pattern of tsconfig.include) {
+      paths = paths.concat(
+        glob(pattern, {cwd: packagePath, nodir: true}).filter(
+          (p) => p.endsWith('.ts') || p.endsWith('.tsx'),
+        ),
+      );
+    }
+  }
+
+  debug(paths);
+
+  const testPattern = /[\.-]spec|test\.[jt]sx?$/;
+  return (
+    paths
+      .map((p) => resolve(packagePath, p))
+      // filter out test files
+      .filter((p) => !testPattern.test(p))
+      // filter out files that don't exist. this may happen, in particular, in
+      // scenarios where we're relying on tsconfig.json to identify source files
+      // instead of main/bin to identify built artifacts.
+      .filter((p) => existsSync(p))
+  );
 }
 
 /**
