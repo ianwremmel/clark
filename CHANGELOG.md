@@ -1,3 +1,16 @@
+<a name="4.2.0"></a>
+# [4.2.0](https://github.com/ianwremmel/clark/compare/v4.1.3...v4.2.0) (2018-05-02)
+
+
+### Bug Fixes
+
+* **all:** use debug correctly ([4d1ad56](https://github.com/ianwremmel/clark/commit/4d1ad56))
+
+
+### Features
+
+* **deps:** implement deps:generate ([bdd5fcf](https://github.com/ianwremmel/clark/commit/bdd5fcf)), closes [#141](https://github.com/ianwremmel/clark/issues/141)
+
 <a name="4.1.3"></a>
 ## [4.1.3](https://github.com/ianwremmel/clark/compare/v4.1.2...v4.1.3) (2018-05-01)
 

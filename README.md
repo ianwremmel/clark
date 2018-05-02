@@ -90,12 +90,35 @@ Simply add your package directories the `include` section of `.clarkrc`.
 ### Commands
 
 <!-- commands -->
+* [`clark deps:generate`](#clark-depsgenerate)
 * [`clark exec COMMAND`](#clark-exec-command)
 * [`clark help [COMMAND]`](#clark-help-command)
 * [`clark hoist`](#clark-hoist)
 * [`clark init`](#clark-init)
 * [`clark list`](#clark-list)
 * [`clark run SCRIPT`](#clark-run-script)
+
+## `clark deps:generate`
+
+Generate package depencies
+
+```
+USAGE
+  $ clark deps:generate
+
+OPTIONS
+  -p, --packageName=packageName  The package for which to generate dependencies. May be specified more than once
+  -s, --silent                   Indicates nothing should be printed to the stdout
+  --fail-fast                    Alias of --failFast
+  --failFast                     Stop on first failure
+  --package=package              alias of --packageName
+  --package-name=package-name    alias of --packageName
+
+ALIASES
+  $ clark deps:generate
+```
+
+_See code: [src/commands/deps/generate.ts](https://github.com/ianwremmel/clark/blob/v4.2.0/src/commands/deps/generate.ts)_
 
 ## `clark exec COMMAND`
 
@@ -114,7 +137,7 @@ OPTIONS
   --package-name=package-name    alias of --packageName
 ```
 
-_See code: [src/commands/exec.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/exec.ts)_
+_See code: [src/commands/exec.ts](https://github.com/ianwremmel/clark/blob/v4.2.0/src/commands/exec.ts)_
 
 ## `clark help [COMMAND]`
 
@@ -156,7 +179,7 @@ OPTIONS
   --risky                        Indicates if clark should attempt to reconcile semver mismatches.
 ```
 
-_See code: [src/commands/hoist.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/hoist.ts)_
+_See code: [src/commands/hoist.ts](https://github.com/ianwremmel/clark/blob/v4.2.0/src/commands/hoist.ts)_
 
 ## `clark init`
 
@@ -171,7 +194,7 @@ OPTIONS
   -s, --script=script  Identifies a script to add to the config file
 ```
 
-_See code: [src/commands/init.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/ianwremmel/clark/blob/v4.2.0/src/commands/init.ts)_
 
 ## `clark list`
 
@@ -182,7 +205,7 @@ USAGE
   $ clark list
 ```
 
-_See code: [src/commands/list.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/ianwremmel/clark/blob/v4.2.0/src/commands/list.ts)_
 
 ## `clark run SCRIPT`
 
@@ -201,7 +224,7 @@ OPTIONS
   --package-name=package-name    alias of --packageName
 ```
 
-_See code: [src/commands/run.ts](https://github.com/ianwremmel/clark/blob/v4.1.3/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/ianwremmel/clark/blob/v4.2.0/src/commands/run.ts)_
 <!-- commandsstop -->
 
 ## Maintainer
