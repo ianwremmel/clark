@@ -1,3 +1,11 @@
+<a name="4.2.1"></a>
+## [4.2.1](https://github.com/ianwremmel/clark/compare/v4.2.0...v4.2.1) (2018-05-02)
+
+
+### Bug Fixes
+
+* **deps:** use correct relative paths for file: deps ([196be86](https://github.com/ianwremmel/clark/commit/196be86)), closes [#152](https://github.com/ianwremmel/clark/issues/152)
+
 <a name="4.2.0"></a>
 # [4.2.0](https://github.com/ianwremmel/clark/compare/v4.1.3...v4.2.0) (2018-05-02)
 
