@@ -1,9 +1,9 @@
 import {existsSync, readFileSync} from 'fs';
-import {dirname, resolve} from 'path';
+import {dirname, join, resolve} from 'path';
 
 import {format as f, makeDebug} from './debug';
 import detective from './detective';
-import {findEntryPoints, read, write} from './packages';
+import {findEntryPoints, getPackagePath, read, write} from './packages';
 import {read as readProject} from './project';
 
 const debug = makeDebug(__filename);
@@ -20,14 +20,34 @@ interface VersionedDependencies {
  * Adds version strings from the root package.json to the passed in set of
  * dependencies.s
  * @param deps
+ * @param packageName - needed so we can determine how to update local file:
+ * paths
  */
 async function addVersionsToDeps(
   deps: string[],
+  packageName: string,
 ): Promise<VersionedDependencies> {
   const proj = await readProject();
+  const descender = join(
+    ...Array((await getPackagePath(packageName)).split('/').length).fill('..'),
+  );
+
+  debug(f`Adding versions for ${packageName} dependencies`);
   return deps.reduce(
     (acc, dep) => {
-      acc[dep] = proj.dependencies[dep];
+      let version = proj.dependencies[dep];
+      debug(f`found ${version} for ${dep}`);
+      if (version.startsWith('file:')) {
+        debug(
+          f`${version} is a local path. making it relative to ${packageName}`,
+        );
+        const relPath = version.replace(/^file:\/*/, '');
+        const newVersion = `file:${join(descender, relPath)}`;
+        debug(f`replacing ${version} with ${newVersion}`);
+        version = newVersion;
+      }
+
+      acc[dep] = version;
       return acc;
     },
     {} as VersionedDependencies,
@@ -109,7 +129,7 @@ function findRequires(filePath: string): string[] {
 export async function generate(packageName: string) {
   const deps = await list(packageName);
 
-  const versionedDeps = await addVersionsToDeps(deps);
+  const versionedDeps = await addVersionsToDeps(deps, packageName);
 
   const pkg = await read(packageName);
   pkg.dependencies = versionedDeps;
