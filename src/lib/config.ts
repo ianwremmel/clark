@@ -2,7 +2,7 @@ import rc from 'rc';
 
 import {format as f, makeDebug} from './debug';
 
-const debug = makeDebug(__dirname);
+const debug = makeDebug(__filename);
 
 /**
  * Root of the config object

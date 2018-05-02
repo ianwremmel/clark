@@ -27,7 +27,7 @@ export function makeDebug(filename: string): IDebugger {
       .substr(filename.indexOf(rootName))
       .replace('src/', '')
       .replace(/\/|\\/g, ':')
-      .replace(/.js$/, ''),
+      .replace(/.[jt]sx?$/, ''),
   );
 }
 
