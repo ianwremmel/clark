@@ -6,7 +6,7 @@ import {Config, ScriptConfig} from '../lib/config';
 import {format as f, makeDebug} from '../lib/debug';
 import {findProjectRoot, hasRc} from '../lib/project';
 
-const debug = makeDebug(__dirname);
+const debug = makeDebug(__filename);
 
 /**
  * Create a .clarkrc file in your project root

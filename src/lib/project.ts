@@ -5,7 +5,7 @@ import {resolve} from 'path';
 
 import {format as f, makeDebug} from './debug';
 
-const debug = makeDebug(__dirname);
+const debug = makeDebug(__filename);
 
 /**
  * Locates the monorepo's root based on various heuristics including existence

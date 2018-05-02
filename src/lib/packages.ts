@@ -15,7 +15,7 @@ import {spawn} from './spawn';
 import {sortObject} from './util';
 import {select} from './version';
 
-const debug = makeDebug(__dirname);
+const debug = makeDebug(__filename);
 
 let pathsByPackage = new Map();
 let packagesByPath = new Map();
