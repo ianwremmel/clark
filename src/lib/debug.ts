@@ -67,10 +67,16 @@ export function colorize(value: any): string {
     case 'number':
       return chalk.yellow(value);
     case 'string':
-      if (value.includes('/')) {
-        return chalk.green(value);
+      // node modules
+      if (value.startsWith('@')) {
+        return chalk.cyan(value);
       }
-      return chalk.blue(value);
+      // filenames
+      if (value.includes('/')) {
+        return chalk.blue(value);
+      }
+      // strings
+      return chalk.yellow(value);
     default:
       return chalk.grey(value);
   }
