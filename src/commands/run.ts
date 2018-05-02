@@ -97,9 +97,9 @@ export default class Run extends Command {
           f`Running ${script} against ${packageName}`,
         afterEach: (packageName, error) => {
           if (error) {
-            return `${script} failed against ${packageName}`;
+            return f`${script} failed against ${packageName}`;
           }
-          return `Ran ${script} against ${packageName}`;
+          return f`Ran ${script} against ${packageName}`;
         },
         after: (packages, errors) => {
           if (errors.length) {
@@ -108,7 +108,7 @@ export default class Run extends Command {
             } packages\n> ${script}\n`;
           }
 
-          return `Ran ${script} successfully against ${packages.length}`;
+          return f`Ran ${script} successfully against ${packages.length}`;
         },
       },
       async (packageName) => {
