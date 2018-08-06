@@ -91,7 +91,7 @@
     "prettier": "^1.12.1",
     "rimraf": "^2.6.2",
     "semantic-release": "^15.0.3",
-    "ts-node": "^6.0.0",
+    "ts-node": "^7.0.0",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
     "tslint-language-service": "^0.9.8",
