@@ -11,7 +11,8 @@ export default class Exec extends Command {
   /**
    * description
    */
-  static description = 'Execute a command in each package directory. Note: commands with spaces and pipes are supported, but must be wrapped in quotes.';
+  static description =
+    'Execute a command in each package directory. Note: commands with spaces and pipes are supported, but must be wrapped in quotes.';
 
   /**
    * flags
