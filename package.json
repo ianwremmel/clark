@@ -14,7 +14,6 @@
     "prebuild": "npm run clean",
     "build": "tsc",
     "clean": "rimraf dist lib",
-    "commitmsg": "npm run --silent lint:commitmsg",
     "lint": "npm run --silent lint:js && npm run --silent lint:ts && npm run --silent lint:changelog",
     "lint:changelog": "commitlint --from origin/master --to HEAD",
     "lint:commitmsg": "commitlint -e",
@@ -24,7 +23,6 @@
     "lint:ts": "npm run --slient lint:tslint -- './src/**/*.ts' && tsc --noemit",
     "lint:staged": "lint-staged",
     "mocha-reporter-options": "[ -n \"${CI}\" ] && echo '--reporter xunit --reporter-options output=reports/junit/mocha.xml'",
-    "precommit": "npm run --silent lint:staged",
     "presemantic-release": "npm run build",
     "semantic-release": "semantic-release -e @oclif/semantic-release",
     "postpack": "rm -f .oclif.manifest.json",
@@ -126,5 +124,11 @@
   "types": "lib/index.d.ts",
   "release": {
     "verifyConditions": "condition-circle"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "npm run --silent lint:commitmsg",
+      "pre-commit": "npm run --silent lint:staged"
+    }
   }
 }
