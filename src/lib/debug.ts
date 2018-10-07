@@ -33,8 +33,6 @@ export function makeDebug(filename: string): IDebugger {
 
 /**
  * Formatter for template strings.
- * @param literals
- * @param placeholders
  */
 export function format(
   literals: TemplateStringsArray,
@@ -54,7 +52,6 @@ export function format(
 
 /**
  * Colorizes variables for template string
- * @param value
  */
 export function colorize(value: any): string {
   if (!((supportsColor as any) as ExtendedSupportsColor).stdout) {

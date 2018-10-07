@@ -23,10 +23,12 @@ export function spawn(
 
     debug(f`Running ${cmd} ${args.join(' ')}`);
 
-    const opts = {
+    const {child: _child, ...rest} = options || {child: null};
+
+    const opts: cpSpawnOptions = {
       detached: false,
       stdio: process.env.NODE_ENV === 'test' ? undefined : 'inherit',
-      ...options,
+      ...rest,
     };
     const child = cpSpawn(cmd, args, opts);
 
@@ -95,11 +97,11 @@ export namespace spawn {
     /**
      * exit code of the ChildProcess
      */
-    code: number = 0;
+    code = 0;
 
     /**
      * stderr output of the ChildProcess
      */
-    data: string = '';
+    data = '';
   }
 }

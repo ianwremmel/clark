@@ -11,7 +11,8 @@ export default class Hoist extends Command {
   /**
    * description
    */
-  static description = 'Migrate dependencies and dev dependencies from a sub package to the root package.json';
+  static description =
+    'Migrate dependencies and dev dependencies from a sub package to the root package.json';
 
   /**
    * flags
