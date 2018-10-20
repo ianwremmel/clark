@@ -3,12 +3,10 @@ import {resolve as pathResolve} from 'path';
 
 /**
  * Reads a file in the specified fixture directory
- * @param filename
- * @param fixture
  */
 export async function readFile(
   filename: string,
-  fixture: string = 'monorepo',
+  fixture = 'monorepo',
 ): Promise<string> {
   const fullFileName = pathResolve(rootDir(fixture), filename);
   return fsReadFile(fullFileName, 'utf-8');
@@ -16,8 +14,7 @@ export async function readFile(
 
 /**
  * Finds the root directory for the specified fixture monorepo
- * @param fixture
  */
-export function rootDir(fixture: string = 'monorepo') {
+export function rootDir(fixture = 'monorepo') {
   return pathResolve(__dirname, '..', 'fixtures', fixture);
 }
