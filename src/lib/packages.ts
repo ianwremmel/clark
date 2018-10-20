@@ -102,8 +102,6 @@ export namespace apply {
 
 /**
  * Executes the specified command against the specified package
- * @param cmd
- * @param packageName
  */
 export async function exec(cmd: string, packageName: string): Promise<void> {
   if (!(await isPackage(packageName))) {
@@ -150,9 +148,6 @@ export async function exec(cmd: string, packageName: string): Promise<void> {
  * does not have a definition for the script and fallbackScript is provided,
  * then fallbackScript will be executed directly (i.e., run as a bash command,
  * not as an npm script).
- * @param scriptName
- * @param packageName
- * @param fallbackScript
  */
 export async function execScript({
   args,
@@ -196,7 +191,6 @@ export namespace execScript {
 /**
  * Removes any `CLARK_` prefixed variables from env before passing them to
  * `spawn()`.
- * @param env
  */
 function filterEnv(env: object): object {
   return Object.entries(env).reduce<EnvObject>((acc, [key, value]) => {
@@ -210,7 +204,6 @@ function filterEnv(env: object): object {
 
 /**
  * Lists all the entry points for the specified package
- * @param packageName
  */
 export async function findEntryPoints(packageName: string): Promise<string[]> {
   const pkg = await read(packageName);
@@ -279,7 +272,6 @@ export async function findEntryPoints(packageName: string): Promise<string[]> {
 /**
  * Higher-level version of that "does the right thing" whether packageName is
  * provided or not.
- * @param options
  */
 export async function gather(options: gather.Options): Promise<string[]> {
   options = await infer(options);
@@ -310,7 +302,6 @@ export namespace gather {
 /**
  * Returns the relative path from the monorepo root to the directory containing
  * the specified package's package.json.
- * @param packageName
  */
 export async function getPackagePath(packageName: string): Promise<string> {
   await init();
@@ -323,8 +314,6 @@ export async function getPackagePath(packageName: string): Promise<string> {
 /**
  * Indicates if the specified package has an implementation of the specified
  * npm script
- * @param packageName
- * @param scriptName
  */
 export async function hasScript(
   packageName: string,
@@ -347,7 +336,6 @@ export async function hasScript(
  * dependencies and devDepenencies are combined because the distinction loses
  * meaning in a monorepo (arguably, they should all be devDependencies, but
  * that's not where `npm install` defaults).
- * @param packageName
  */
 export async function hoist(
   packageName: string,
@@ -436,7 +424,6 @@ export namespace hoist {
 
 /**
  * Attempts to infer the intended packageName from the current directory
- * @param options
  */
 export async function infer(
   options: MaybeSpecifiesPackageName,
@@ -516,7 +503,6 @@ export function reset() {
 
 /**
  * Indicates if the given packageName identifies a package in the monorpeo
- * @param packageName
  */
 export async function isPackage(packageName: string): Promise<boolean> {
   await init();
@@ -525,7 +511,6 @@ export async function isPackage(packageName: string): Promise<boolean> {
 
 /**
  * Indicates if the given directory contains a package
- * @param dir
  */
 export async function isPackagePath(dir: string): Promise<boolean> {
   await init();
@@ -545,8 +530,6 @@ export async function list(): Promise<string[]> {
 
 /**
  * Loads all packages found in a particular glob pattern
- *
- * @param pattern
  */
 async function listPackagesInGlob(pattern: string): Promise<void> {
   const cwd = await findProjectRoot();
@@ -585,7 +568,6 @@ export async function listPaths(): Promise<string[]> {
 
 /**
  * Reads a package.json from the monorepo
- * @param packageName
  */
 export async function read(packageName: string) {
   const packagePath = resolve(
@@ -599,8 +581,6 @@ export async function read(packageName: string) {
 
 /**
  * Writes a new package.json to the appropriate package
- * @param packageName
- * @param pkg
  */
 export async function write(packageName: string, pkg: object) {
   const packagePath = resolve(

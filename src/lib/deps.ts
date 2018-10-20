@@ -19,7 +19,6 @@ interface VersionedDependencies {
 /**
  * Adds version strings from the root package.json to the passed in set of
  * dependencies.s
- * @param deps
  * @param packageName - needed so we can determine how to update local file:
  * paths
  */
@@ -56,7 +55,6 @@ async function addVersionsToDeps(
 
 /**
  * Strips path segments off of require statements
- * @param requires
  */
 function convertRequiresToDeps(requires: string[]): string[] {
   requires = Array.from(new Set(requires))
@@ -78,7 +76,6 @@ function convertRequiresToDeps(requires: string[]): string[] {
 /**
  * Finds all of the require/import statements for specified file *and its local
  * dependencies*
- * @param filePath
  */
 function findRequires(filePath: string): string[] {
   if (visited.has(filePath)) {
@@ -124,7 +121,6 @@ function findRequires(filePath: string): string[] {
 /**
  * Generate dependencies for the specified package by walking the code found at
  * its entrypoints.
- * @param packageName
  */
 export async function generate(packageName: string) {
   const deps = await list(packageName);
@@ -138,7 +134,6 @@ export async function generate(packageName: string) {
 
 /**
  * Lists dependencies for the specified package
- * @param packageName
  */
 export async function list(packageName: string): Promise<string[]> {
   const entrypoints = await findEntryPoints(packageName);
@@ -155,7 +150,6 @@ export async function list(packageName: string): Promise<string[]> {
 
 /**
  * Loads a source file
- * @param filePath
  */
 function loadSource(filePath: string): string {
   if (!existsSync(filePath)) {

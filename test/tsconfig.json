@@ -2,10 +2,14 @@
   "declaration": false,
   "extends": "../tsconfig",
   "compilerOptions": {
-    "sourceMap": true
+    "baseUrl": ".",
+    "sourceMap": true,
+    "paths": {
+      "builtins": ["../src/types/builtins"],
+      "node-source-walk": ["../src/types/node-source-walk"],
+      "pkg-up": ["../src/types/pkg-up"],
+      "typescript-eslint-parser": ["../src/types/typescript-eslint-parser"]
+    }
   },
-  "include": [
-    "./**/*",
-    "../src/**/*"
-  ]
+  "include": ["./**/*", "../src/**/*"]
 }

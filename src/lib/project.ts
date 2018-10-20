@@ -31,7 +31,6 @@ export async function findProjectRoot(): Promise<string> {
 
 /**
  * Indicates if this project has a .clarkrc file
- * @param rootDir
  */
 export async function hasRc(rootDir: string): Promise<boolean> {
   debug(f`checking if ${rootDir} contains '.clarkrc'`);
@@ -43,7 +42,6 @@ export async function hasRc(rootDir: string): Promise<boolean> {
 /**
  * Determines whether the given paths describe an alle monorepo by checking for
  * a packages/node_modules path in all of them.
- * @param paths
  */
 export function isAlleRepo(paths: string[]): boolean {
   return paths.every((packagePath) =>
