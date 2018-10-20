@@ -1,3 +1,15 @@
+# [5.0.0](https://github.com/ianwremmel/clark/compare/v4.2.1...v5.0.0) (2018-10-20)
+
+
+### Tests
+
+* update tests to deal with oclif parsing strictness ([1096cb7](https://github.com/ianwremmel/clark/commit/1096cb7))
+
+
+### BREAKING CHANGES
+
+* positional arguments must come before flags apparently due to a change in the oclif parser
+
 <a name="4.2.1"></a>
 ## [4.2.1](https://github.com/ianwremmel/clark/compare/v4.2.0...v4.2.1) (2018-05-02)
 

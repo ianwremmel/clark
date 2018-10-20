@@ -118,7 +118,7 @@ ALIASES
   $ clark deps:generate
 ```
 
-_See code: [src/commands/deps/generate.ts](https://github.com/ianwremmel/clark/blob/v4.2.1/src/commands/deps/generate.ts)_
+_See code: [src/commands/deps/generate.ts](https://github.com/ianwremmel/clark/blob/v5.0.0/src/commands/deps/generate.ts)_
 
 ## `clark exec COMMAND`
 
@@ -137,7 +137,7 @@ OPTIONS
   --package-name=package-name    alias of --packageName
 ```
 
-_See code: [src/commands/exec.ts](https://github.com/ianwremmel/clark/blob/v4.2.1/src/commands/exec.ts)_
+_See code: [src/commands/exec.ts](https://github.com/ianwremmel/clark/blob/v5.0.0/src/commands/exec.ts)_
 
 ## `clark help [COMMAND]`
 
@@ -154,7 +154,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.7/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
 
 ## `clark hoist`
 
@@ -179,7 +179,7 @@ OPTIONS
   --risky                        Indicates if clark should attempt to reconcile semver mismatches.
 ```
 
-_See code: [src/commands/hoist.ts](https://github.com/ianwremmel/clark/blob/v4.2.1/src/commands/hoist.ts)_
+_See code: [src/commands/hoist.ts](https://github.com/ianwremmel/clark/blob/v5.0.0/src/commands/hoist.ts)_
 
 ## `clark init`
 
@@ -194,7 +194,7 @@ OPTIONS
   -s, --script=script  Identifies a script to add to the config file
 ```
 
-_See code: [src/commands/init.ts](https://github.com/ianwremmel/clark/blob/v4.2.1/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/ianwremmel/clark/blob/v5.0.0/src/commands/init.ts)_
 
 ## `clark list`
 
@@ -205,7 +205,7 @@ USAGE
   $ clark list
 ```
 
-_See code: [src/commands/list.ts](https://github.com/ianwremmel/clark/blob/v4.2.1/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/ianwremmel/clark/blob/v5.0.0/src/commands/list.ts)_
 
 ## `clark run SCRIPT`
 
@@ -224,7 +224,7 @@ OPTIONS
   --package-name=package-name    alias of --packageName
 ```
 
-_See code: [src/commands/run.ts](https://github.com/ianwremmel/clark/blob/v4.2.1/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/ianwremmel/clark/blob/v5.0.0/src/commands/run.ts)_
 <!-- commandsstop -->
 
 ## Maintainer
