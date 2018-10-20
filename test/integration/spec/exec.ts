@@ -78,10 +78,10 @@ describe('exec', () => {
     .stderr()
     .command([
       'exec',
+      'env | grep CLARK | grep -v CLARK_ENV',
       '--silent',
       '--package',
       '@example/scoped-package-the-first',
-      'env | grep CLARK | grep -v CLARK_ENV',
     ])
     .it('injects useful environment variables', async (ctx) => {
       // strip out this project's path so we can write consistent assertions
@@ -113,7 +113,7 @@ describe('exec', () => {
       .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
       .stdout()
       .stderr()
-      .command(['exec', '--silent', '--package', 'not-scoped', 'pwd'])
+      .command(['exec', 'pwd', '--silent', '--package', 'not-scoped'])
       .it(
         'executes a comand in the specified package directory',
         async (ctx) => {
@@ -138,12 +138,12 @@ describe('exec', () => {
       .stderr()
       .command([
         'exec',
+        'pwd',
         '--silent',
         '--package',
         '@example/scoped-package-the-first',
         '--package',
         '@example/scoped-package-the-second',
-        'pwd',
       ])
       .it(
         'executes a command in each specified package directory',
@@ -172,11 +172,11 @@ describe('exec', () => {
       .stderr()
       .command([
         'exec',
+        'pwd',
         '--fail-fast',
         '--silent',
         '--package',
         'not-a-package',
-        'pwd',
       ])
       .catch((err) => {
         assert.include(
