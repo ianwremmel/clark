@@ -6,7 +6,6 @@ interface AnyObject {
 
 /**
  * Returns a new clone of `obj` with its keys sorted alphabetically
- * @param obj
  */
 export function sortObject(obj: object): object {
   return Object.entries(obj)
@@ -31,7 +30,6 @@ export function sortObject(obj: object): object {
 
 /**
  * Additively camleizes the properties of the provided object
- * @param obj
  */
 export function camelizeObject(obj: object): object {
   return Object.keys(obj).reduce(

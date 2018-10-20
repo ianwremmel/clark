@@ -24,7 +24,6 @@ const enum RangeOperator {
 
 /**
  * Removes the range operator from a version string and converts it to a SemVer
- * @param version
  */
 function extractExactVersion(version: string): string {
   const exact = semver.clean(
@@ -40,7 +39,6 @@ function extractExactVersion(version: string): string {
 
 /**
  * Extracts the range modififer from a semver string
- * @param version
  */
 function extractRangeOperator(version: string): RangeOperator {
   if (version.startsWith('^')) {
@@ -55,8 +53,6 @@ function extractRangeOperator(version: string): RangeOperator {
 
 /**
  * Determines the most permissive range operator between two version strings
- * @param left
- * @param right
  */
 function extractMostPermissiveOperator(
   left: string,
@@ -78,8 +74,6 @@ function extractMostPermissiveOperator(
 
 /**
  * Indicates if two version strings have the same range operator
- * @param left
- * @param right
  */
 function hasSameOperator(left: string, right: string): boolean {
   const leftType = extractRangeOperator(left);
@@ -90,8 +84,6 @@ function hasSameOperator(left: string, right: string): boolean {
 /**
  * Selects the greater of two semver ranges combined with their most permissive
  * range operator
- * @param left
- * @param right
  */
 export function select(left: string | null, right: string | null): string {
   debug(f`checking if ${left} and ${right} are compatible`);

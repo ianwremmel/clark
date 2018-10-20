@@ -7,7 +7,6 @@ const debug = makeDebug(__filename);
 
 /**
  * Given a piece of sourcecode, locates its import statements
- * @param src
  */
 export default function detective(src: string) {
   if (src === '') {
@@ -47,8 +46,6 @@ type Node = any;
 
 /**
  * Uses walker to search src for import/require statements.
- * @param walker
- * @param src
  */
 function walk(walker: Walker, src: string) {
   const dependencies: string[] = [];

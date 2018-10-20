@@ -35,8 +35,6 @@ declare module 'node-source-walk' {
 
     /**
      * walk
-     * @param src
-     * @param callback
      */
     walk(src: string, callback: (node: Node) => void): void;
   }
