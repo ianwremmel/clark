@@ -1,6 +1,6 @@
 {
   "name": "@ianwremmel/clark",
-  "version": "4.2.1",
+  "version": "5.0.0",
   "description": "Monorepo tools",
   "bin": {
     "clark": "bin/run"
