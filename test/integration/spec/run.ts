@@ -140,10 +140,10 @@ describe('run', () => {
       .stderr()
       .command([
         'run',
+        'not-in-clarkrc',
         '--silent',
         '--package',
         '@example/scoped-package-the-first',
-        'not-in-clarkrc',
       ])
       .it('supports --package', async (ctx) => {
         assert.equal(ctx.stdout, '1\n\n');
@@ -155,7 +155,7 @@ describe('run', () => {
       .do(() => process.chdir(resolve(__dirname, '../fixtures/monorepo')))
       .stdout()
       .stderr()
-      .command(['run', '--silent', '--package', 'not-scoped', 'arguable'])
+      .command(['run', 'arguable', '--silent', '--package', 'not-scoped'])
       .it('proves the example command works', (ctx) => {
         assert.equal(ctx.stdout, '\n\n');
       });
@@ -166,10 +166,10 @@ describe('run', () => {
       .stderr()
       .command([
         'run',
+        'arguable',
         '--silent',
         '--package',
         'not-scoped',
-        'arguable',
         '--',
         'firstargument',
       ])
@@ -183,10 +183,10 @@ describe('run', () => {
       .stderr()
       .command([
         'run',
+        'arguable',
         '--silent',
         '--package',
         'not-scoped',
-        'arguable',
         '--',
         'firstargument secondargument',
       ])
@@ -200,10 +200,10 @@ describe('run', () => {
       .stderr()
       .command([
         'run',
+        'arguable',
         '--silent',
         '--package',
         'not-scoped',
-        'arguable',
         '--',
         // Our goal is to pass an interpolable string to bash, *not* to have
         // js interpolate it
