@@ -4,7 +4,6 @@ import {resolve} from 'path';
 
 /**
  * helper
- * @param str
  */
 function stringToObject(str: string) {
   return str
