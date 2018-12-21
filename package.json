@@ -50,7 +50,7 @@
     "rc": "^1.2.8",
     "semver": "^5.5.1",
     "string": "^3.3.3",
-    "supports-color": "^5.5.0",
+    "supports-color": "^6.0.0",
     "tslib": "^1.9.3",
     "typescript-eslint-parser": "^21.0.0"
   },
