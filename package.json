@@ -52,7 +52,7 @@
     "string": "^3.3.3",
     "supports-color": "^6.0.0",
     "tslib": "^1.9.3",
-    "typescript-eslint-parser": "^21.0.0"
+    "typescript-eslint-parser": "^22.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.0.0",
