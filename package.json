@@ -64,7 +64,7 @@
     "@oclif/test": "^1.2.1",
     "@oclif/tslint": "^3.1.0",
     "@types/chai": "^4.1.6",
-    "@types/debug": "4.1.0",
+    "@types/debug": "4.1.1",
     "@types/find-root": "^1.1.0",
     "@types/glob": "^7.1.1",
     "@types/invariant": "^2.2.29",
