@@ -55,7 +55,7 @@
     "typescript-eslint-parser": "^22.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^7.0.0",
+    "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^7.1.2",
     "@ianwremmel/eslint-config-base": "^1.0.0",
     "@ianwremmel/eslint-config-standard": "^1.2.0",
