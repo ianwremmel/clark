@@ -1,6 +1,7 @@
+import {readFileSync} from 'fs';
+
 import chalk from 'chalk';
 import debugFactory, {IDebugger} from 'debug';
-import {readFileSync} from 'fs';
 import {sync as pkgUp} from 'pkg-up';
 import * as supportsColor from 'supports-color';
 

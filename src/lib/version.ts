@@ -119,9 +119,8 @@ export function select(left: string | null, right: string | null): string {
     debug(f`${left} and ${right} have the same range operator`);
     if (semver.gt(leftExact, rightExact)) {
       return left;
-    } else {
-      return right;
     }
+    return right;
   }
 
   debug(f`${left} and ${right} do not have the same range operator`);

@@ -1,7 +1,8 @@
-import {test} from '@oclif/test';
-import {assert} from 'chai';
 import {execSync} from 'child_process';
 import {resolve} from 'path';
+
+import {test} from '@oclif/test';
+import {assert} from 'chai';
 
 import {readFile} from '../lib/run';
 

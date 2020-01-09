@@ -94,9 +94,7 @@ export default class Exec extends Command {
         },
         after: (packages, errors) => {
           if (errors.length) {
-            return f`clark exec failed to execute the following command against ${
-              errors.length
-            } packages\n> ${command}\n`;
+            return f`clark exec failed to execute the following command against ${errors.length} packages\n> ${command}\n`;
           }
 
           return `Ran ${command} successfully against ${packages.length}`;

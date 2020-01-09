@@ -81,7 +81,6 @@ function walk(walker: Walker, src: string) {
 
         break;
       default:
-        return;
     }
   });
   return dependencies;

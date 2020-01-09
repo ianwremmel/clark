@@ -1,8 +1,9 @@
+import {execSync} from 'child_process';
+import {resolve} from 'path';
+
 import {test} from '@oclif/test';
 import {assert} from 'chai';
-import {execSync} from 'child_process';
 import {sync as glob} from 'glob';
-import {resolve} from 'path';
 
 import {readFile, rootDir} from '../lib/run';
 

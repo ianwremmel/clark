@@ -21,11 +21,12 @@ describe('version', () => {
     });
 
     it('selects the only version specified if the other is null', () => {
-      [['^1.1.0', null, '^1.1.0'], [null, '^1.1.0', '^1.1.0']].forEach(
-        ([left, right, correct]) => {
-          assert.equal(select(left, right), correct);
-        },
-      );
+      [
+        ['^1.1.0', null, '^1.1.0'],
+        [null, '^1.1.0', '^1.1.0'],
+      ].forEach(([left, right, correct]) => {
+        assert.equal(select(left, right), correct);
+      });
     });
 
     it('selects the more permissive of two compatible semver ranges', () => {

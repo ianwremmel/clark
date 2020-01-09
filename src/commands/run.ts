@@ -104,9 +104,7 @@ export default class Run extends Command {
         },
         after: (packages, errors) => {
           if (errors.length) {
-            return f`clark run failed to execute the following command against ${
-              errors.length
-            } packages\n> ${script}\n`;
+            return f`clark run failed to execute the following command against ${errors.length} packages\n> ${script}\n`;
           }
 
           return f`Ran ${script} successfully against ${packages.length}`;

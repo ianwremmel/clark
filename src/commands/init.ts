@@ -1,6 +1,7 @@
+import {resolve} from 'path';
+
 import {Command, flags} from '@oclif/command';
 import {writeFile} from 'mz/fs';
-import {resolve} from 'path';
 
 import {Config, ScriptConfig} from '../lib/config';
 import {format as f, makeDebug} from '../lib/debug';

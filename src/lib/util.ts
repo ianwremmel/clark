@@ -19,25 +19,19 @@ export function sortObject(obj: object): object {
 
       return 0;
     })
-    .reduce(
-      (acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      },
-      {} as AnyObject,
-    );
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {} as AnyObject);
 }
 
 /**
  * Additively camleizes the properties of the provided object
  */
 export function camelizeObject(obj: object): object {
-  return Object.keys(obj).reduce(
-    (acc, key) => {
-      const camelizedKey = S(key).camelize().s;
-      acc[camelizedKey] = acc[key];
-      return acc;
-    },
-    obj as AnyObject,
-  );
+  return Object.keys(obj).reduce((acc, key) => {
+    const camelizedKey = S(key).camelize().s;
+    acc[camelizedKey] = acc[key];
+    return acc;
+  }, obj as AnyObject);
 }

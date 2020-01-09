@@ -1,6 +1,7 @@
+import {dirname, resolve} from 'path';
+
 import {sync as glob} from 'glob';
 import {exists, existsSync, readFile, writeFile} from 'mz/fs';
-import {dirname, resolve} from 'path';
 
 import {load} from './config';
 import {format as f, makeDebug} from './debug';
@@ -228,9 +229,11 @@ export async function findEntryPoints(packageName: string): Promise<string[]> {
   if (pkg.browser) {
     debug(f`found browser entry(s) for ${pkg.name}`);
     paths = paths.concat(
-      Object.values(pkg.browser as {
-        [key: string]: string;
-      }).filter((p) => p && !p.startsWith('@')),
+      Object.values(
+        pkg.browser as {
+          [key: string]: string;
+        },
+      ).filter((p) => p && !p.startsWith('@')),
     );
   }
 
@@ -280,10 +283,9 @@ export async function gather(options: gather.Options): Promise<string[]> {
     if (Array.isArray(packageName)) {
       debug(f`User specified ${packageName.length} packages`);
       return packageName.sort();
-    } else {
-      debug('User specified a single package');
-      return [packageName];
     }
+    debug('User specified a single package');
+    return [packageName];
   }
 
   debug('User did not specify any packages; listing all packages');
@@ -321,7 +323,7 @@ export async function hasScript(
 ): Promise<boolean> {
   debug(f`Checking if ${packageName} has a ${scriptName} script`);
   const pkg = await read(packageName);
-  const has = !!(pkg.scripts && pkg.scripts[scriptName]);
+  const has = Boolean(pkg.scripts && pkg.scripts[scriptName]);
   debug(
     f`${packageName} ${
       has ? ' has ' : ' does not have '

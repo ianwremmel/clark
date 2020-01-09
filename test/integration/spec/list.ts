@@ -1,6 +1,7 @@
+import {resolve} from 'path';
+
 import {test} from '@oclif/test';
 import {assert} from 'chai';
-import {resolve} from 'path';
 
 describe('list', () => {
   test

@@ -1,5 +1,6 @@
-import {readFile as fsReadFile} from 'mz/fs';
 import {resolve as pathResolve} from 'path';
+
+import {readFile as fsReadFile} from 'mz/fs';
 
 /**
  * Reads a file in the specified fixture directory

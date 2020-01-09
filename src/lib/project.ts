@@ -1,7 +1,8 @@
-import findRoot from 'find-root';
 import {existsSync} from 'fs';
-import {readFile, writeFile} from 'mz/fs';
 import {resolve} from 'path';
+
+import findRoot from 'find-root';
+import {readFile, writeFile} from 'mz/fs';
 
 import {format as f, makeDebug} from './debug';
 
@@ -66,5 +67,4 @@ export async function write(pkg: object) {
   debug('Writing root package.json');
   await writeFile('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
   debug('Wrote root package.json');
-  return;
 }

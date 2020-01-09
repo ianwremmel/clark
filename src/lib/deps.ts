@@ -28,36 +28,35 @@ async function addVersionsToDeps(
 ): Promise<VersionedDependencies> {
   const proj = await readProject();
   const descender = join(
-    ...Array((await getPackagePath(packageName)).split('/').length).fill('..'),
+    ...new Array((await getPackagePath(packageName)).split('/').length).fill(
+      '..',
+    ),
   );
 
   debug(f`Adding versions for ${packageName} dependencies`);
-  return deps.reduce(
-    (acc, dep) => {
-      let version = proj.dependencies[dep];
-      debug(f`found ${version} for ${dep}`);
-      if (version.startsWith('file:')) {
-        debug(
-          f`${version} is a local path. making it relative to ${packageName}`,
-        );
-        const relPath = version.replace(/^file:\/*/, '');
-        const newVersion = `file:${join(descender, relPath)}`;
-        debug(f`replacing ${version} with ${newVersion}`);
-        version = newVersion;
-      }
+  return deps.reduce((acc, dep) => {
+    let version = proj.dependencies[dep];
+    debug(f`found ${version} for ${dep}`);
+    if (version.startsWith('file:')) {
+      debug(
+        f`${version} is a local path. making it relative to ${packageName}`,
+      );
+      const relPath = version.replace(/^file:\/*/, '');
+      const newVersion = `file:${join(descender, relPath)}`;
+      debug(f`replacing ${version} with ${newVersion}`);
+      version = newVersion;
+    }
 
-      acc[dep] = version;
-      return acc;
-    },
-    {} as VersionedDependencies,
-  );
+    acc[dep] = version;
+    return acc;
+  }, {} as VersionedDependencies);
 }
 
 /**
  * Strips path segments off of require statements
  */
 function convertRequiresToDeps(requires: string[]): string[] {
-  requires = Array.from(new Set(requires))
+  requires = [...new Set(requires)]
     .filter((r) => !r.startsWith('.'))
     .map((r) => {
       // The following block makes sure the dep is a package name and not a file
@@ -92,18 +91,15 @@ function findRequires(filePath: string): string[] {
 
     visited.set(
       filePath,
-      requires.reduce(
-        (acc, req) => {
-          debug(f`Found ${req}`);
-          if (req.startsWith('.')) {
-            debug(f`${req} is relative, descending`);
-            const next = findRequires(resolve(dirname(filePath), req));
-            return Array.from(new Set([...acc, ...next]));
-          }
-          return acc;
-        },
-        [] as string[],
-      ),
+      requires.reduce((acc, req) => {
+        debug(f`Found ${req}`);
+        if (req.startsWith('.')) {
+          debug(f`${req} is relative, descending`);
+          const next = findRequires(resolve(dirname(filePath), req));
+          return [...new Set([...acc, ...next])];
+        }
+        return acc;
+      }, [] as string[]),
     );
 
     return requires;
@@ -138,12 +134,9 @@ export async function generate(packageName: string) {
 export async function list(packageName: string): Promise<string[]> {
   const entrypoints = await findEntryPoints(packageName);
 
-  const requires = entrypoints.reduce(
-    (acc, entrypoint) => {
-      return acc.concat(findRequires(entrypoint));
-    },
-    [] as string[],
-  );
+  const requires = entrypoints.reduce((acc, entrypoint) => {
+    return acc.concat(findRequires(entrypoint));
+  }, [] as string[]);
 
   return convertRequiresToDeps(requires).sort();
 }
