@@ -2,12 +2,36 @@ env:
   es6: true
   node: true
 extends:
-  - "@ianwremmel/eslint-config-standard"
+  - 'plugin:@ianwremmel/ianwremmel/modern'
+  - oclif
+  - oclif-typescript
   - prettier
 parserOptions:
   ecmaVersion: 2017
   sourceType: script
 plugins:
   - prettier
+
+overrides:
+  - files:
+      - '**/*.ts'
+    parserOptions:
+      sourceType: module
+    rules:
+      import/export: off
+      import/no-unresolved: off
+
 rules:
   prettier/prettier: error
+  no-console: off
+  compat/compat: off
+  no-await-in-loop: off
+  new-cap:
+    - error
+    - capIsNewExceptions:
+        - S
+
+  # Things I don't want to fix right now:
+  unicorn/explicit-length-check: warn
+  '@typescript-eslint/no-use-before-define': warn
+  unicorn/catch-error-name: warn

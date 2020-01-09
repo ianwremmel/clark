@@ -5,14 +5,9 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "module": "commonjs",
-    "outDir": "./lib",
-    "plugins": [
-      {
-        "name": "tslint-language-service"
-      }
-    ],
+    "outDir": "lib",
     "pretty": true,
-    "rootDirs": ["./src"],
+    "rootDir": "./src",
     "sourceMap": true,
     "strict": true,
     "target": "es2017"
