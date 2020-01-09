@@ -208,7 +208,7 @@ describe('run', () => {
         '--',
         // Our goal is to pass an interpolable string to bash, *not* to have
         // js interpolate it
-        // tslint:disable-next-line no-invalid-template-strings
+        // eslint-disable-next-line no-template-curly-in-string
         "'${CLARK_PACKAGE_NAME}'",
       ])
       .it('injects environment variables', (ctx) => {

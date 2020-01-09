@@ -50,7 +50,7 @@ export default class Init extends Command {
     }
 
     const extract = (s: ScriptConfig, item: string) => {
-      const [key, value] = item.split(/=(.+)/);
+      const [key, value] = item.split(/[=](.+)/);
       s[key] = value;
       return s;
     };

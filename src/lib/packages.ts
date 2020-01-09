@@ -259,7 +259,7 @@ export async function findEntryPoints(packageName: string): Promise<string[]> {
 
   debug(paths);
 
-  const testPattern = /[\.-]spec|test\.[jt]sx?$/;
+  const testPattern = /[.-]spec|test\.[jt]sx?$/;
   return (
     paths
       .map((p) => resolve(packagePath, p))
@@ -476,7 +476,7 @@ export interface SpecifiesPackageName {
 /**
  * Describes an Options object that does not have a packageName property
  */
-export interface DoesNotSpecifyPackageName {}
+export type DoesNotSpecifyPackageName = {};
 
 /**
  * Helper

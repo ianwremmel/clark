@@ -24,6 +24,7 @@ export function spawn(
 
     debug(f`Running ${cmd} ${args.join(' ')}`);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {child: _child, ...rest} = options || {child: null};
 
     const opts: cpSpawnOptions = {

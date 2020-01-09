@@ -35,3 +35,6 @@ rules:
   unicorn/explicit-length-check: warn
   '@typescript-eslint/no-use-before-define': warn
   unicorn/catch-error-name: warn
+  # unicorn/no-abusive-eslint-disable deoesn't seem to notice that rules beginning
+  # with @ signs are rules
+  unicorn/no-abusive-eslint-disable: warn
