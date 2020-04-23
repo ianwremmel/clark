@@ -1,0 +1,17 @@
+environment:
+  nodejs_version: "lts"
+pull_requests:
+  do_not_increment_build_number: true
+skip_tags: true
+version: '{build}'
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - ps: '"//registry.npmjs.org/:_authToken=$env:NPM_TOKEN`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII'
+  - npm install
+
+test_script:
+  - npm test
+
+build_script:
+  - npm run build
