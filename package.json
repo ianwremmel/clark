@@ -83,7 +83,7 @@
     "eslint-plugin-mocha": "^6.0.0",
     "eslint-plugin-prettier": "^3.0.0",
     "husky": "^3.0.0",
-    "lint-staged": "^9.0.0",
+    "lint-staged": "^10.5.2",
     "mocha": "^6.0.0",
     "oclif": "^1.12.1",
     "prettier": "^1.14.3",
