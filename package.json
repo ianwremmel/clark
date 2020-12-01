@@ -48,7 +48,7 @@
     "node-source-walk": "^4.0.0",
     "pkg-up": "^3.0.0",
     "rc": "^1.2.8",
-    "semver": "^6.0.0",
+    "semver": "^7.3.4",
     "string": "^3.3.3",
     "supports-color": "^7.0.0",
     "tslib": "^1.9.3",
